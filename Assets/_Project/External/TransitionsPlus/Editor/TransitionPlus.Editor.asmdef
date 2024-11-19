@@ -1,0 +1,18 @@
+{
+    "name": "TransitionPlus.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:0f47eb25dc19aaa419aeff44e119766a"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
