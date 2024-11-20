@@ -14,53 +14,38 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sceneDatasByGuid:
     keys:
-    - 8c9cfa26abfee488c85f1582747f6a02
     - 
+    - 8c9cfa26abfee488c85f1582747f6a02
     values:
-    - goDatasByGlobalId:
-        keys:
-        - GlobalObjectId_V1-2-8c9cfa26abfee488c85f1582747f6a02-2085328508-0
-        - GlobalObjectId_V1-2-8c9cfa26abfee488c85f1582747f6a02-1502134707-0
-        - GlobalObjectId_V1-2-8c9cfa26abfee488c85f1582747f6a02-619394800-0
-        - GlobalObjectId_V1-2-8c9cfa26abfee488c85f1582747f6a02-519420028-0
-        - GlobalObjectId_V1-2-8c9cfa26abfee488c85f1582747f6a02-1582539042-0
-        - GlobalObjectId_V1-2-8c9cfa26abfee488c85f1582747f6a02-454836617-0
-        - GlobalObjectId_V1-2-8c9cfa26abfee488c85f1582747f6a02-211791241-0
-        values:
-        - iColor: 0
-          icon: Settings Icon
-        - iColor: 0
-          icon: Settings Icon
-        - iColor: 0
-          icon: Light Icon
-        - iColor: 0
-          icon: Camera Icon
-        - iColor: 0
-          icon: PreMatCube
-        - iColor: 0
-          icon: AvatarMask On Icon
-        - iColor: 0
-          icon: d_eyeDropper.sml
-      goDatasByInstanceId:
-        keys: 149a00000e9a0000089a0000fe9900007ac9fdfff8aaffff2a97fdff
-        values:
-        - iColor: 0
-          icon: Settings Icon
-        - iColor: 0
-          icon: Settings Icon
-        - iColor: 0
-          icon: Light Icon
-        - iColor: 0
-          icon: Camera Icon
-        - iColor: 0
-          icon: PreMatCube
-        - iColor: 0
-          icon: AvatarMask On Icon
-        - iColor: 0
-          icon: d_eyeDropper.sml
     - goDatasByGlobalId:
         keys: []
         values: []
       goDatasByInstanceId:
         keys: 
         values: []
+    - goDatasByGlobalId:
+        keys:
+        - GlobalObjectId_V1-2-8c9cfa26abfee488c85f1582747f6a02-1502134707-0
+        - GlobalObjectId_V1-2-8c9cfa26abfee488c85f1582747f6a02-833019449-0
+        - GlobalObjectId_V1-2-8c9cfa26abfee488c85f1582747f6a02-489482135-0
+        - GlobalObjectId_V1-2-8c9cfa26abfee488c85f1582747f6a02-454836617-0
+        values:
+        - iColor: 0
+          icon: 
+        - iColor: 0
+          icon: StandaloneInputModule Icon
+        - iColor: 0
+          icon: Canvas Icon
+        - iColor: 0
+          icon: AvatarMask On Icon
+      goDatasByInstanceId:
+        keys: 7897000038eaffff50eaffff60970000
+        values:
+        - iColor: 0
+          icon: 
+        - iColor: 0
+          icon: StandaloneInputModule Icon
+        - iColor: 0
+          icon: Canvas Icon
+        - iColor: 0
+          icon: AvatarMask On Icon

@@ -7,7 +7,7 @@ using UnityEngine;
 public class EntityList<T> : IEnumerable<Entity> where T : Entity
 {
     [SerializeField] List<T> collection = new ();
-
+    
     public static EntityList<T> operator +(EntityList<T> list, T entity)
     {
         list.Add(entity);
