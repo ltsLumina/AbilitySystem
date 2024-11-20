@@ -24,13 +24,17 @@ public class TickManager : Singleton<TickManager>
     [SerializeField] List<int> laps = new (10);
     
     public static event Action OnMicroTick;
-    public static event Action OnTick; 
+    public static event Action OnTick;
 
+    static bool showTickLogs;
+    
     void OnGUI()
     {
         GUI.Label(new Rect(10, 10, 100, 20), "Tick: " + tick.Current);
         GUI.HorizontalSlider(new Rect(10, 30, 100, 20), tick.Current, 1, tick.Rate);
-        var slider = GUI.HorizontalSlider(new Rect(10, 50, 100, 20), Time.timeScale, 0, 1);
+        float slider = GUI.HorizontalSlider(new Rect(10, 50, 100, 20), Time.timeScale, 0, 1);
+        showTickLogs = GUI.Toggle(new Rect(10, 70, 100, 20), showTickLogs, "Show Tick Logs");
+
         // snap to 0.1 increments
         Time.timeScale = Mathf.Round(slider * 10) / 10;
     }
@@ -54,7 +58,7 @@ public class TickManager : Singleton<TickManager>
 
         OnMicroTick += () =>
         {
-            Logger.Log("Tick! \n[no. " + tick.Current + "]");
+            if (showTickLogs) Logger.Log("Tick! \n[no. " + tick.Current + "]");
             tickCounter++;
 
             switch (tickCounter)
