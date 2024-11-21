@@ -29,6 +29,7 @@ MonoBehaviour:
         - GlobalObjectId_V1-2-8c9cfa26abfee488c85f1582747f6a02-833019449-0
         - GlobalObjectId_V1-2-8c9cfa26abfee488c85f1582747f6a02-489482135-0
         - GlobalObjectId_V1-2-8c9cfa26abfee488c85f1582747f6a02-454836617-0
+        - GlobalObjectId_V1-2-8c9cfa26abfee488c85f1582747f6a02-211791241-0
         values:
         - iColor: 0
           icon: 
@@ -38,8 +39,10 @@ MonoBehaviour:
           icon: Canvas Icon
         - iColor: 0
           icon: AvatarMask On Icon
+        - iColor: 0
+          icon: d_eyeDropper.sml
       goDatasByInstanceId:
-        keys: 7897000038eaffff50eaffff60970000
+        keys: a2970000969700007a9700006a97000064970000
         values:
         - iColor: 0
           icon: 
@@ -49,3 +52,5 @@ MonoBehaviour:
           icon: Canvas Icon
         - iColor: 0
           icon: AvatarMask On Icon
+        - iColor: 0
+          icon: d_eyeDropper.sml

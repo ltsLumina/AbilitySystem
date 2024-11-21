@@ -49,6 +49,20 @@ namespace Lumina.Essentials.Modules
 
         #region Miscellaneous
         /// <summary>
+        /// Returns the last child in a tree of transforms.
+        /// </summary>
+        /// <param name="parent"></param>
+        /// <returns></returns>
+        public static Transform GetLastChild(this Transform parent)
+        {
+            if (parent.childCount == 0) return parent;
+
+            Transform lastChild = parent.GetChild(parent.childCount - 1);
+            while (lastChild.childCount > 0) lastChild = lastChild.GetChild(lastChild.childCount - 1);
+            return lastChild;
+        }
+        
+        /// <summary>
         ///     Destroys all children of the given transform.
         ///     Can be used as extension method.
         /// </summary>

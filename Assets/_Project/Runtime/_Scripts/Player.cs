@@ -1,15 +1,24 @@
-﻿using System;
+﻿#region
+using System;
 using System.Collections;
-using DG.Tweening;
-using Lumina.Essentials.Modules;
+using System.Collections.Generic;
 using UnityEngine;
+using VInspector;
+using static Lumina.Essentials.Modules.Helpers;
+using PaintDotNet.Data.PhotoshopFileType;
+using UnityEngine.InputSystem;
+#endregion
+
 
 public class Player : Entity
 {
     [SerializeField] int health = 10;
-    [SerializeField] float speed = 25;
+    [Foldout("Movement")]
+    [SerializeField] float speed = 75;
+    [SerializeField] float mouseSpeed = 35;
+    [EndFoldout]
     [SerializeField] float topSpeed = 15;
-    [SerializeField] float moveDamping = 1;
+    [SerializeField] float moveDamping = 5;
     [SerializeField] float stopDamping = 15;
 
     [Header("Other")]
@@ -18,33 +27,30 @@ public class Player : Entity
     InputManager inputs;
     Rigidbody2D rb;
 
-    protected override void OnMicroTick()
+    protected override void OnTick()
     {
         
     }
 
-    protected override void OnTick()
+    protected override void OnCycle()
     {
-        if (health <= 0) return;
-        health--;
+        PerCycle(3, () =>
+        {
+            health = Mathf.Clamp(health - 1, 0, 10);
+        });
     }
+
+    void Reset() => gameObject.tag = "Player";
 
     protected override IEnumerator Start()
     {
         inputs = GetComponentInChildren<InputManager>();
-        rb     = GetComponent<Rigidbody2D>();
-
-        speed = mouseMove ? 35 : 25;
+        rb = GetComponent<Rigidbody2D>();
         
         return base.Start();
     }
-
-    void OnValidate()
-    {
-        speed = mouseMove ? 35 : 25;
-    }
     
-    void Update()
+    void FixedUpdate()
     {
         if (mouseMove) MouseMove();
         else Move();
@@ -54,18 +60,25 @@ public class Player : Entity
     {
         rb.AddForce(inputs.MoveInput * speed);
         rb.linearVelocity = Vector2.ClampMagnitude(rb.linearVelocity, topSpeed);
-            
-        var changingDir = Vector2.Dot(rb.linearVelocity, inputs.MoveInput) < 0;
+        bool changingDir = Vector2.Dot(rb.linearVelocity, inputs.MoveInput) < 0;
         rb.linearDamping = changingDir ? stopDamping : moveDamping;
         if (!inputs.IsMoving) rb.linearDamping = Mathf.Lerp(rb.linearDamping, 100, 0.1f);
-
-        //rb.linearDamping = !inputs.IsMoving ? stopDamping : moveDamping;
     }
 
     void MouseMove()
     {
-        var mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        var mousePos = CameraMain.ScreenToWorldPoint(Input.mousePosition);
         var dir = (mousePos - transform.position).normalized;
-        rb.AddForce(dir * speed);
+        rb.AddForce(dir * mouseSpeed);
+    }
+
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.green;
+        if (!rb) return;
+        Vector2 dir = rb.linearVelocity.normalized * 5;
+        Gizmos.DrawRay(transform.position, dir);
+        var point = transform.position + (Vector3) dir;
+        Gizmos.DrawWireSphere(point, 0.3f);
     }
 }

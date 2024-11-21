@@ -27,16 +27,16 @@ public abstract class Entity : MonoBehaviour, IEntity
     public event Action<Entity> OnEntityDestroy;
     #endregion
     
-    void OnEnable() => OnEntityEnable?.Invoke(this);
-    void OnDisable() => OnEntityDisable?.Invoke(this);
-    void OnDestroy() => OnEntityDestroy?.Invoke(this);
+    void IEntity.OnEnable() => OnEntityEnable?.Invoke(this);
+    void IEntity.OnDisable() => OnEntityDisable?.Invoke(this);
+    void IEntity.OnDestroy() => OnEntityDestroy?.Invoke(this);
 
-    public override string ToString()
-    {
-        return base.ToString();
-    }
+    public override string ToString() => 
+        $"{name} ({GetType().Name}) \n" 
+        + $"State: {State}";
 
     bool hasTicked;
+
     
     protected virtual IEnumerator Start()
     {
@@ -55,11 +55,11 @@ public abstract class Entity : MonoBehaviour, IEntity
 
             TickManager.OnMicroTick += () =>
             {
-                OnMicroTick();
+                OnTick();
                 tcs.TrySetResult(true);
             };
             
-            TickManager.OnTick += OnTick;
+            TickManager.OnTick += OnCycle;
 
             return tcs;
         }
@@ -67,12 +67,41 @@ public abstract class Entity : MonoBehaviour, IEntity
         void Initialize()
         {
             // any other initialization code here
+            OnEntityEnable += e =>
+            {
+                Logger.Log($"{e.name} has been enabled.");
+                State = ActiveState.Enabled;
+            };
+            
+            OnEntityDisable += e =>
+            {
+                Logger.Log($"{e.name} has been disabled.");
+                State = ActiveState.Disabled;
+            };
+            
+            OnEntityDestroy += e =>
+            {
+                Logger.Log($"{e.name} has been destroyed.");
+            };
         }
     }
 
-    protected abstract void OnMicroTick();
-
     protected abstract void OnTick();
+
+    protected abstract void OnCycle();
+    
+    protected int tickCycles;
+
+    protected void PerCycle(int cycle, Action action)
+    {
+        tickCycles++;
+
+        if (tickCycles == cycle)
+        {
+            action();
+            tickCycles = 0;
+        }
+    }
     
     public void Destroy()
     {
@@ -98,17 +127,4 @@ public abstract class Entity : MonoBehaviour, IEntity
         }
     }
 
-}
-
-public static class EntityExtensions
-{
-    public static void Destroy(this IEntity entity)
-    {
-        entity.Destroy();
-    }
-    
-    public static void Destroy(this IEntity entity, float delay)
-    {
-        entity.Destroy(delay);
-    }
 }

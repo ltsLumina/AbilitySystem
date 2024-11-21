@@ -2,5 +2,5 @@
 // {
 //     
 //
-//     protected override void OnTick() => throw new System.NotImplementedException();
+//     protected override void OnCycle() => throw new System.NotImplementedException();
 // }

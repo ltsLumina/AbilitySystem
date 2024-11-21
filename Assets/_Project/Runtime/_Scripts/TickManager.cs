@@ -83,10 +83,10 @@ public class TickManager : Singleton<TickManager>
             }
         };
     }
-
+    
     void Update()
     {
-        if (tick.Update(Time.deltaTime * Time.timeScale, tickCycleDuration))
+        if (tick.Cycle(Time.deltaTime * Time.timeScale, tickCycleDuration))
         {
             OnMicroTick?.Invoke();
             cycleCompleted = false;
@@ -132,7 +132,7 @@ public class Tick
     /// <param name="deltaTime"> The delta time adjusted by the timescale. </param>
     /// <param name="tickCycleDuration"> The duration of a tick cycle in seconds. </param>
     /// <returns> Returns true if the tick has been updated. </returns>
-    public bool Update(float deltaTime, float tickCycleDuration)
+    public bool Cycle(float deltaTime, float tickCycleDuration)
     {
         if (Pause) return false;
 
