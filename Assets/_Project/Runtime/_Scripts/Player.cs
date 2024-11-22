@@ -1,21 +1,21 @@
 ﻿#region
-using System;
 using System.Collections;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using UnityEngine;
 using VInspector;
 using static Lumina.Essentials.Modules.Helpers;
-using PaintDotNet.Data.PhotoshopFileType;
-using UnityEngine.InputSystem;
 #endregion
-
 
 public class Player : Entity
 {
+    [HideInInspector, UsedImplicitly]
+    public VInspectorData data;
+
     [SerializeField] int health = 10;
     [Foldout("Movement")]
-    [SerializeField] float speed = 75;
-    [SerializeField] float mouseSpeed = 35;
+    [SerializeField] List<float> speeds = new (2)
+    { 75, 35 };
     [EndFoldout]
     [SerializeField] float topSpeed = 15;
     [SerializeField] float moveDamping = 5;
@@ -27,18 +27,19 @@ public class Player : Entity
     InputManager inputs;
     Rigidbody2D rb;
 
-    protected override void OnTick()
+    float speed
     {
-        
+        get => mouseMove ? speeds[1] : speeds[0];
+        set
+        {
+            if (mouseMove) speeds[1] = value;
+            else speeds[0] = value;
+        }
     }
 
-    protected override void OnCycle()
-    {
-        PerCycle(3, () =>
-        {
-            health = Mathf.Clamp(health - 1, 0, 10);
-        });
-    }
+    protected override void OnTick() { }
+
+    protected override void OnCycle() { PerCycle(3, () => { health = Mathf.Clamp(health - 1, 0, 10); }); }
 
     void Reset() => gameObject.tag = "Player";
 
@@ -46,10 +47,10 @@ public class Player : Entity
     {
         inputs = GetComponentInChildren<InputManager>();
         rb = GetComponent<Rigidbody2D>();
-        
+
         return base.Start();
     }
-    
+
     void FixedUpdate()
     {
         if (mouseMove) MouseMove();
@@ -69,7 +70,25 @@ public class Player : Entity
     {
         var mousePos = CameraMain.ScreenToWorldPoint(Input.mousePosition);
         var dir = (mousePos - transform.position).normalized;
-        rb.AddForce(dir * mouseSpeed);
+        rb.AddForce(dir * speed);
+    }
+
+    public void OnHit(Enemy enemy = default)
+    {
+        health--;
+
+        var sprite = GetComponentInChildren<SpriteRenderer>();
+        sprite.FlashSprite(Color.red, 0.3f);
+        StartCoroutine(sprite.CreateAfterImages(0.05f, 0.25f, 5));
+
+        StartCoroutine(Foo());
+    }
+
+    IEnumerator Foo()
+    {
+        speed *= 1.5f;
+        yield return new WaitForSeconds(0.5f);
+        speed /= 1.5f;
     }
 
     void OnDrawGizmos()

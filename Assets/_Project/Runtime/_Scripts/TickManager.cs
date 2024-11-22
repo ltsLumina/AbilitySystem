@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using Lumina.Essentials.Attributes;
 using UnityEngine;
 
@@ -13,21 +14,21 @@ using UnityEngine;
 public class TickManager : Singleton<TickManager>
 {
     [SerializeField] Tick tick;
-    
+
     [Tooltip("The number of ticks per second.")]
     [SerializeField] int tickRate = 20;
 
-    [Tooltip("The duration of a tick cycle in seconds.")] 
+    [Tooltip("The duration of a tick cycle in seconds.")]
     [SerializeField] float tickCycleDuration = 1f;
 
     [Header("Other")]
     [SerializeField] List<int> laps = new (10);
-    
-    public static event Action OnMicroTick;
+
     public static event Action OnTick;
+    public static event Action OnCycle;
 
     static bool showTickLogs;
-    
+
     void OnGUI()
     {
         GUI.Label(new Rect(10, 10, 100, 20), "Tick: " + tick.Current);
@@ -45,18 +46,18 @@ public class TickManager : Singleton<TickManager>
     #endregion
 
     bool cycleCompleted;
-    
+
     void Start()
     {
         Application.targetFrameRate = 60;
-        
+
         tick = new Tick(tickRate);
-        
+
         stopwatch = new ();
         tickCounter = 0;
         cycleCompleted = false;
 
-        OnMicroTick += () =>
+        OnTick += () =>
         {
             if (showTickLogs) Logger.Log("Tick! \n[no. " + tick.Current + "]");
             tickCounter++;
@@ -75,7 +76,7 @@ public class TickManager : Singleton<TickManager>
 
                     if (!cycleCompleted)
                     {
-                        OnTick?.Invoke();
+                        OnCycle?.Invoke();
                         cycleCompleted = true;
                     }
 
@@ -83,17 +84,31 @@ public class TickManager : Singleton<TickManager>
             }
         };
     }
-    
+
     void Update()
     {
         if (tick.Cycle(Time.deltaTime * Time.timeScale, tickCycleDuration))
         {
-            OnMicroTick?.Invoke();
+            OnTick?.Invoke();
             cycleCompleted = false;
         }
     }
 
-     void OnDestroy() => OnMicroTick = null;
+    void OnDestroy() => OnTick = null;
+
+    public static Task WaitForNextCycle()
+    {
+        var tcs = new TaskCompletionSource<bool>();
+
+        OnCycle += Cycle; // Add the listener to the event and wait for a cycle to complete.
+        return tcs.Task;
+
+        void Cycle() // Once the cycle has completed, remove the listener and set the task as completed.
+        {
+            OnCycle -= Cycle;
+            tcs.SetResult(true);
+        }
+    }
 }
 
 [Serializable]
@@ -101,7 +116,7 @@ public class Tick
 {
     [SerializeField, ReadOnly] int tick;
     [SerializeField] bool pause;
-    
+
     float accumulatedTime;
 
     public bool Pause
@@ -146,7 +161,7 @@ public class Tick
             if (Current > Rate) { Current = 1; }
             return true;
         }
-        
+
         return false;
     }
 }

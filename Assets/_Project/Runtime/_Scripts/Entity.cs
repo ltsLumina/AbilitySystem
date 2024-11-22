@@ -18,7 +18,7 @@ public abstract class Entity : MonoBehaviour, IEntity
         Enabled,
         Disabled,
     }
-    
+
     public ActiveState State { get; private set; }
 
     #region Events
@@ -26,40 +26,39 @@ public abstract class Entity : MonoBehaviour, IEntity
     public event Action<Entity> OnEntityDisable;
     public event Action<Entity> OnEntityDestroy;
     #endregion
-    
+
     void IEntity.OnEnable() => OnEntityEnable?.Invoke(this);
+
     void IEntity.OnDisable() => OnEntityDisable?.Invoke(this);
+
     void IEntity.OnDestroy() => OnEntityDestroy?.Invoke(this);
 
-    public override string ToString() => 
-        $"{name} ({GetType().Name}) \n" 
-        + $"State: {State}";
+    public override string ToString() => $"{name} ({GetType().Name}) \n" + $"State: {State}";
 
     bool hasTicked;
 
-    
     protected virtual IEnumerator Start()
     {
         Initialize();
 
         var tickTask = InitializeTick();
 
-        yield return new WaitForSeconds(1); Debug.Assert(
-            tickTask.Task.IsCompleted, $"{name} has not ticked after 1 second. " + 
-                   "\nEnsure the TickManager is running and that your entity is calling base.Start() in its Start method.");
+        yield return new WaitForSeconds(1);
+        Debug.Assert(tickTask.Task.IsCompleted, $"{name} has not ticked after 1 second. " + "\nEnsure the TickManager is running and that your entity is calling base.Start() in its Start method.");
 
         yield break;
+
         TaskCompletionSource<bool> InitializeTick()
         {
             var tcs = new TaskCompletionSource<bool>();
 
-            TickManager.OnMicroTick += () =>
+            TickManager.OnTick += () =>
             {
                 OnTick();
                 tcs.TrySetResult(true);
             };
-            
-            TickManager.OnTick += OnCycle;
+
+            TickManager.OnCycle += OnCycle;
 
             return tcs;
         }
@@ -72,25 +71,22 @@ public abstract class Entity : MonoBehaviour, IEntity
                 Logger.Log($"{e.name} has been enabled.");
                 State = ActiveState.Enabled;
             };
-            
+
             OnEntityDisable += e =>
             {
                 Logger.Log($"{e.name} has been disabled.");
                 State = ActiveState.Disabled;
             };
-            
-            OnEntityDestroy += e =>
-            {
-                Logger.Log($"{e.name} has been destroyed.");
-            };
+
+            OnEntityDestroy += e => { Logger.Log($"{e.name} has been destroyed."); };
         }
     }
 
     protected abstract void OnTick();
 
     protected abstract void OnCycle();
-    
-    protected int tickCycles;
+
+    int tickCycles;
 
     protected void PerCycle(int cycle, Action action)
     {
@@ -102,16 +98,10 @@ public abstract class Entity : MonoBehaviour, IEntity
             tickCycles = 0;
         }
     }
-    
-    public void Destroy()
-    {
-        StartCoroutine(DestroyCoroutine(0));
-    }
-    
-    public void Destroy(float delay)
-    {
-        StartCoroutine(DestroyCoroutine(delay));
-    }
+
+    public void Destroy() { StartCoroutine(DestroyCoroutine(0)); }
+
+    public void Destroy(float delay) { StartCoroutine(DestroyCoroutine(delay)); }
 
     IEnumerator DestroyCoroutine(float delay)
     {
@@ -121,10 +111,6 @@ public abstract class Entity : MonoBehaviour, IEntity
 
     void OnCollisionEnter2D(Collision2D other)
     {
-        if (!other.gameObject.CompareTag("Player"))
-        {
-            Debug.Log($"{name} collided with {other.gameObject.name}.");
-        }
+        if (!other.gameObject.CompareTag("Player")) { Debug.Log($"{name} collided with {other.gameObject.name}."); }
     }
-
 }

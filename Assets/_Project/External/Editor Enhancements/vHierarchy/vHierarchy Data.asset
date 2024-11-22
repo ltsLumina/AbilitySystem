@@ -30,9 +30,15 @@ MonoBehaviour:
         - GlobalObjectId_V1-2-8c9cfa26abfee488c85f1582747f6a02-489482135-0
         - GlobalObjectId_V1-2-8c9cfa26abfee488c85f1582747f6a02-454836617-0
         - GlobalObjectId_V1-2-8c9cfa26abfee488c85f1582747f6a02-211791241-0
+        - GlobalObjectId_V1-2-8c9cfa26abfee488c85f1582747f6a02-2085328508-0
+        - GlobalObjectId_V1-2-8c9cfa26abfee488c85f1582747f6a02-519420028-0
+        - GlobalObjectId_V1-2-8c9cfa26abfee488c85f1582747f6a02-1582539042-0
+        - GlobalObjectId_V1-2-8c9cfa26abfee488c85f1582747f6a02-619394800-0
+        - GlobalObjectId_V1-2-8c9cfa26abfee488c85f1582747f6a02-3157423394075836857-5898334225754631765
+        - GlobalObjectId_V1-2-8c9cfa26abfee488c85f1582747f6a02-845126394-0
         values:
         - iColor: 0
-          icon: 
+          icon: Settings Icon
         - iColor: 0
           icon: StandaloneInputModule Icon
         - iColor: 0
@@ -41,11 +47,23 @@ MonoBehaviour:
           icon: AvatarMask On Icon
         - iColor: 0
           icon: d_eyeDropper.sml
+        - iColor: 0
+          icon: Settings Icon
+        - iColor: 0
+          icon: Camera Icon
+        - iColor: 0
+          icon: PreMatCube
+        - iColor: 0
+          icon: Light Icon
+        - iColor: 0
+          icon: 
+        - iColor: 0
+          icon: PreMatCylinder
       goDatasByInstanceId:
-        keys: a2970000969700007a9700006a97000064970000
+        keys: f8970000e0970000c2970000b2970000aa97000020980000cc97000002980000d8970000b2faffff2e2fffff
         values:
         - iColor: 0
-          icon: 
+          icon: Settings Icon
         - iColor: 0
           icon: StandaloneInputModule Icon
         - iColor: 0
@@ -54,3 +72,15 @@ MonoBehaviour:
           icon: AvatarMask On Icon
         - iColor: 0
           icon: d_eyeDropper.sml
+        - iColor: 0
+          icon: Settings Icon
+        - iColor: 0
+          icon: Camera Icon
+        - iColor: 0
+          icon: PreMatCube
+        - iColor: 0
+          icon: Light Icon
+        - iColor: 0
+          icon: 
+        - iColor: 0
+          icon: PreMatCylinder

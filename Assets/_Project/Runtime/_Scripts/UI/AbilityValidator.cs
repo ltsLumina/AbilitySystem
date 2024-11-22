@@ -1,7 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using Lumina.Essentials.Modules;
+using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using VInspector;
@@ -9,8 +8,8 @@ using VInspector;
 [ExecuteInEditMode]
 public class AbilityValidator : MonoBehaviour
 {
-    [SerializeField] List<InputAction> abilities = new();
-    
+    [SerializeField] List<InputAction> abilities = new ();
+
     InputAction ability;
 
     void ValidateName()
@@ -22,22 +21,19 @@ public class AbilityValidator : MonoBehaviour
             if (abilities.Contains(action)) continue;
 
             abilities = actions.Where(a => a.name.Contains("Ability")).ToList();
-            
+
             int childIndex = transform.GetSiblingIndex();
 
             ability = abilities[childIndex];
             const string template = "Ability [KEY]";
             gameObject.name = template.Replace("[KEY]", $"[\" {ability.GetBindingDisplayString()} \"]");
-            
-            GameObject icon = transform.GetLastChild().gameObject;
-            // temporarily changing the text instead of an icon
-            icon.GetComponent<TMPro.TextMeshProUGUI>().text = ability.GetBindingDisplayString();
+
             // this will be the proper way eventually:
             // icon.GetComponent<Image>().sprite = iconSprite;
         }
     }
 
-    [Button]
+    [Button, UsedImplicitly]
     public void FixName()
     {
         const string template = "Ability [KEY]";

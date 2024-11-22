@@ -12,7 +12,7 @@ float4 BlendARGB(float4 overlying, float4 underlying)
 	overlying.rgb *= overlying.a;
 	underlying.rgb *= underlying.a;
 	float3 blended = overlying.rgb + ((1 - overlying.a) * underlying.rgb);
-	float alpha = underlying.a + (1 - underlying.a) * overlying.a;
+	float  alpha = underlying.a + (1 - underlying.a) * overlying.a;
 	return float4(blended / alpha, alpha);
 }
 
@@ -44,7 +44,7 @@ void GetSurfaceNormal_float(texture2D atlas, float textureWidth, float textureHe
 	h /= bevelWidth;
 	h = saturate(h + .5);
 
-	if (raisedBevel) h = 1 - abs(h * 2.0 - 1.0);
+	if(raisedBevel) h = 1 - abs(h * 2.0 - 1.0);
 	h = lerp(h, sin(h * 3.141592 / 2.0), float4(_BevelRoundness, _BevelRoundness, _BevelRoundness, _BevelRoundness));
 	h = min(h, 1.0 - float4(_BevelClamp, _BevelClamp, _BevelClamp, _BevelClamp));
 	h *= _BevelAmount * bevelWidth * _GradientScale * -2.0;
@@ -53,7 +53,7 @@ void GetSurfaceNormal_float(texture2D atlas, float textureWidth, float textureHe
 	float3 vb = normalize(float3(0.0, 1.0, h.w - h.z));
 
 	float3 f = float3(1, 1, 1);
-	if (isFront) f = float3(1, 1, -1);
+	if(isFront) f = float3(1, 1, -1);
 	nornmal = cross(va, vb) * f;
 }
 
@@ -62,7 +62,7 @@ void EvaluateLight_float(float4 faceColor, float3 n, out float4 color)
 	n.z = abs(n.z);
 	float3 light = normalize(float3(sin(_LightAngle), cos(_LightAngle), 1.0));
 
-	float3 col = max(faceColor.rgb, 0) + GetSpecular(n, light)* faceColor.a;
+	float3 col = max(faceColor.rgb, 0) + GetSpecular(n, light) * faceColor.a;
 	//faceColor.rgb += col * faceColor.a;
 	col *= 1 - (dot(n, light) * _Diffuse);
 	col *= lerp(_Ambient, 1, n.z * n.z);
@@ -87,11 +87,12 @@ void ComputeUVOffset_float(float texWidth, float texHeight, float2 offset, float
 	uvOffset = float2(-offset.x * SDR / texWidth, -offset.y * SDR / texHeight);
 }
 
-void ScreenSpaceRatio2_float(float4x4 projection, float4 position, float2 objectScale, float screenWidth, float screenHeight, float fontScale, out float SSR)
+void ScreenSpaceRatio2_float(float4x4  projection, float4 position, float2 objectScale, float screenWidth, float screenHeight, float fontScale,
+                             out float SSR)
 {
 	float2 pixelSize = position.w;
 	pixelSize /= (objectScale * mul((float2x2)projection, float2(screenWidth, screenHeight)));
-	SSR = rsqrt(dot(pixelSize, pixelSize)*2) * fontScale;
+	SSR = rsqrt(dot(pixelSize, pixelSize) * 2) * fontScale;
 }
 
 // UV			: Texture coordinate of the source distance field texture
@@ -103,7 +104,7 @@ void ScreenSpaceRatio_float(float2 UV, float TextureSize, bool Filter, out float
 	{
 		float2 a = float2(ddx(UV.x), ddy(UV.x));
 		float2 b = float2(ddx(UV.y), ddy(UV.y));
-		float s = lerp(dot(a,a), dot(b,b), 0.5);
+		float  s = lerp(dot(a, a), dot(b, b), 0.5);
 		SSR = rsqrt(s) / TextureSize;
 	}
 	else
@@ -121,8 +122,8 @@ void ScreenSpaceRatio_float(float2 UV, float TextureSize, bool Filter, out float
 void ComputeSDF_float(float SSR, float SD, float SDR, float isoPerimeter, float softness, out float outAlpha)
 {
 	softness *= SSR * SDR;
-	float d = (SD - 0.5) * SDR;																				// Signed distance to edge, in Texture space
-	outAlpha = saturate((d * 2.0 * SSR + 0.5 + isoPerimeter * SDR * SSR + softness * 0.5) / (1.0 + softness));	// Screen pixel coverage (alpha)
+	float d = (SD - 0.5) * SDR; // Signed distance to edge, in Texture space
+	outAlpha = saturate((d * 2.0 * SSR + 0.5 + isoPerimeter * SDR * SSR + softness * 0.5) / (1.0 + softness)); // Screen pixel coverage (alpha)
 }
 
 void ComputeSDF2_float(float SSR, float SD, float SDR, float2 isoPerimeter, float2 softness, out float2 outAlpha)
@@ -163,7 +164,8 @@ void Layer1_float(float alpha, float4 color0, out float4 outColor)
 void Layer2_float(float2 alpha, float4 color0, float4 color1, out float4 outColor)
 {
 	color1.a *= alpha.y;
-	color0.rgb *= color0.a; color1.rgb *= color1.a;
+	color0.rgb *= color0.a;
+	color1.rgb *= color1.a;
 	outColor = lerp(color1, color0, alpha.x);
 	outColor.rgb /= outColor.a;
 }
@@ -172,7 +174,10 @@ void Layer2_float(float2 alpha, float4 color0, float4 color1, out float4 outColo
 void Layer4_float(float4 alpha, float4 color0, float4 color1, float4 color2, float4 color3, out float4 outColor)
 {
 	color3.a *= alpha.w;
-	color0.rgb *= color0.a; color1.rgb *= color1.a; color2.rgb *= color2.a; color3.rgb *= color3.a;
+	color0.rgb *= color0.a;
+	color1.rgb *= color1.a;
+	color2.rgb *= color2.a;
+	color3.rgb *= color3.a;
 	outColor = lerp(lerp(lerp(color3, color2, alpha.z), color1, alpha.y), color0, alpha.x);
 	outColor.rgb /= outColor.a;
 }
