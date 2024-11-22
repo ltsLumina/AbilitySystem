@@ -1,9 +1,11 @@
-﻿using System;
+﻿#region
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Lumina.Essentials.Attributes;
 using UnityEngine;
+#endregion
 
 /// <summary>
 ///     <para> Manages the game's tick rate. </para>
@@ -46,6 +48,21 @@ public class TickManager : Singleton<TickManager>
     #endregion
 
     bool cycleCompleted;
+
+    /// <summary>
+    ///     <para> The number of ticks per second. </para>
+    /// </summary>
+    public int TickRate => tickRate;
+
+    /// <summary>
+    ///     <para> The duration of a tick cycle in seconds. </para>
+    /// </summary>
+    public float TickCycleDuration => tickCycleDuration;
+
+    /// <summary>
+    ///     <para> The duration of a single tick in seconds. </para>
+    /// </summary>
+    public float TickDuration => 1f / tickRate;
 
     void Start()
     {

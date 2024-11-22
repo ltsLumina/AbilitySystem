@@ -16,6 +16,9 @@ public class ExtendedScriptableObjectDrawer : PropertyDrawer
 {
     const int buttonWidth = 66;
 
+    /// <summary>
+    ///    <para> A list of class full names to ignore when drawing the property. </para>
+    /// </summary>
     readonly static List<string> ignoreClassFullNames = new ()
     { "TMPro.TMP_FontAsset" };
     public override float GetPropertyHeight(SerializedProperty property, GUIContent label)

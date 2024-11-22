@@ -7,7 +7,7 @@ using VInspector;
 using static Lumina.Essentials.Modules.Helpers;
 #endregion
 
-public class Player : Entity
+public class Player : Entity, IDamageable
 {
     [HideInInspector, UsedImplicitly]
     public VInspectorData data;
@@ -99,5 +99,11 @@ public class Player : Entity
         Gizmos.DrawRay(transform.position, dir);
         var point = transform.position + (Vector3) dir;
         Gizmos.DrawWireSphere(point, 0.3f);
+    }
+
+    public void TakeDamage(float damage)
+    {
+        health -= Mathf.RoundToInt(damage);
+        if (health <= 0) Logger.Log("Player has died.");
     }
 }

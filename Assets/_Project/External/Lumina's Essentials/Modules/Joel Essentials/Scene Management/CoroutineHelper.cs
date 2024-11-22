@@ -34,9 +34,11 @@ public class CoroutineHelper : MonoBehaviour
 
     public static MonoBehaviour GetHost() => Instance;
 
-    new public static void StartCoroutine(IEnumerator coroutine)
+    new public static Coroutine StartCoroutine(IEnumerator coroutine)
     {
-        if (Instance != null) ((MonoBehaviour) Instance).StartCoroutine(coroutine);
-        else Debug.LogError("[Coroutine Helper] is null. Coroutine cannot be started.");
+        if (Instance != null) return ((MonoBehaviour) Instance).StartCoroutine(coroutine);
+
+        Debug.LogError("[Coroutine Helper] is null. Coroutine cannot be started.");
+        return null;
     }
 }

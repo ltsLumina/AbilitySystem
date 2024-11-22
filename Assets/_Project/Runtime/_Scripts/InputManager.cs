@@ -1,3 +1,4 @@
+#region
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
@@ -5,6 +6,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using VInspector;
 using static Lumina.Essentials.Modules.Helpers;
+#endregion
 
 public class InputManager : MonoBehaviour
 {
@@ -50,9 +52,9 @@ public class InputManager : MonoBehaviour
         }
 
         abilityButtons = new ()
-        { { abilityKeys[0], FindMultiple<AbilityButton>().FirstOrDefault(b => b.ability == 1)?.gameObject },
-          { abilityKeys[1], FindMultiple<AbilityButton>().FirstOrDefault(b => b.ability == 2)?.gameObject },
-          { abilityKeys[2], FindMultiple<AbilityButton>().FirstOrDefault(b => b.ability == 3)?.gameObject },
-          { abilityKeys[3], FindMultiple<AbilityButton>().FirstOrDefault(b => b.ability == 4)?.gameObject } };
+        { { abilityKeys[0], FindMultiple<AbilityButton>().FirstOrDefault(b => b.abilityIndex == 1)?.gameObject },
+          { abilityKeys[1], FindMultiple<AbilityButton>().FirstOrDefault(b => b.abilityIndex == 2)?.gameObject },
+          { abilityKeys[2], FindMultiple<AbilityButton>().FirstOrDefault(b => b.abilityIndex == 3)?.gameObject },
+          { abilityKeys[3], FindMultiple<AbilityButton>().FirstOrDefault(b => b.abilityIndex == 4)?.gameObject } };
     }
 }

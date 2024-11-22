@@ -1,3 +1,4 @@
+#region
 using System.Collections;
 using System.Globalization;
 using DG.Tweening;
@@ -10,10 +11,14 @@ using UnityEngine.UI;
 using VInspector;
 using Tween = DG.Tweening.Core.TweenerCore<float, float, DG.Tweening.Plugins.Options.FloatOptions>;
 using ColorTween = DG.Tweening.Core.TweenerCore<UnityEngine.Color, UnityEngine.Color, DG.Tweening.Plugins.Options.ColorOptions>;
+#endregion
 
 public class AbilityButton : MonoBehaviour
 {
-    [Tab("Ability")]
+    [Tab("Ability"), EnableIf(nameof(ability), null), SerializeField]
+     Ability ability;
+    [EndIf]
+    [Tab("UI")]
     [Header("References")]
     [SerializeField] Image circle;
     [Tooltip("The layer that covers the button when it's on cooldown. \nActive = on cooldown.")]
@@ -56,13 +61,14 @@ public class AbilityButton : MonoBehaviour
 
     //float cooldownTime => RoundToDecimal(cooldownTween.Elapsed(), 2);
 
-    public int ability => transform.GetSiblingIndex() + 1;
+    public int abilityIndex => transform.GetSiblingIndex() + 1;
 
     Button button => GetComponent<Button>();
 
     protected void Start()
     {
         button.onClick.AddListener(Invoke);
+        button.image.sprite = ability.abilityIcon;
 
         circle.fillAmount = 0;
         duration.alpha = 0;
@@ -129,11 +135,6 @@ public class AbilityButton : MonoBehaviour
         cooldownTween = circle.DOFillAmount(0, cooldown).SetEase(Ease.InOutSine);
         OnCooldown = true;
 
-        var effect = Instantiate(Resources.Load<GameObject>("PREFABS/Effect"));
-        var player = GameObject.FindGameObjectWithTag("Player");
-        effect.transform.position = player.transform.position + transform.right * 2.5f;
-        effect.AddComponent<Rigidbody2D>().AddForce(transform.right * 500);
-
         cooldownTween.OnComplete
         (() =>
         {
@@ -178,10 +179,10 @@ public class AbilityButton : MonoBehaviour
             return;
         }
 
-        var foo = new Ability();
-        foo.DoSomething();
+        // <abilityLogic()>
+        ability?.Invoke();
         Cooldown();
-        Logger.Log($"Ability {ability} has been invoked.");
+        Logger.Log($"Ability {abilityIndex} has been invoked.");
     }
 
     bool TweenIsInvalid(Tween tween) => tween != null && tween.IsActive() && tween.IsPlaying();
@@ -191,14 +192,4 @@ public class AbilityButton : MonoBehaviour
     #region Utility
     static float RoundToDecimal(float value, int decimals) => Mathf.Round(value * Mathf.Pow(10, decimals)) / Mathf.Pow(10, decimals);
     #endregion
-}
-
-public class Ability
-{
-    public Ability()
-    {
-        // << Ability logic goes here >> \\
-    }
-
-    public void DoSomething() { }
 }

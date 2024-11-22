@@ -1,6 +1,8 @@
-﻿using UnityEngine;
+﻿#region
+using UnityEngine;
+#endregion
 
-public class Enemy : Entity
+public class Enemy : Entity, IDamageable
 {
     protected override void OnTick() { }
 
@@ -13,5 +15,13 @@ public class Enemy : Entity
             Debug.Log("Player entered enemy trigger.");
             player.OnHit(this);
         }
+    }
+
+    public void TakeDamage(float damage)
+    {
+        Debug.Log($"{name} took {damage} damage.");
+
+        var spriteRenderer = GetComponent<SpriteRenderer>();
+        spriteRenderer.FlashSprite(Color.red, 0.75f);
     }
 }

@@ -321,6 +321,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a827b104469f4ade8ad61c007a943047, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  data: {fileID: 902245447}
   health: 10
   speeds:
   - 50
@@ -1141,6 +1142,38 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &902245447
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89b7ac12dedcd467992b1d9eb3139ab5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttons: []
+  rootTab:
+    name: 
+    selectedSubtabIndex: 0
+    subtabs: []
+    subtabsDrawn: 0
+  rootFoldout:
+    name: 
+    expanded: 1
+    subfoldouts:
+    - rid: 1347812652628050257
+  references:
+    version: 2
+    RefIds:
+    - rid: 1347812652628050257
+      type: {class: VInspectorData/Foldout, ns: VInspector, asm: VInspector}
+      data:
+        name: Movement
+        expanded: 0
+        subfoldouts: []
 --- !u!114 &971241381
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1273,6 +1306,10 @@ PrefabInstance:
       propertyPath: m_Color.r
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3724852529656350874, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
+      propertyPath: m_Navigation.m_Mode
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5832864610646627859, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
       propertyPath: m_Name
       value: Available
@@ -1290,8 +1327,16 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 7916833178086342432, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
+      propertyPath: ability
+      value: 
+      objectReference: {fileID: 11400000, guid: afbdf85f3e271f6409967ae0003f86bc, type: 2}
+    - target: {fileID: 7916833178086342432, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
       propertyPath: cooldown
       value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7916833178086342432, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
+      propertyPath: showDecimals
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7916833178086342432, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
       propertyPath: cooldownDuration
@@ -1801,6 +1846,10 @@ PrefabInstance:
       propertyPath: m_Color.r
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3724852529656350874, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
+      propertyPath: m_Navigation.m_Mode
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5832864610646627859, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
       propertyPath: m_Name
       value: Available
@@ -1818,8 +1867,16 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 7916833178086342432, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
+      propertyPath: ability
+      value: 
+      objectReference: {fileID: 11400000, guid: 436c9be7bb2ed044e8ceb2c7ef39a040, type: 2}
+    - target: {fileID: 7916833178086342432, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
       propertyPath: cooldown
       value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7916833178086342432, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
+      propertyPath: showDecimals
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7916833178086342432, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
       propertyPath: cooldownDuration
@@ -1953,6 +2010,10 @@ PrefabInstance:
       propertyPath: m_Color.r
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3724852529656350874, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
+      propertyPath: m_Navigation.m_Mode
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5832864610646627859, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
       propertyPath: m_Name
       value: Available
@@ -1970,8 +2031,16 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 7916833178086342432, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
+      propertyPath: ability
+      value: 
+      objectReference: {fileID: 11400000, guid: d15570f6e6541524a9feff4252a606b5, type: 2}
+    - target: {fileID: 7916833178086342432, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
       propertyPath: cooldown
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7916833178086342432, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
+      propertyPath: showDecimals
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7916833178086342432, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
       propertyPath: cooldownDuration
@@ -2126,6 +2195,22 @@ PrefabInstance:
     - target: {fileID: 7515439847528555595, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
       propertyPath: m_Name
       value: 'Ability [" 1 "]'
+      objectReference: {fileID: 0}
+    - target: {fileID: 7916833178086342432, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
+      propertyPath: ability
+      value: 
+      objectReference: {fileID: 11400000, guid: 77eb844baaa6e164e87cbf2969e507b7, type: 2}
+    - target: {fileID: 7916833178086342432, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
+      propertyPath: cooldown
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7916833178086342432, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
+      propertyPath: showDecimals
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7960038183676868197, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

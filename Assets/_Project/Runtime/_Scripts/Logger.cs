@@ -107,7 +107,14 @@ public static class Logger
     /// </summary>
     /// <param name="message"> The message to be logged. </param>
     /// <param name="context"> Object to which the message applies. </param>
-    public static void LogExplicit(string message, Object context = default) => Debug.LogWarning("<color=red>[Logger] ►</color> " + message, context);
+    public static void LogExplicit(string message, Object context = default)
+    {
+        message ??= DefaultErrorMessage;
+        if (message == string.Empty) message = "";
+
+        string formattedMessage = $"{ErrorMessagePrefix(colorDictionary[prefixColor])} {message}" + "\n";
+        Debug.LogWarning(formattedMessage, context);
+    }
 
     public static void LogExplicit(bool message, Object context = default) => Debug.LogWarning("<color=red>[Logger] ►</color> " + message, context);
 
