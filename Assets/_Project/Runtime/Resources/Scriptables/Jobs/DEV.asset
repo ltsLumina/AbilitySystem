@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 90923ec636836004ba48f1ef4a68fb6d, type: 3}
-  m_Name: Mixed Job
+  m_Name: DEV
   m_EditorClassIdentifier: 
-  job: 0
+  job: 4
   abilities:
-  - {fileID: 11400000, guid: 77eb844baaa6e164e87cbf2969e507b7, type: 2}
   - {fileID: 11400000, guid: afbdf85f3e271f6409967ae0003f86bc, type: 2}
+  - {fileID: 11400000, guid: 77eb844baaa6e164e87cbf2969e507b7, type: 2}
   - {fileID: 11400000, guid: 436c9be7bb2ed044e8ceb2c7ef39a040, type: 2}
   - {fileID: 11400000, guid: d15570f6e6541524a9feff4252a606b5, type: 2}

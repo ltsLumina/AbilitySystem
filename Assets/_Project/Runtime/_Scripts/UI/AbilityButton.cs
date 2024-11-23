@@ -15,9 +15,9 @@ using ColorTween = DG.Tweening.Core.TweenerCore<UnityEngine.Color, UnityEngine.C
 
 public class AbilityButton : MonoBehaviour
 {
-    [Tab("Ability"), EnableIf(nameof(ability), null), SerializeField]
-     Ability ability;
-    [EndIf]
+    [Tab("Ability")]
+    [SerializeField] [ReadOnly] Ability ability;
+
     [Tab("UI")]
     [Header("References")]
     [SerializeField] Image circle;
@@ -26,7 +26,6 @@ public class AbilityButton : MonoBehaviour
     [SerializeField] TextMeshProUGUI duration;
 
     [Header("Settings")]
-    [SerializeField] float cooldown = 2.5f;
     [UsedImplicitly, Tooltip("Whether the ability is currently on cooldown.")]
     [SerializeField, ReadOnly] bool onCooldown;
     [UsedImplicitly, Tooltip("The amount of time remaining on the cooldown. \nThis variable is only used for debugging.")]
@@ -55,18 +54,20 @@ public class AbilityButton : MonoBehaviour
 
     float CooldownTime(bool showDecimals = false)
     {
-        if (showDecimals) return RoundToDecimal(circle.fillAmount * cooldown, 2);
-        return Mathf.RoundToInt(circle.fillAmount * cooldown);
+        if (showDecimals) return RoundToDecimal(circle.fillAmount * ability.cooldown, 2);
+        return Mathf.RoundToInt(circle.fillAmount * ability.cooldown);
     }
 
     //float cooldownTime => RoundToDecimal(cooldownTween.Elapsed(), 2);
 
-    public int abilityIndex => transform.GetSiblingIndex() + 1;
+    public int abilityIndex => transform.GetSiblingIndex();
 
     Button button => GetComponent<Button>();
 
     protected void Start()
     {
+        ability = FindFirstObjectByType<Player>().Job.Abilities[abilityIndex];
+
         button.onClick.AddListener(Invoke);
         button.image.sprite = ability.abilityIcon;
 
@@ -82,6 +83,21 @@ public class AbilityButton : MonoBehaviour
 
         EditorApplication.update += () => cooldownTime = CooldownTime(true);
 #endif
+    }
+
+    void Update()
+    {
+        // in simple terms, this checks the following:
+        // - if the ability is on cooldown
+        // - if the ability has been cancelled
+        // - if the cooldown has not yet exceeded the cast time, meaning it hasn't been cast yet and its cooldown can be reset.
+        if (OnCooldown && ability.cancelled && cooldownTween.Elapsed() <= ability.castTime)
+        {
+            if (!ability.cancellable) return;
+
+            Logger.LogWarning($"{ability} has been cancelled.");
+            ResetCooldown();
+        }
     }
 
     void InitAvailabilityLayer()
@@ -132,7 +148,7 @@ public class AbilityButton : MonoBehaviour
 
         InitCooldown(); // Sets the fill amount to 1 and fades the duration text in
 
-        cooldownTween = circle.DOFillAmount(0, cooldown).SetEase(Ease.InOutSine);
+        cooldownTween = circle.DOFillAmount(0, ability.cooldown).SetEase(Ease.InOutSine);
         OnCooldown = true;
 
         cooldownTween.OnComplete
@@ -148,7 +164,7 @@ public class AbilityButton : MonoBehaviour
             if (queued)
             {
                 queued = false;
-                Cooldown();
+                Invoke();
             }
         });
 
@@ -157,7 +173,6 @@ public class AbilityButton : MonoBehaviour
         void InitCooldown()
         {
             const float fadeTo = 1;
-            const float fadeDuration = 0.35f;
 
             circle.fillAmount = 1;
             cooldownFadeTween = duration.DOFade(fadeTo, fadeDuration);
@@ -171,6 +186,20 @@ public class AbilityButton : MonoBehaviour
         }
     }
 
+    void ResetCooldown()
+    {
+        // Reset everything and apply the fade out animation to the duration text
+
+        cooldownTween.Kill();
+        cooldownFadeTween.Kill();
+
+        circle.fillAmount = 0;
+        duration.DOFade(0, fadeDuration);
+        OnCooldown = false;
+
+        queued = false;
+    }
+
     public void Invoke()
     {
         if (OnCooldown && CooldownTime() < coyoteTime)
@@ -179,10 +208,10 @@ public class AbilityButton : MonoBehaviour
             return;
         }
 
-        // <abilityLogic()>
+        if (OnCooldown) return;
+
         ability?.Invoke();
         Cooldown();
-        Logger.Log($"Ability {abilityIndex} has been invoked.");
     }
 
     bool TweenIsInvalid(Tween tween) => tween != null && tween.IsActive() && tween.IsPlaying();

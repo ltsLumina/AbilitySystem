@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using VInspector;
 using static Lumina.Essentials.Modules.Helpers;
 #endregion
@@ -11,6 +12,8 @@ public class Player : Entity, IDamageable
 {
     [HideInInspector, UsedImplicitly]
     public VInspectorData data;
+
+    [SerializeField] Job job;
 
     [SerializeField] int health = 10;
     [Foldout("Movement")]
@@ -25,7 +28,10 @@ public class Player : Entity, IDamageable
     [SerializeField] bool mouseMove;
 
     InputManager inputs;
+    PlayerInput playerInput;
     Rigidbody2D rb;
+
+    public Job Job => job;
 
     float speed
     {
@@ -39,16 +45,39 @@ public class Player : Entity, IDamageable
 
     protected override void OnTick() { }
 
-    protected override void OnCycle() { PerCycle(3, () => { health = Mathf.Clamp(health - 1, 0, 10); }); }
+    protected override void OnCycle() { }
 
     void Reset() => gameObject.tag = "Player";
 
     protected override IEnumerator Start()
     {
         inputs = GetComponentInChildren<InputManager>();
+        playerInput = inputs.GetComponent<PlayerInput>();
         rb = GetComponent<Rigidbody2D>();
 
+        Rebind(mouseMove);
+
         return base.Start();
+    }
+
+    void Rebind(bool useMouseBindings)
+    {
+        switch (useMouseBindings)
+        {
+            case true: // Using Mouse bindings (Q, W, E, R)
+                playerInput.actions[InputManager.AbilityKeys[0]].ApplyBindingOverride("<Keyboard>/q");
+                playerInput.actions[InputManager.AbilityKeys[1]].ApplyBindingOverride("<Keyboard>/w");
+                playerInput.actions[InputManager.AbilityKeys[2]].ApplyBindingOverride("<Keyboard>/e");
+                playerInput.actions[InputManager.AbilityKeys[3]].ApplyBindingOverride("<Keyboard>/r");
+                break;
+
+            case false: // Using Keyboard bindings (1, 2, 3, 4)
+                playerInput.actions[InputManager.AbilityKeys[0]].ApplyBindingOverride("<Keyboard>/1");
+                playerInput.actions[InputManager.AbilityKeys[1]].ApplyBindingOverride("<Keyboard>/2");
+                playerInput.actions[InputManager.AbilityKeys[2]].ApplyBindingOverride("<Keyboard>/3");
+                playerInput.actions[InputManager.AbilityKeys[3]].ApplyBindingOverride("<Keyboard>/4");
+                break;
+        }
     }
 
     void FixedUpdate()

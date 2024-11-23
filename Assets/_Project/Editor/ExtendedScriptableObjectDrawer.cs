@@ -20,7 +20,7 @@ public class ExtendedScriptableObjectDrawer : PropertyDrawer
     ///    <para> A list of class full names to ignore when drawing the property. </para>
     /// </summary>
     readonly static List<string> ignoreClassFullNames = new ()
-    { "TMPro.TMP_FontAsset" };
+    { "TMPro.TMP_FontAsset", "Ability" };
     public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
     {
         float totalHeight = EditorGUIUtility.singleLineHeight;

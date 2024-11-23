@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 607a7f27dc29c4541b753c3658683d25, type: 3}
-  m_Name: DRK [E] (Utility)
+  m_Name: RPR [3] (Utility)
   m_EditorClassIdentifier: 
-  abilityClass: 2
+  abilityClass: 0
   abilityName: 
   abilityDescription: 
   abilityIcon: {fileID: 21300000, guid: 72d74b3c26cef2d4ea85f6a3a853539d, type: 3}
-  abilityKey: 2
+  abilityType: 2
   range: 0
   radius: 0
   usesCastTime: 0
@@ -24,5 +24,5 @@ MonoBehaviour:
   usesGlobalCooldown: 0
   cooldown: 8
   damageType: 1
-  damage: 25
+  damage: 65
   damageCycles: 24

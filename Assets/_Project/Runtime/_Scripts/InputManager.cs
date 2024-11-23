@@ -39,22 +39,14 @@ public class InputManager : MonoBehaviour
 
     public void OnAbility4(InputAction.CallbackContext context) { Ability(context); }
 
+    #region Utility
+    public static List<string> AbilityKeys => (from action in FindAnyObjectByType<PlayerInput>().actions where action.name.StartsWith("Ability") select action.name).ToList();
+
     [Button, UsedImplicitly]
-    public void SetDictionaryKeys()
-    {
-        InputActionAsset actions = GetComponentInParent<PlayerInput>().actions;
-        List<string> abilityKeys = new ();
-
-        foreach (var action in actions)
-        {
-            // add all actions that start with "Ability_" to the list
-            if (action.name.StartsWith("Ability")) { abilityKeys.Add(action.name); }
-        }
-
-        abilityButtons = new ()
-        { { abilityKeys[0], FindMultiple<AbilityButton>().FirstOrDefault(b => b.abilityIndex == 1)?.gameObject },
-          { abilityKeys[1], FindMultiple<AbilityButton>().FirstOrDefault(b => b.abilityIndex == 2)?.gameObject },
-          { abilityKeys[2], FindMultiple<AbilityButton>().FirstOrDefault(b => b.abilityIndex == 3)?.gameObject },
-          { abilityKeys[3], FindMultiple<AbilityButton>().FirstOrDefault(b => b.abilityIndex == 4)?.gameObject } };
-    }
+    public void SetDictionaryKeys() => abilityButtons = new ()
+    { { AbilityKeys[0], FindMultiple<AbilityButton>().FirstOrDefault(b => b.abilityIndex == 0)?.gameObject },
+      { AbilityKeys[1], FindMultiple<AbilityButton>().FirstOrDefault(b => b.abilityIndex == 1)?.gameObject },
+      { AbilityKeys[2], FindMultiple<AbilityButton>().FirstOrDefault(b => b.abilityIndex == 2)?.gameObject },
+      { AbilityKeys[3], FindMultiple<AbilityButton>().FirstOrDefault(b => b.abilityIndex == 3)?.gameObject } };
+    #endregion
 }

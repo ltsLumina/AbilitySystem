@@ -335,7 +335,6 @@ MonoBehaviour:
   circle: {fileID: 7899283282929096717}
   availabilityLayer: {fileID: 7538312209846194098}
   duration: {fileID: 7762464440543954903}
-  cooldown: 1.5
   onCooldown: 0
   cooldownTime: 0
   coyoteTime: 0.15

@@ -1,36 +1,25 @@
+#region
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using VInspector;
+#endregion
 
 [ExecuteInEditMode]
 public class AbilityValidator : MonoBehaviour
 {
-    [SerializeField] List<InputAction> abilities = new ();
-
-    InputAction ability;
-
     void ValidateName()
     {
-        var actions = FindAnyObjectByType<PlayerInput>().actions;
+        InputActionAsset actions = FindAnyObjectByType<PlayerInput>().actions;
+        List<InputAction> abilities = actions.Where(a => InputManager.AbilityKeys.Contains(a.name)).ToList();
 
-        foreach (var action in actions)
-        {
-            if (abilities.Contains(action)) continue;
+        int childIndex = transform.GetSiblingIndex();
+        if (childIndex >= abilities.Count) return;
 
-            abilities = actions.Where(a => a.name.Contains("Ability")).ToList();
-
-            int childIndex = transform.GetSiblingIndex();
-
-            ability = abilities[childIndex];
-            const string template = "Ability [KEY]";
-            gameObject.name = template.Replace("[KEY]", $"[\" {ability.GetBindingDisplayString()} \"]");
-
-            // this will be the proper way eventually:
-            // icon.GetComponent<Image>().sprite = iconSprite;
-        }
+        const string template = "Ability [KEY]";
+        gameObject.name = template.Replace("[KEY]", $"[\" {abilities[childIndex].GetBindingDisplayString()} \"]");
     }
 
     [Button, UsedImplicitly]

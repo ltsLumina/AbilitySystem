@@ -22,6 +22,8 @@ public class Enemy : Entity, IDamageable
         Debug.Log($"{name} took {damage} damage.");
 
         var spriteRenderer = GetComponent<SpriteRenderer>();
-        spriteRenderer.FlashSprite(Color.red, 0.75f);
+        spriteRenderer.FlashSprite(Color.red, 0.5f);
+
+        PopUpDamageNumbers.ShowDamage(damage, transform.position);
     }
 }

@@ -2,10 +2,10 @@
 #region
 #if USING_CUSTOM_INSPECTOR && UNITY_EDITOR
 using UnityEditor;
+using UnityEngine.InputSystem;
 #endif
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -25,53 +25,59 @@ public sealed class Ability : ScriptableObject, IAbility
     [SuppressMessage("ReSharper", "UnusedMember.Local")]
     enum Key
     {
+        [InspectorName("Primary")]
         Q, // Primary
+        [InspectorName("Secondary")]
         W, // Secondary
+        [InspectorName("Utility")]
         E, // Utility
+        [InspectorName("Ultimate")]
         R, // Ultimate
     }
 
-    [SuppressMessage("ReSharper", "UnusedMember.Local")]
+    [SuppressMessage("ReSharper", "UnusedMember.Global")]
     public enum DamageType
     {
         Direct,
-        [Description("DoT")]
+        [Description("DoT")] // Unity will "nicify" this to "Do T" unless I use the Description attribute.
         DoT,
     }
 
-    [Header("Ability Info"), SerializeField]
-     Class abilityClass;
+    [Header("Ability Info")]
+    [SerializeField] public Class job;
     [SerializeField] string abilityName;
-    [TextArea, SerializeField]
-     string abilityDescription;
+    [TextArea]
+    [SerializeField] string abilityDescription;
     [SerializeField] public Sprite abilityIcon;
-    [SerializeField] Key abilityKey;
+    [SerializeField] Key abilityType;
 
-    [Header("Ability Properties"), SerializeField]
-     float range;
+    [Header("Ability Properties")]
+    [SerializeField] float range;
     [SerializeField] float radius;
     [SerializeField] bool usesCastTime;
-    [SerializeField] float castTime;
-    [SerializeField] bool usesGlobalCooldown;
-    [SerializeField] float cooldown;
+    [SerializeField] public float castTime;
+    [SerializeField] public bool usesGlobalCooldown;
+    [SerializeField] public float cooldown;
 
-    [Header("Damage"), SerializeField]
-     DamageType damageType;
+    [Header("Damage Properties")]
+    [SerializeField] DamageType damageType;
     [SerializeField] float damage;
     [SerializeField] int damageCycles;
 
-    List<Action> OnInvoke = new ();
+    static Player _player;
 
     static Player player
     {
         get
         {
-            var player = FindFirstObjectByType<Player>();
-            return player;
+            if (!_player) _player = FindFirstObjectByType<Player>();
+            return _player;
         }
     }
 
-    public static bool cancelled
+    public bool cancellable => usesCastTime;
+
+    public bool cancelled
     {
         get
         {
@@ -80,88 +86,50 @@ public sealed class Ability : ScriptableObject, IAbility
         }
     }
 
+    public override string ToString() => abilityName == string.Empty ? name : abilityName;
+
     public void Invoke()
     {
-        Logger.Log("Ability has been invoked.");
-        OnInvoke = InitializeOnInvoke();
+        Entity nearestTarget = FindClosestTarget();
+        bool isCast = usesCastTime;
+        bool isGCD = usesGlobalCooldown;
+        bool isDoT = damageType == DamageType.DoT;
 
-        OnInvoke.ForEach(action => action.Invoke());
-    }
+        switch (true)
+        {
+            case true when isCast:
+                Logger.Log("Casting...");
+                player.StartCoroutine(Cast(nearestTarget));
+                break;
 
-    List<Action> InitializeOnInvoke()
-    {
-        Entity nearestTarget = null;
-        bool isCast = false;
-        bool isGCD = false;
-        bool isDoT = false;
+            case true when isGCD:
+                Logger.Log("On global cooldown.");
+                GlobalCooldown(nearestTarget);
+                break;
 
-        Logger.LogBehaviour = Logger.LogLevel.Quiet;
+            case true when isDoT:
+                Logger.Log("Applying DoT...");
+                DamageOverTime(nearestTarget);
+                break;
+        }
 
-        var actions = new List<Action>
-        { () => Logger.LogExplicit("Ability has been invoked."),
-          () =>
-          {
-              nearestTarget = FindClosestTarget();
-              Logger.Log($"Nearest target: {nearestTarget}");
-          },
-          () =>
-          {
-              if (usesCastTime) isCast = true;
-          },
-          () =>
-          {
-              if (usesGlobalCooldown)
-              {
-                  Logger.Log($"Global cooldown: {cooldown} seconds.");
-                  isGCD = true;
-              }
-          },
-          () =>
-          {
-              // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
-              switch (damageType)
-              {
-                  case DamageType.Direct:
-                      Logger.Log($"Deals {damage} damage.");
-                      break;
+        return;
 
-                  case DamageType.DoT:
-                      Logger.Log($"Deals {damage} damage over {damageCycles} cycles.");
-                      isDoT = true;
-                      break;
-              }
-          },
-          () =>
-          {
-              // Attack
-              switch (true)
-              {
-                  case true when isCast:
-                      Logger.Log("Casting...");
-                      player.StartCoroutine(Cast());
-                      break;
+        [return: NotNull]
+        static Entity FindClosestTarget()
+        {
+            Entity[] entities = FindObjectsByType<Entity>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
 
-                  case true when isGCD:
-                      Logger.Log("On global cooldown.");
-                      GlobalCooldown(nearestTarget);
-                      break;
-
-                  case true when isDoT:
-                      Logger.Log("Applying DoT...");
-                      DamageOverTime(nearestTarget);
-                      break;
-              }
-
-              Logger.LogBehaviour = Logger.LogLevel.Verbose;
-          } };
-
-        return actions;
+            // Find the closest entity to the player. If anything is null, throw an exception.
+            return (player == null ? null : entities.Where(entity => entity != player).OrderBy(entity => Vector2.Distance(player.transform.position, entity.transform.position)).FirstOrDefault()) ??
+                   throw new InvalidOperationException();
+        }
     }
 
     #region Casting
     Coroutine castCoroutine;
 
-    IEnumerator Cast()
+    IEnumerator Cast(Entity target = null)
     {
         castCoroutine = player.StartCoroutine(CastCoroutine());
         yield return new WaitWhile(Casting);
@@ -172,6 +140,10 @@ public sealed class Ability : ScriptableObject, IAbility
         GameObject effect = Instantiate(Resources.Load<GameObject>("PREFABS/Effect"));
         effect.transform.position = player.transform.position + player.transform.right * 2.5f;
         effect.AddComponent<Rigidbody2D>().AddForce(player.transform.right * 500);
+
+        if (!target) yield break;
+        target.TryGetComponent(out IDamageable damageable);
+        damageable?.TakeDamage(damage);
     }
 
     /// <summary>
@@ -216,30 +188,28 @@ public sealed class Ability : ScriptableObject, IAbility
     void DamageOverTime(Entity target)
     {
         target.TryGetComponent(out IDamageable damageable);
-        TickManager.OnCycle += () => { damageable?.TakeDamage(damage); };
+        int cycle = 0;
+        int totalCycles = damageCycles / AbilitySettings.DoT_Cycles;
 
-        // var tickManager = FindAnyObjectByType<TickManager>();
-        // if (!tickManager) yield break;
-        //
-        // float cycleDuration = tickManager.TickCycleDuration;
-        //
-        // for (int i = 0; i < damageCycles; i++)
-        // {
-        //     yield return new WaitForSeconds(cycleDuration);
-        //     // Apply damage
-        //     target.TryGetComponent(out IDamageable damageable);
-        //     damageable?.TakeDamage(damage);
-        // }
-    }
+        TickManager.OnCycle += OnCycle;
+        return;
 
-    [return: NotNull]
-    static Entity FindClosestTarget()
-    {
-        Entity[] entities = FindObjectsByType<Entity>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+        void OnCycle()
+        {
+            if (cycle >= totalCycles)
+            {
+                TickManager.OnCycle -= OnCycle;
+                return;
+            }
 
-        // Find the closest entity to the player. If anything is null, throw an exception.
-        return (player == null ? null : entities.Where(entity => entity != player).OrderBy(entity => Vector2.Distance(player.transform.position, entity.transform.position)).FirstOrDefault()) ??
-               throw new InvalidOperationException();
+            cycle++;
+
+            if (cycle == 3)
+            {
+                damageable?.TakeDamage(damage);
+                cycle = 0;
+            }
+        }
     }
 }
 
@@ -247,11 +217,11 @@ public sealed class Ability : ScriptableObject, IAbility
 [CustomEditor(typeof(Ability), true), CanEditMultipleObjects]
 public class AbilityEditor : Editor
 {
-    SerializedProperty abilityClass;
+    SerializedProperty job;
     SerializedProperty abilityName;
     SerializedProperty abilityDescription;
     SerializedProperty abilityIcon;
-    SerializedProperty abilityKey;
+    SerializedProperty abilityType;
     SerializedProperty range;
     SerializedProperty radius;
     SerializedProperty usesCastTime;
@@ -262,20 +232,76 @@ public class AbilityEditor : Editor
     SerializedProperty damage;
     SerializedProperty damageCycles;
 
-    string abilityType => abilityKey.enumValueIndex switch
+    #region Properties
+    Player player => FindFirstObjectByType<Player>();
+
+    bool isDirect => damageType.enumValueIndex == 0;
+    bool isDoT => damageType.enumValueIndex == 1;
+
+    /// <summary>
+    ///     Gets the job name based on the ability class enum value.
+    ///     <example> Reaper, Red Mage, Dark Knight, Sage, Developer </example>
+    /// </summary>
+    string jobName => job.enumValueIndex switch
+    { 0 => "Reaper",
+      1 => "Red Mage",
+      2 => "Dark Knight",
+      3 => "Sage",
+      4 => "Developer",
+      _ => "Unknown" };
+
+    /// <summary>
+    ///     Gets the job tri-code based on the ability class enum value.
+    ///     <example> RPR, RDM, DRK, SGE, DEV </example>
+    /// </summary>
+    string jobTriCode => job.enumValueIndex switch
+    { 0 => "RPR",
+      1 => "RDM",
+      2 => "DRK",
+      3 => "SGE",
+      4 => "DEV",
+      _ => "Unknown" };
+
+    /// <summary>
+    ///     Gets the long version of the ability type based on the ability type enum value.
+    ///     <example> Primary, Secondary, Utility, Ultimate </example>
+    /// </summary>
+    string abilityTypeNoun => abilityType.enumValueIndex switch
     { 0 => "Primary",
       1 => "Secondary",
       2 => "Utility",
       3 => "Ultimate",
       _ => "Unknown" };
 
+    /// <summary>
+    ///     Get the short version of the ability type.
+    ///     <example> Q, W, E, R </example>
+    /// </summary>
+    string abilityTypeKey
+    {
+        get
+        {
+            var playerInput = player.GetComponentInChildren<PlayerInput>();
+
+            return abilityType.enumValueIndex switch
+            { 0 => GetBindingDisplayString(0),
+              1 => GetBindingDisplayString(1),
+              2 => GetBindingDisplayString(2),
+              3 => GetBindingDisplayString(3),
+              _ => "Unknown" };
+
+            string GetBindingDisplayString(int abilityIndex) => $"{playerInput.actions[InputManager.AbilityKeys[abilityIndex]].GetBindingDisplayString()}";
+        }
+    }
+    #endregion
+
     void OnEnable()
     {
-        abilityClass = serializedObject.FindProperty("abilityClass");
+        job = serializedObject.FindProperty("job");
         abilityName = serializedObject.FindProperty("abilityName");
         abilityDescription = serializedObject.FindProperty("abilityDescription");
         abilityIcon = serializedObject.FindProperty("abilityIcon");
-        abilityKey = serializedObject.FindProperty("abilityKey");
+        abilityType = serializedObject.FindProperty("abilityType");
         range = serializedObject.FindProperty("range");
         radius = serializedObject.FindProperty("radius");
         usesCastTime = serializedObject.FindProperty("usesCastTime");
@@ -294,15 +320,16 @@ public class AbilityEditor : Editor
     {
         serializedObject.Update();
 
-        var centeredStyle = new GUIStyle(GUI.skin.label)
+        var headerButtonStyle = new GUIStyle(GUI.skin.label)
         { alignment = TextAnchor.MiddleCenter, fontStyle = FontStyle.Bold, fontSize = 14 };
 
-        using (new GUILayout.HorizontalScope("textField")) { showInfo = EditorGUILayout.BeginFoldoutHeaderGroup(showInfo, "Ability Info", centeredStyle); }
+        using (new GUILayout.HorizontalScope("textField")) { showInfo = EditorGUILayout.BeginFoldoutHeaderGroup(showInfo, "Ability Info", headerButtonStyle); }
 
         if (showInfo)
             using (new GUILayout.VerticalScope("box"))
             {
-                EditorGUILayout.PropertyField(abilityClass);
+                EditorGUILayout.PropertyField(job);
+                EditorGUILayout.LabelField(jobName, EditorStyles.centeredGreyMiniLabel);
                 EditorGUILayout.PropertyField(abilityName);
                 EditorGUILayout.PropertyField(abilityDescription);
                 EditorGUILayout.PropertyField(abilityIcon);
@@ -312,26 +339,35 @@ public class AbilityEditor : Editor
 
         GUILayout.Space(25);
 
-        using (new GUILayout.HorizontalScope("textField")) { showProperties = EditorGUILayout.BeginFoldoutHeaderGroup(showProperties, "Ability Properties", centeredStyle); }
+        using (new GUILayout.HorizontalScope("textField")) { showProperties = EditorGUILayout.BeginFoldoutHeaderGroup(showProperties, "Ability Properties", headerButtonStyle); }
 
         if (showProperties)
             using (new GUILayout.VerticalScope("box"))
             {
-                EditorGUILayout.PropertyField(abilityKey);
-                GUILayout.Label(abilityType, EditorStyles.centeredGreyMiniLabel);
+                EditorGUILayout.PropertyField(abilityType);
+                GUILayout.Label($"Key: {abilityTypeKey}", EditorStyles.centeredGreyMiniLabel);
 
                 EditorGUILayout.PropertyField(range);
                 EditorGUILayout.PropertyField(radius);
 
-                EditorGUILayout.PropertyField(usesCastTime);
+                using (new EditorGUI.DisabledGroupScope(isDoT))
+                {
+                    if (isDoT) usesCastTime.boolValue = false;
+                    EditorGUILayout.PropertyField(usesCastTime);
+                }
 
                 if (usesCastTime.boolValue)
                 {
                     EditorGUILayout.HelpBox("This ability uses a cast time.", MessageType.Info);
                     EditorGUILayout.PropertyField(castTime);
                 }
+                else { castTime.floatValue = 0; }
 
-                EditorGUILayout.PropertyField(usesGlobalCooldown);
+                using (new EditorGUI.DisabledGroupScope(isDoT))
+                {
+                    if (isDoT) usesGlobalCooldown.boolValue = false;
+                    EditorGUILayout.PropertyField(usesGlobalCooldown);
+                }
 
                 if (usesGlobalCooldown.boolValue)
                 {
@@ -357,7 +393,7 @@ public class AbilityEditor : Editor
                     EditorGUILayout.HelpBox("This ability deals damage over time.", MessageType.Info);
 
                     damage.floatValue = EditorGUILayout.FloatField("Damage per Cycle", damage.floatValue);
-                    damageCycles.intValue = EditorGUILayout.IntField("Number of Cycles", damageCycles.intValue);
+                    damageCycles.intValue = EditorGUILayout.IntField("Cycles (seconds)", damageCycles.intValue);
 
                     // Clamp the duration to a minimum of 1 second.
                     damageCycles.intValue = Mathf.Max(1, damageCycles.intValue);
@@ -366,17 +402,18 @@ public class AbilityEditor : Editor
                     if (!tickManager) return;
 
                     int tickRate = tickManager.TickRate;
-                    float cycleDuration = tickManager.TickCycleDuration;
-
                     float damagePerTick = damage.floatValue / tickRate;
                     float totalDamage = damage.floatValue * damageCycles.intValue;
-                    float totalDuration = damageCycles.intValue * cycleDuration;
 
-                    EditorGUILayout.LabelField("Damage per Tick", damagePerTick.ToString("F2"));
+                    EditorGUILayout.LabelField("Damage Per Tick", damagePerTick.ToString("F2"));
                     EditorGUILayout.LabelField("Total Damage", totalDamage.ToString("F0"));
-                    EditorGUILayout.LabelField("Total Duration", totalDuration + "s");
+                    EditorGUILayout.LabelField("DoT Cycles", $"{damageCycles.intValue / AbilitySettings.DoT_Cycles}");
 
-                    if (damagePerTick > 2.75) EditorGUILayout.HelpBox("This ability deals a considerable amount of damage." + " \nConsider reducing the damage per cycle or the number of cycles.", MessageType.Warning);
+                    EditorGUILayout.LabelField
+                    ($"DoTs deal damage every {AbilitySettings.DoT_Cycles} tick cycles. Therefore this DoT will deal damage {damageCycles.intValue / AbilitySettings.DoT_Cycles} times.",
+                     EditorStyles.centeredGreyMiniLabel);
+
+                    if (damagePerTick > 2.75) EditorGUILayout.HelpBox("This DoT deals a considerable amount of damage." + " \nConsider reducing the damage per cycle or the number of cycles.", MessageType.Warning);
                 }
             }
 
@@ -403,8 +440,7 @@ public class AbilityEditor : Editor
     void RenameAbilityAsset()
     {
         var ability = (Ability) target;
-        string newName = $"{abilityClass.enumDisplayNames[abilityClass.enumValueIndex]} [{abilityKey.enumDisplayNames[abilityKey.enumValueIndex]}] ({abilityType})";
-
+        string newName = $"{jobTriCode} [{abilityTypeKey}] ({abilityTypeNoun})";
         string assetPath = AssetDatabase.GetAssetPath(ability);
         AssetDatabase.RenameAsset(assetPath, newName);
         ability.name = newName;
