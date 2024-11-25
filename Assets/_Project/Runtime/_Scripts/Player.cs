@@ -31,8 +31,6 @@ public class Player : Entity, IDamageable
     PlayerInput playerInput;
     Rigidbody2D rb;
 
-    public Job Job => job;
-
     float speed
     {
         get => mouseMove ? speeds[1] : speeds[0];
@@ -42,6 +40,10 @@ public class Player : Entity, IDamageable
             else speeds[0] = value;
         }
     }
+
+    public Job Job => job;
+    public InputManager Inputs => GetComponentInChildren<InputManager>();
+    public PlayerInput PlayerInput => Inputs.GetComponent<PlayerInput>();
 
     protected override void OnTick() { }
 

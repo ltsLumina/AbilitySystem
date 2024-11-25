@@ -69,7 +69,7 @@ public class AbilityButton : MonoBehaviour
         ability = FindFirstObjectByType<Player>().Job.Abilities[abilityIndex];
 
         button.onClick.AddListener(Invoke);
-        button.image.sprite = ability.abilityIcon;
+        button.image.sprite = ability.icon;
 
         circle.fillAmount = 0;
         duration.alpha = 0;

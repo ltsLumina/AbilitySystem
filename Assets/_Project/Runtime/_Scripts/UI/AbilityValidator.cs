@@ -12,14 +12,18 @@ public class AbilityValidator : MonoBehaviour
 {
     void ValidateName()
     {
-        InputActionAsset actions = FindAnyObjectByType<PlayerInput>().actions;
-        List<InputAction> abilities = actions.Where(a => InputManager.AbilityKeys.Contains(a.name)).ToList();
+        InputActionAsset actions = FindAnyObjectByType<PlayerInput>()?.actions;
 
-        int childIndex = transform.GetSiblingIndex();
-        if (childIndex >= abilities.Count) return;
+        if (actions != null)
+        {
+            List<InputAction> abilities = actions.Where(a => InputManager.AbilityKeys.Contains(a.name)).ToList();
 
-        const string template = "Ability [KEY]";
-        gameObject.name = template.Replace("[KEY]", $"[\" {abilities[childIndex].GetBindingDisplayString()} \"]");
+            int childIndex = transform.GetSiblingIndex();
+            if (childIndex >= abilities.Count) return;
+
+            const string template = "Ability [KEY]";
+            gameObject.name = template.Replace("[KEY]", $"[\" {abilities[childIndex].GetBindingDisplayString()} \"]");
+        }
     }
 
     [Button, UsedImplicitly]

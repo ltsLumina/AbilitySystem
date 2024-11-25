@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 607a7f27dc29c4541b753c3658683d25, type: 3}
   m_Name: RPR [3] (Utility)
   m_EditorClassIdentifier: 
-  abilityClass: 0
+  job: 0
   abilityName: 
-  abilityDescription: 
-  abilityIcon: {fileID: 21300000, guid: 72d74b3c26cef2d4ea85f6a3a853539d, type: 3}
-  abilityType: 2
+  description: 
+  icon: {fileID: 21300000, guid: 72d74b3c26cef2d4ea85f6a3a853539d, type: 3}
+  type: 2
   range: 0
   radius: 0
   usesCastTime: 0
@@ -25,4 +25,4 @@ MonoBehaviour:
   cooldown: 8
   damageType: 1
   damage: 65
-  damageCycles: 24
+  damageTicks: 3

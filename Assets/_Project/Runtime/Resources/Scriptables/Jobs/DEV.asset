@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   job: 4
   abilities:
-  - {fileID: 11400000, guid: afbdf85f3e271f6409967ae0003f86bc, type: 2}
-  - {fileID: 11400000, guid: 77eb844baaa6e164e87cbf2969e507b7, type: 2}
-  - {fileID: 11400000, guid: 436c9be7bb2ed044e8ceb2c7ef39a040, type: 2}
-  - {fileID: 11400000, guid: d15570f6e6541524a9feff4252a606b5, type: 2}
+  - {fileID: 11400000, guid: da92c8c5c4e91214b9c23b8e12e7baae, type: 2}
+  - {fileID: 11400000, guid: 1f67d69bb75d9a34b8f5cceababa77e9, type: 2}
+  - {fileID: 11400000, guid: 919d82cad208bc940aa21a486d8c6eb6, type: 2}
+  - {fileID: 11400000, guid: 7fb88128b31effe4b9d4e59d15ddd642, type: 2}

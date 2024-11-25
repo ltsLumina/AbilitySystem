@@ -20,7 +20,7 @@ public class ExtendedScriptableObjectDrawer : PropertyDrawer
     ///    <para> A list of class full names to ignore when drawing the property. </para>
     /// </summary>
     readonly static List<string> ignoreClassFullNames = new ()
-    { "TMPro.TMP_FontAsset", "Ability" };
+    { "TMPro.TMP_FontAsset", "Ability", "Job" };
     public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
     {
         float totalHeight = EditorGUIUtility.singleLineHeight;
@@ -30,15 +30,15 @@ public class ExtendedScriptableObjectDrawer : PropertyDrawer
         {
             var data = property.objectReferenceValue as ScriptableObject;
             if (data == null) return EditorGUIUtility.singleLineHeight;
-            var                serializedObject = new SerializedObject(data);
-            SerializedProperty prop             = serializedObject.GetIterator();
+            var serializedObject = new SerializedObject(data);
+            SerializedProperty prop = serializedObject.GetIterator();
 
             if (prop.NextVisible(true))
                 do
                 {
                     if (prop.name == "m_Script") continue;
                     SerializedProperty subProp = serializedObject.FindProperty(prop.name);
-                    float              height  = EditorGUI.GetPropertyHeight(subProp, null, true) + EditorGUIUtility.standardVerticalSpacing;
+                    float height = EditorGUI.GetPropertyHeight(subProp, null, true) + EditorGUIUtility.standardVerticalSpacing;
                     totalHeight += height;
                 }
                 while (prop.NextVisible(false));
@@ -70,8 +70,8 @@ public class ExtendedScriptableObjectDrawer : PropertyDrawer
             propertySO = (ScriptableObject) property.serializedObject.targetObject;
 
         Rect propertyRect = Rect.zero;
-        var  guiContent   = new GUIContent(property.displayName);
-        var  foldoutRect  = new Rect(position.x, position.y, EditorGUIUtility.labelWidth, EditorGUIUtility.singleLineHeight);
+        var guiContent = new GUIContent(property.displayName);
+        var foldoutRect = new Rect(position.x, position.y, EditorGUIUtility.labelWidth, EditorGUIUtility.singleLineHeight);
 
         if (property.objectReferenceValue != null && AreAnySubPropertiesVisible(property)) { property.isExpanded = EditorGUI.Foldout(foldoutRect, property.isExpanded, guiContent, true); }
         else
@@ -84,8 +84,8 @@ public class ExtendedScriptableObjectDrawer : PropertyDrawer
             EditorGUI.Foldout(foldoutRect, property.isExpanded, guiContent, true, EditorStyles.label);
         }
 
-        Rect  indentedPosition = EditorGUI.IndentedRect(position);
-        float indentOffset     = indentedPosition.x - position.x;
+        Rect indentedPosition = EditorGUI.IndentedRect(position);
+        float indentOffset = indentedPosition.x - position.x;
         propertyRect = new (position.x + (EditorGUIUtility.labelWidth - indentOffset), position.y, position.width - (EditorGUIUtility.labelWidth - indentOffset), EditorGUIUtility.singleLineHeight);
 
         if (propertySO != null || property.objectReferenceValue == null) propertyRect.width -= buttonWidth;
@@ -105,14 +105,14 @@ public class ExtendedScriptableObjectDrawer : PropertyDrawer
                 GUI.Box
                 (new
                  (0, position.y + EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing - 1, Screen.width,
-                  position.height                                                                              - EditorGUIUtility.singleLineHeight - EditorGUIUtility.standardVerticalSpacing), "");
+                  position.height - EditorGUIUtility.singleLineHeight - EditorGUIUtility.standardVerticalSpacing), "");
 
                 EditorGUI.indentLevel++;
                 var serializedObject = new SerializedObject(data);
 
                 // Iterate over all the values and draw them
                 SerializedProperty prop = serializedObject.GetIterator();
-                float              y    = position.y + EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
+                float y = position.y + EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing;
 
                 if (prop.NextVisible(true))
                     do
@@ -145,15 +145,12 @@ public class ExtendedScriptableObjectDrawer : PropertyDrawer
                 property.objectReferenceValue = CreateAssetWithSavePrompt(type, selectedAssetPath);
             }
         }
-        
-        try
-        {
-            property.serializedObject.ApplyModifiedProperties();
-        }
-        catch (InvalidOperationException)
+
+        try { property.serializedObject.ApplyModifiedProperties(); } catch (InvalidOperationException)
         {
             // ignored
         }
+
         EditorGUI.EndProperty();
     }
 
@@ -165,16 +162,16 @@ public class ExtendedScriptableObjectDrawer : PropertyDrawer
     {
         Rect position = EditorGUILayout.BeginVertical();
 
-        Rect       propertyRect = Rect.zero;
-        GUIContent guiContent   = label;
-        var        foldoutRect  = new Rect(position.x, position.y, EditorGUIUtility.labelWidth, EditorGUIUtility.singleLineHeight);
+        Rect propertyRect = Rect.zero;
+        GUIContent guiContent = label;
+        var foldoutRect = new Rect(position.x, position.y, EditorGUIUtility.labelWidth, EditorGUIUtility.singleLineHeight);
 
         if (objectReferenceValue != null)
         {
             isExpanded = EditorGUI.Foldout(foldoutRect, isExpanded, guiContent, true);
 
-            Rect  indentedPosition = EditorGUI.IndentedRect(position);
-            float indentOffset     = indentedPosition.x - position.x;
+            Rect indentedPosition = EditorGUI.IndentedRect(position);
+            float indentOffset = indentedPosition.x - position.x;
             propertyRect = new (position.x + EditorGUIUtility.labelWidth - indentOffset, position.y, position.width - EditorGUIUtility.labelWidth - indentOffset, EditorGUIUtility.singleLineHeight);
         }
         else
@@ -186,8 +183,8 @@ public class ExtendedScriptableObjectDrawer : PropertyDrawer
             foldoutRect.x += 12;
             EditorGUI.Foldout(foldoutRect, isExpanded, guiContent, true, EditorStyles.label);
 
-            Rect  indentedPosition = EditorGUI.IndentedRect(position);
-            float indentOffset     = indentedPosition.x - position.x;
+            Rect indentedPosition = EditorGUI.IndentedRect(position);
+            float indentOffset = indentedPosition.x - position.x;
             propertyRect = new (position.x + EditorGUIUtility.labelWidth - indentOffset, position.y, position.width - EditorGUIUtility.labelWidth - indentOffset - 60, EditorGUIUtility.singleLineHeight);
         }
 
@@ -203,8 +200,8 @@ public class ExtendedScriptableObjectDrawer : PropertyDrawer
         {
             if (GUILayout.Button("Create", GUILayout.Width(buttonWidth)))
             {
-                string           selectedAssetPath         = "Assets";
-                ScriptableObject newAsset                  = CreateAssetWithSavePrompt(typeof(T), selectedAssetPath);
+                string selectedAssetPath = "Assets";
+                ScriptableObject newAsset = CreateAssetWithSavePrompt(typeof(T), selectedAssetPath);
                 if (newAsset != null) objectReferenceValue = (T) newAsset;
             }
 
@@ -247,16 +244,16 @@ public class ExtendedScriptableObjectDrawer : PropertyDrawer
     {
         Rect position = EditorGUILayout.BeginVertical();
 
-        Rect       propertyRect = Rect.zero;
-        GUIContent guiContent   = label;
-        var        foldoutRect  = new Rect(position.x, position.y, EditorGUIUtility.labelWidth, EditorGUIUtility.singleLineHeight);
+        Rect propertyRect = Rect.zero;
+        GUIContent guiContent = label;
+        var foldoutRect = new Rect(position.x, position.y, EditorGUIUtility.labelWidth, EditorGUIUtility.singleLineHeight);
 
         if (objectReferenceValue != null)
         {
             isExpanded = EditorGUI.Foldout(foldoutRect, isExpanded, guiContent, true);
 
-            Rect  indentedPosition = EditorGUI.IndentedRect(position);
-            float indentOffset     = indentedPosition.x - position.x;
+            Rect indentedPosition = EditorGUI.IndentedRect(position);
+            float indentOffset = indentedPosition.x - position.x;
             propertyRect = new (position.x + EditorGUIUtility.labelWidth - indentOffset, position.y, position.width - EditorGUIUtility.labelWidth - indentOffset, EditorGUIUtility.singleLineHeight);
         }
         else
@@ -268,8 +265,8 @@ public class ExtendedScriptableObjectDrawer : PropertyDrawer
             foldoutRect.x += 12;
             EditorGUI.Foldout(foldoutRect, isExpanded, guiContent, true, EditorStyles.label);
 
-            Rect  indentedPosition = EditorGUI.IndentedRect(position);
-            float indentOffset     = indentedPosition.x - position.x;
+            Rect indentedPosition = EditorGUI.IndentedRect(position);
+            float indentOffset = indentedPosition.x - position.x;
             propertyRect = new (position.x + EditorGUIUtility.labelWidth - indentOffset, position.y, position.width - EditorGUIUtility.labelWidth - indentOffset - 60, EditorGUIUtility.singleLineHeight);
         }
 
@@ -285,8 +282,8 @@ public class ExtendedScriptableObjectDrawer : PropertyDrawer
         {
             if (GUILayout.Button("Create", GUILayout.Width(buttonWidth)))
             {
-                string           selectedAssetPath         = "Assets";
-                ScriptableObject newAsset                  = CreateAssetWithSavePrompt(typeof(T), selectedAssetPath);
+                string selectedAssetPath = "Assets";
+                ScriptableObject newAsset = CreateAssetWithSavePrompt(typeof(T), selectedAssetPath);
                 if (newAsset != null) objectReferenceValue = (T) newAsset;
             }
 
@@ -315,7 +312,7 @@ public class ExtendedScriptableObjectDrawer : PropertyDrawer
     {
         Type type = fieldInfo.FieldType;
 
-        if (type.IsArray) type                                                                 = type.GetElementType();
+        if (type.IsArray) type = type.GetElementType();
         else if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>)) type = type.GetGenericArguments()[0];
 
         return type;
@@ -323,9 +320,9 @@ public class ExtendedScriptableObjectDrawer : PropertyDrawer
 
     static bool AreAnySubPropertiesVisible(SerializedProperty property)
     {
-        var                data             = (ScriptableObject) property.objectReferenceValue;
-        var                serializedObject = new SerializedObject(data);
-        SerializedProperty prop             = serializedObject.GetIterator();
+        var data = (ScriptableObject) property.objectReferenceValue;
+        var serializedObject = new SerializedObject(data);
+        SerializedProperty prop = serializedObject.GetIterator();
 
         while (prop.NextVisible(true))
         {

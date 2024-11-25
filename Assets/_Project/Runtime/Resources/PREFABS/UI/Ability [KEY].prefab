@@ -397,39 +397,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0c9a88ab0567f254a94e6a7336c04017, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  abilities:
-  - m_Name: Ability_1
-    m_Type: 1
-    m_ExpectedControlType: 
-    m_Id: 302b61a6-3539-4043-a3c9-62385cd471fc
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings: []
-    m_Flags: 0
-  - m_Name: Ability_2
-    m_Type: 1
-    m_ExpectedControlType: 
-    m_Id: 1efe8a25-b4e2-46ec-a0f2-8e0c2ac81118
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings: []
-    m_Flags: 0
-  - m_Name: Ability_3
-    m_Type: 1
-    m_ExpectedControlType: 
-    m_Id: a3295ebc-98b2-4cd1-9085-2de4fcda883e
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings: []
-    m_Flags: 0
-  - m_Name: Ability_4
-    m_Type: 1
-    m_ExpectedControlType: 
-    m_Id: fae47c1d-58c8-4930-91c8-28e80c38ef46
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings: []
-    m_Flags: 0
 --- !u!1 &8599066036435017831
 GameObject:
   m_ObjectHideFlags: 0

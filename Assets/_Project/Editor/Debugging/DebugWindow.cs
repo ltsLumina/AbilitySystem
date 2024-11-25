@@ -3,8 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using Lumina.Essentials.Modules;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -29,13 +27,14 @@ public class DebugWindow : EditorWindow
     static int maxPingedAssets = 20;
     static bool isSettingMaxPingedAssets;
     static string commandQuery = string.Empty;
+    static bool showTextures;
 
     readonly static Dictionary<string, string> commandDictionary = new ()
-    { { "help", "Shows the list of available commands." }, 
-    {"refuel", "Refuels the vehicle."}, 
-    {"repair", "Repairs the vehicle."}, 
-    {"recharge", "Recharges the vehicle."}, 
-    {"null", "Does nothing."} };
+    { { "help", "Shows the list of available commands." },
+      { "refuel", "Refuels the vehicle." },
+      { "repair", "Repairs the vehicle." },
+      { "recharge", "Recharges the vehicle." },
+      { "null", "Does nothing." } };
 
     readonly static List<string> addedScenes = new ();
 
@@ -241,6 +240,7 @@ public class DebugWindow : EditorWindow
         DrawEditorWindowsMenu();
         DrawDebugOptionsMenu();
         DrawConsoleCommandMenu();
+        DrawTexturesMenu();
     }
 
     static void DrawEditorWindowsMenu()
@@ -269,17 +269,11 @@ public class DebugWindow : EditorWindow
             {
                 var simpleModeContent = new GUIContent("Simple Mode", "Enabling \"Simple Mode\" reduces the amount of options displayed in the Debug Window.");
                 var enterPlaymodeOptionsContent = new GUIContent("Enter Playmode Options", "Enabling \"Enter Playmode Options\" improves Unity's workflow by significantly reducing the time it takes to enter play mode.");
-                
+
                 simpleMode = EditorGUILayout.Toggle(simpleModeContent, simpleMode);
 
-                if (simpleMode)
-                {
-                    EditorSettings.enterPlayModeOptionsEnabled = EditorGUILayout.Toggle(enterPlaymodeOptionsContent, EditorSettings.enterPlayModeOptionsEnabled);
-                }
-                else
-                {
-                    EditorSettings.enterPlayModeOptions = (EnterPlayModeOptions) EditorGUILayout.EnumPopup(enterPlaymodeOptionsContent, EditorSettings.enterPlayModeOptions, EditorStyles.popup);
-                }
+                if (simpleMode) EditorSettings.enterPlayModeOptionsEnabled = EditorGUILayout.Toggle(enterPlaymodeOptionsContent, EditorSettings.enterPlayModeOptionsEnabled);
+                else EditorSettings.enterPlayModeOptions = (EnterPlayModeOptions) EditorGUILayout.EnumPopup(enterPlaymodeOptionsContent, EditorSettings.enterPlayModeOptions, EditorStyles.popup);
             }
         }
     }
@@ -472,6 +466,22 @@ public class DebugWindow : EditorWindow
             }
 
             commandQuery = string.Empty;
+        }
+    }
+
+    static void DrawTexturesMenu()
+    {
+        using (new VerticalScope("box"))
+        {
+            showTextures = EditorGUILayout.Foldout(showTextures, "Textures", true, EditorStyles.foldoutHeader);
+
+            if (showTextures)
+            {
+                EditorGUI.indentLevel++;
+                EditorGUILayout.LabelField("Textures", EditorStyles.boldLabel);
+                foreach (GUIContent content in EditorTextures.Textures.Select(texture => new GUIContent(texture.Key, texture.Value))) EditorGUILayout.LabelField(content);
+                EditorGUI.indentLevel--;
+            }
         }
     }
     #endregion
