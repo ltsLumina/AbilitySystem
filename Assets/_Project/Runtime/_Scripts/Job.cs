@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using JetBrains.Annotations;
 using Lumina.Essentials.Attributes;
-using UnityEditor;
 using UnityEngine;
 #endregion
 
@@ -41,10 +39,14 @@ public sealed class Job : ScriptableObject
 
     void OnValidate()
     {
-        Ability[] resources = Resources.LoadAll<Ability>(AbilitySettings.ResourcesPath);
-        abilities = resources.Where(a => a.job == job).ToList();
+        Ability[] resources = Resources.LoadAll<Ability>(AbilitySettings.ResourcePaths.ABILITIES);
+        abilities = resources.Where(a => a.Job == job).ToList();
+        if (resources.Length == 0) return;
 
         PlayModePreventer.preventPlayMode = abilities.Count != 4;
+        PlayModePreventer.Reason
+        ($"Not enough abilities for {job}. There must be exactly 4 abilities." + "\n" + "The following abilities were found: " + string.Join
+             (", ", abilities.Select(a => a.name) + $"(Count: {abilities.Count})"), this);
 
         switch (abilities.Count)
         {
@@ -55,29 +57,6 @@ public sealed class Job : ScriptableObject
             case var count when count != 4:
                 Logger.LogError($"Not enough abilities for {job}. There must be exactly 4 abilities.");
                 break;
-        }
-    }
-}
-
-[InitializeOnLoad]
-public static class PlayModePreventer
-{
-    [UsedImplicitly]
-    public static bool preventPlayMode { get; set; }
-
-    static PlayModePreventer() { EditorApplication.playModeStateChanged += OnPlayModeStateChanged; }
-
-    static void OnPlayModeStateChanged(PlayModeStateChange state)
-    {
-        if (state == PlayModeStateChange.EnteredPlayMode)
-        {
-            if (!preventPlayMode) return;
-
-            List<Job> missingAbilities = Object.FindObjectsByType<Job>(FindObjectsSortMode.None).Where(j => j.Abilities.Count != 4).ToList();
-            string jobs = string.Join(", ", missingAbilities.Select(j => j.name));
-
-            Logger.LogError("Cannot enter playmode when there are missing abilities. Please ensure that each job has exactly 4 abilities." + "\n" + $"The following jobs have missing abilities: {jobs}");
-            EditorApplication.isPlaying = false;
         }
     }
 }

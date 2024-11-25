@@ -19,9 +19,8 @@ public class AbilityEditor : Editor
     SerializedProperty type;
     SerializedProperty range;
     SerializedProperty radius;
-    SerializedProperty usesCastTime;
+    SerializedProperty cooldownType;
     SerializedProperty castTime;
-    SerializedProperty usesGlobalCooldown;
     SerializedProperty cooldown;
     SerializedProperty damageType;
     SerializedProperty damage;
@@ -29,8 +28,6 @@ public class AbilityEditor : Editor
 
     #region Properties
     static Player player => FindAnyObjectByType<Player>();
-
-    bool isDoT => damageType.enumValueIndex == 1;
 
     /// <summary>
     ///     Gets the job name based on the ability class enum value.
@@ -83,9 +80,8 @@ public class AbilityEditor : Editor
         type = serializedObject.FindProperty("type");
         range = serializedObject.FindProperty("range");
         radius = serializedObject.FindProperty("radius");
-        usesCastTime = serializedObject.FindProperty("usesCastTime");
+        cooldownType = serializedObject.FindProperty("cooldownType");
         castTime = serializedObject.FindProperty("castTime");
-        usesGlobalCooldown = serializedObject.FindProperty("usesGlobalCooldown");
         cooldown = serializedObject.FindProperty("cooldown");
         damageType = serializedObject.FindProperty("damageType");
         damage = serializedObject.FindProperty("damage");
@@ -123,50 +119,48 @@ public class AbilityEditor : Editor
         GUILayout.Space(25);
 
         using (new GUILayout.HorizontalScope("textField")) { showProperties = EditorGUILayout.BeginFoldoutHeaderGroup(showProperties, "Ability Properties", headerButtonStyle); }
-
         {
             if (showProperties)
+            {
                 using (new GUILayout.VerticalScope("box"))
                 {
                     EditorGUILayout.PropertyField(type);
                     GUILayout.Label($"Key: {abilityTypeKey}", EditorStyles.centeredGreyMiniLabel);
 
-                    EditorGUILayout.PropertyField(range);
-                    EditorGUILayout.PropertyField(radius);
+                    range.floatValue = EditorGUILayout.Slider("Range", range.floatValue, 0f, 25);
+                    radius.floatValue = EditorGUILayout.Slider("Radius", radius.floatValue, 0f, 25);
 
-                    using (new EditorGUI.DisabledGroupScope(isDoT))
+                    EditorGUILayout.PropertyField(cooldownType, new GUIContent("Cooldown Type", "Does this ability use the global cooldown (GCD & Cast)? Or is it instant?"));
+
+                    switch (cooldownType.enumValueIndex)
                     {
-                        if (isDoT) usesCastTime.boolValue = false;
-                        EditorGUILayout.PropertyField(usesCastTime);
-                    }
+                        case 0: // GCD
 
-                    if (usesCastTime.boolValue)
-                    {
-                        EditorGUILayout.HelpBox("This ability uses a cast time.", MessageType.Info);
-                        EditorGUILayout.PropertyField(castTime);
-                    }
-                    else { castTime.floatValue = 0; }
+                            using (new EditorGUI.DisabledScope(true))
+                            {
+                                EditorGUILayout.PropertyField(cooldown);
+                                cooldown.floatValue = AbilitySettings.GlobalCooldown;
+                            }
+                            EditorGUILayout.HelpBox("This ability is on the global cooldown.", MessageType.Info);
 
-                    using (new EditorGUI.DisabledGroupScope(isDoT))
-                    {
-                        if (isDoT) usesGlobalCooldown.boolValue = false;
-                        EditorGUILayout.PropertyField(usesGlobalCooldown);
-                    }
-
-                    if (usesGlobalCooldown.boolValue)
-                    {
-                        EditorGUILayout.HelpBox("This ability is on the global cooldown.", MessageType.Info);
-
-                        using (new EditorGUI.DisabledGroupScope(true))
-                        {
-                            cooldown.floatValue = AbilitySettings.GlobalCooldown;
+                            castTime.floatValue = 0;
+                            break;
+                        
+                        case 1: // Instant
                             EditorGUILayout.PropertyField(cooldown);
-                        }
-                    }
-                    else
-                    {
-                        EditorGUILayout.PropertyField(cooldown);
-                        if (cooldown.floatValue <= 1) EditorGUILayout.HelpBox("This ability has a very short cooldown.", MessageType.Warning);
+                            EditorGUILayout.HelpBox("This ability is instant and does not use the global cooldown.", MessageType.Info);
+                            
+                            castTime.floatValue = 0;
+                            break;
+                            
+                        
+                        case 2: // Cast
+                            castTime.floatValue = EditorGUILayout.FloatField("Cast Time", Mathf.Clamp(castTime.floatValue, 0f, 5));
+                            EditorGUILayout.HelpBox("This ability uses a cast time.", MessageType.Info);
+
+                            EditorGUILayout.PropertyField(cooldown);
+                            if (cooldown.floatValue <= 1) EditorGUILayout.HelpBox("This ability has a very short cooldown.", MessageType.Warning);
+                            break;
                     }
 
                     EditorGUILayout.PropertyField(damageType);
@@ -179,31 +173,27 @@ public class AbilityEditor : Editor
                     else
                     {
                         EditorGUILayout.HelpBox("This ability deals damage over time.", MessageType.Info);
-
+                        
                         damage.floatValue = EditorGUILayout.FloatField("Damage per Cycle", damage.floatValue);
-                        damageTicks.intValue = EditorGUILayout.IntField("Cycles (seconds)", Mathf.Max(3, damageTicks.intValue));
+                        damageTicks.intValue = EditorGUILayout.IntField("Cycles (seconds)", Mathf.Clamp(damageTicks.intValue, 3, 60));
+                        if (damageTicks.intValue < 9) EditorGUILayout.HelpBox("DoT has a very short duration.", MessageType.Warning);
 
-                        // Clamp the duration to a minimum of 1 second.
-                        damageTicks.intValue = Mathf.Max(1, damageTicks.intValue);
-
-                        var tickManager = FindAnyObjectByType<TickManager>();
-                        if (!tickManager) return;
-
-                        int tickRate = tickManager.TickRate;
+                        int tickRate = TickManager.Instance.TickRate;
                         float damagePerTick = damage.floatValue / tickRate;
-                        float totalDamage = damage.floatValue * damageTicks.intValue;
+                        float totalDamage = damage.floatValue   * damageTicks.intValue;
 
                         EditorGUILayout.LabelField("Damage Per Tick", damagePerTick.ToString("F2"));
                         EditorGUILayout.LabelField("Total Damage", totalDamage.ToString("F0"));
-                        EditorGUILayout.LabelField("DoT Cycles", $"{damageTicks.intValue / AbilitySettings.DoT_Cycles}");
-
-                        EditorGUILayout.LabelField
-                        ($"DoTs deal damage every {AbilitySettings.DoT_Cycles} tick cycles. Therefore this DoT will deal damage {damageTicks.intValue / AbilitySettings.DoT_Cycles} times.",
-                         EditorStyles.centeredGreyMiniLabel);
+                        EditorGUILayout.LabelField("DoT Ticks", $"{damageTicks.intValue / AbilitySettings.DoT_Rate}");
+                        
+                        var dotInfoContent = new GUIContent
+                            ($"DoTs deal damage every {AbilitySettings.DoT_Rate} tick cycles. Therefore this DoT will deal damage {damageTicks.intValue / AbilitySettings.DoT_Rate} times.");
+                        EditorGUILayout.LabelField(dotInfoContent, EditorStyles.centeredGreyMiniLabel);
 
                         if (damagePerTick > 2.75) EditorGUILayout.HelpBox("This DoT deals a considerable amount of damage." + " \nConsider reducing the damage per cycle or the number of cycles.", MessageType.Warning);
                     }
                 }
+            }
 
             EditorGUILayout.EndFoldoutHeaderGroup();
         }

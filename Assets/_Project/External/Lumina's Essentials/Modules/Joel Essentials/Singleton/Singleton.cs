@@ -16,6 +16,11 @@ public class Singleton<T> : MonoBehaviour
         {
             if (instance == null)
             {
+                // In Editor, the instance is found by searching for the object as it is normally set in playmode.
+                if (!Application.isPlaying && Application.isEditor) {
+                    instance = (T) Helpers.Find(typeof(T));
+                    return instance;
+                }
                 Debug.LogError("No object of type " + typeof(T).FullName + " was found.");
                 return null;
             }

@@ -337,8 +337,6 @@ MonoBehaviour:
   duration: {fileID: 7762464440543954903}
   onCooldown: 0
   cooldownTime: 0
-  coyoteTime: 0.15
-  queued: 0
   fadeDuration: 0.35
   showDecimals: 0
 --- !u!114 &3724852529656350874

@@ -88,17 +88,6 @@ public abstract class Entity : MonoBehaviour, IEntity
 
     int tickCycles;
 
-    protected void PerCycle(int cycle, Action action)
-    {
-        tickCycles++;
-
-        if (tickCycles == cycle)
-        {
-            action();
-            tickCycles = 0;
-        }
-    }
-
     public void Destroy() { StartCoroutine(DestroyCoroutine(0)); }
 
     public void Destroy(float delay) { StartCoroutine(DestroyCoroutine(delay)); }

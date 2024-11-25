@@ -1,4 +1,5 @@
 #region
+using System;
 using System.Collections;
 using System.Globalization;
 using DG.Tweening;
@@ -30,9 +31,9 @@ public class AbilityButton : MonoBehaviour
     [SerializeField, ReadOnly] bool onCooldown;
     [UsedImplicitly, Tooltip("The amount of time remaining on the cooldown. \nThis variable is only used for debugging.")]
     [SerializeField, ReadOnly] float cooldownTime;
-    [Tooltip("The amount of time remaining on the cooldown that the ability can be pressed again to queue it.")]
-    [SerializeField] float coyoteTime = 0.2f;
-    [SerializeField, ReadOnly] bool queued;
+    //[Tooltip("The amount of time remaining on the cooldown that the ability can be pressed again to queue it.")]
+    //[SerializeField] float coyoteTime = 0.2f;
+    //[SerializeField, ReadOnly] bool queued;
 
     [Header("Animation"), Tooltip("The duration of all fades applied to the cooldown animation. (e.g. fill amount, text)")]
     [SerializeField] float fadeDuration = 0.35f;
@@ -54,22 +55,28 @@ public class AbilityButton : MonoBehaviour
 
     float CooldownTime(bool showDecimals = false)
     {
-        if (showDecimals) return RoundToDecimal(circle.fillAmount * ability.cooldown, 2);
-        return Mathf.RoundToInt(circle.fillAmount * ability.cooldown);
+        if (showDecimals) return RoundToDecimal(circle.fillAmount * ability.Cooldown, 2);
+        return Mathf.RoundToInt(circle.fillAmount * ability.Cooldown);
     }
-
-    //float cooldownTime => RoundToDecimal(cooldownTween.Elapsed(), 2);
 
     public int abilityIndex => transform.GetSiblingIndex();
 
     Button button => GetComponent<Button>();
 
+    void TriggerGCD()
+    {
+        if (ability.CDType != Ability.CooldownType.Instant) Cooldown(); // Instant abilities are not affected by the global cooldown.
+    }
+    
     protected void Start()
     {
-        ability = FindFirstObjectByType<Player>().Job.Abilities[abilityIndex];
+        Ability.OnGlobalCooldown += TriggerGCD;
+        
+        var job = FindAnyObjectByType<Player>().Job;
+        ability = job.Abilities[abilityIndex];
 
         button.onClick.AddListener(Invoke);
-        button.image.sprite = ability.icon;
+        button.image.sprite = ability.Icon;
 
         circle.fillAmount = 0;
         duration.alpha = 0;
@@ -85,13 +92,15 @@ public class AbilityButton : MonoBehaviour
 #endif
     }
 
+    void OnDestroy() => Ability.OnGlobalCooldown -= TriggerGCD;
+
     void Update()
     {
         // in simple terms, this checks the following:
         // - if the ability is on cooldown
         // - if the ability has been cancelled
         // - if the cooldown has not yet exceeded the cast time, meaning it hasn't been cast yet and its cooldown can be reset.
-        if (OnCooldown && ability.cancelled && cooldownTween.Elapsed() <= ability.castTime)
+        if (OnCooldown && ability.cancelled && cooldownTween.Elapsed() <= ability.CastTime)
         {
             if (!ability.cancellable) return;
 
@@ -148,7 +157,7 @@ public class AbilityButton : MonoBehaviour
 
         InitCooldown(); // Sets the fill amount to 1 and fades the duration text in
 
-        cooldownTween = circle.DOFillAmount(0, ability.cooldown).SetEase(Ease.InOutSine);
+        cooldownTween = circle.DOFillAmount(0, ability.Cooldown).SetEase(Ease.InOutSine);
         OnCooldown = true;
 
         cooldownTween.OnComplete
@@ -160,12 +169,6 @@ public class AbilityButton : MonoBehaviour
             OnCooldown = false;
 
             Terminate(); // Fades the duration text out
-
-            if (queued)
-            {
-                queued = false;
-                Invoke();
-            }
         });
 
         return;
@@ -180,8 +183,6 @@ public class AbilityButton : MonoBehaviour
 
         void Terminate()
         {
-            if (queued) return;
-
             duration.DOFade(0, 0.35f);
         }
     }
@@ -196,20 +197,12 @@ public class AbilityButton : MonoBehaviour
         circle.fillAmount = 0;
         duration.DOFade(0, fadeDuration);
         OnCooldown = false;
-
-        queued = false;
     }
 
     public void Invoke()
     {
-        if (OnCooldown && CooldownTime() < coyoteTime)
-        {
-            queued = true;
-            return;
-        }
-
         if (OnCooldown) return;
-
+        
         ability?.Invoke();
         Cooldown();
     }

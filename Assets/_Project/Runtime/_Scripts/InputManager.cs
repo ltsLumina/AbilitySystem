@@ -22,31 +22,27 @@ public class InputManager : MonoBehaviour
         IsMoving = MoveInput != Vector2.zero;
     }
 
-    public void OnDash(InputAction.CallbackContext context) { Logger.LogWarning("Dash is not implemented."); }
+    public void OnDash(InputAction.CallbackContext context) => Logger.LogWarning("Dash is not implemented.");
 
-    void Ability(InputAction.CallbackContext context)
+    public void Ability(InputAction.CallbackContext context)
     {
         if (!context.performed) return;
 
-        if (abilityButtons.TryGetValue(context.action.name, out GameObject button)) { button.GetComponent<AbilityButton>().Invoke(); }
+        if (abilityButtons.TryGetValue(context.action.name, out GameObject button)) button.GetComponent<AbilityButton>().Invoke();
     }
-
-    public void OnAbility1(InputAction.CallbackContext context) { Ability(context); }
-
-    public void OnAbility2(InputAction.CallbackContext context) { Ability(context); }
-
-    public void OnAbility3(InputAction.CallbackContext context) { Ability(context); }
-
-    public void OnAbility4(InputAction.CallbackContext context) { Ability(context); }
 
     #region Utility
     public static List<string> AbilityKeys => (from action in FindAnyObjectByType<PlayerInput>().actions where action.name.StartsWith("Ability") select action.name).ToList();
 
+    int abilityIndex(AbilityButton button) => button.transform.GetSiblingIndex();
+    
     [Button, UsedImplicitly]
-    public void SetDictionaryKeys() => abilityButtons = new ()
-    { { AbilityKeys[0], FindMultiple<AbilityButton>().FirstOrDefault(b => b.abilityIndex == 0)?.gameObject },
-      { AbilityKeys[1], FindMultiple<AbilityButton>().FirstOrDefault(b => b.abilityIndex == 1)?.gameObject },
-      { AbilityKeys[2], FindMultiple<AbilityButton>().FirstOrDefault(b => b.abilityIndex == 2)?.gameObject },
-      { AbilityKeys[3], FindMultiple<AbilityButton>().FirstOrDefault(b => b.abilityIndex == 3)?.gameObject } };
+    public void SetDictionaryKeys()
+    {
+        for (int index = 0; index < AbilityKeys.Count; index++)
+        {
+            abilityButtons[AbilityKeys[index]] = FindMultiple<AbilityButton>().FirstOrDefault(b => abilityIndex(b) == index)?.gameObject;
+        }
+    }
     #endregion
 }

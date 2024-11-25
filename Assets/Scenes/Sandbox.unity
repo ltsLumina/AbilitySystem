@@ -1433,6 +1433,10 @@ PrefabInstance:
       value: 2.5
       objectReference: {fileID: 0}
     - target: {fileID: 7916833178086342432, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
+      propertyPath: coyoteTime
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 7916833178086342432, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
       propertyPath: showDecimals
       value: 0
       objectReference: {fileID: 0}
@@ -1759,7 +1763,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1800267626}
         m_TargetAssemblyTypeName: InputManager, Assembly-CSharp
-        m_MethodName: OnAbility1
+        m_MethodName: Ability
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1775,7 +1779,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1800267626}
         m_TargetAssemblyTypeName: InputManager, Assembly-CSharp
-        m_MethodName: OnAbility2
+        m_MethodName: Ability
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1791,7 +1795,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1800267626}
         m_TargetAssemblyTypeName: InputManager, Assembly-CSharp
-        m_MethodName: OnAbility3
+        m_MethodName: Ability
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1807,7 +1811,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1800267626}
         m_TargetAssemblyTypeName: InputManager, Assembly-CSharp
-        m_MethodName: OnAbility4
+        m_MethodName: Ability
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1967,6 +1971,10 @@ PrefabInstance:
     - target: {fileID: 7916833178086342432, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
       propertyPath: cooldown
       value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7916833178086342432, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
+      propertyPath: coyoteTime
+      value: 0.15
       objectReference: {fileID: 0}
     - target: {fileID: 7916833178086342432, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
       propertyPath: showDecimals
@@ -2133,6 +2141,10 @@ PrefabInstance:
       value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 7916833178086342432, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
+      propertyPath: coyoteTime
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 7916833178086342432, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
       propertyPath: showDecimals
       value: 0
       objectReference: {fileID: 0}
@@ -2297,6 +2309,10 @@ PrefabInstance:
     - target: {fileID: 7916833178086342432, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
       propertyPath: cooldown
       value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7916833178086342432, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
+      propertyPath: coyoteTime
+      value: 0.15
       objectReference: {fileID: 0}
     - target: {fileID: 7916833178086342432, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
       propertyPath: showDecimals

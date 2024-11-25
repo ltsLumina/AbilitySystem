@@ -19,6 +19,13 @@ public sealed class Ability : ScriptableObject
         Utility,
         Ultimate,
     }
+    
+    public enum CooldownType
+    {
+        GCD, // Weaponskill
+        Instant, // Ability (oGCD)
+        Cast, // Spell
+    }
 
     [SuppressMessage("ReSharper", "UnusedMember.Global")]
     public enum DamageType
@@ -29,25 +36,44 @@ public sealed class Ability : ScriptableObject
     }
 
     [Header("Ability Info")]
-    [SerializeField] public Class job;
+    [SerializeField] Class job;
     [SerializeField] string abilityName;
     [TextArea]
     [SerializeField] string description;
-    [SerializeField] public Sprite icon;
+    [SerializeField] Sprite icon;
     [SerializeField] AbilityType type;
 
     [Header("Ability Properties")]
     [SerializeField] float range;
     [SerializeField] float radius;
-    [SerializeField] bool usesCastTime;
-    [SerializeField] public float castTime;
-    [SerializeField] public bool usesGlobalCooldown;
-    [SerializeField] public float cooldown;
+    [SerializeField] CooldownType cooldownType;
+    [SerializeField] float castTime;
+    [SerializeField] float cooldown;
 
     [Header("Damage Properties")]
     [SerializeField] DamageType damageType;
     [SerializeField] float damage;
     [SerializeField] int damageTicks;
+
+    public static event Action OnGlobalCooldown;
+    
+    public Class Job => job;
+    public string Name
+    {
+        get => abilityName;
+        set => abilityName = value;
+    }
+    public string Description => description;
+    public Sprite Icon => icon;
+    public AbilityType Type => type;
+    public float Range => range;
+    public float Radius => radius;
+    public CooldownType CDType => cooldownType;
+    public float CastTime => castTime;
+    public float Cooldown => cooldown;
+    public DamageType DmgType => damageType;
+    public float Damage => damage;
+    public int DamageTicks => damageTicks;
 
     static Player _player;
 
@@ -60,7 +86,7 @@ public sealed class Ability : ScriptableObject
         }
     }
 
-    public bool cancellable => usesCastTime;
+    public bool cancellable => cooldownType == CooldownType.Cast;
 
     public bool cancelled
     {
@@ -76,8 +102,9 @@ public sealed class Ability : ScriptableObject
     public void Invoke()
     {
         Entity nearestTarget = FindClosestTarget();
-        bool isCast = usesCastTime;
-        bool isGCD = usesGlobalCooldown;
+        bool isCast = cooldownType == CooldownType.Cast;
+        bool isGCD = cooldownType == CooldownType.GCD;
+        bool isInstant = cooldownType == CooldownType.Instant;
         bool isDoT = damageType == DamageType.DoT;
 
         switch (true)
@@ -90,6 +117,11 @@ public sealed class Ability : ScriptableObject
             case true when isGCD:
                 Logger.Log("On global cooldown.");
                 GlobalCooldown(nearestTarget);
+                break;
+            
+            case true when isInstant:
+                Logger.Log("Instant cast...");
+                Instant(nearestTarget);
                 break;
 
             case true when isDoT:
@@ -116,7 +148,14 @@ public sealed class Ability : ScriptableObject
 
     IEnumerator Cast(Entity target = null)
     {
+        OnGlobalCooldown?.Invoke();
+        
         castCoroutine = player.StartCoroutine(CastCoroutine());
+        var particle = Instantiate(Resources.Load<GameObject>("PREFABS/Casting Particles")).GetComponent<ParticleSystem>();
+        ParticleSystem.MainModule particleMain = particle.main;
+        particleMain.duration = castTime + 0.5f;
+        particle.transform.position = player.transform.position + new Vector3(0, -0.8f);
+        particle.Play();
         yield return new WaitWhile(Casting);
 
         if (cancelled) yield break;
@@ -159,6 +198,8 @@ public sealed class Ability : ScriptableObject
 
     void GlobalCooldown(Entity target = null)
     {
+        OnGlobalCooldown?.Invoke();
+        
         // Cast the ability
         GameObject effect = Instantiate(Resources.Load<GameObject>("PREFABS/Effect"));
         var player = GameObject.FindGameObjectWithTag("Player");
@@ -170,15 +211,29 @@ public sealed class Ability : ScriptableObject
         damageable?.TakeDamage(damage);
     }
 
+    void Instant(Entity target = null)
+    {
+        // Cast the ability
+        GameObject effect = Instantiate(Resources.Load<GameObject>("PREFABS/Effect"));
+        effect.transform.position = player.transform.position + player.transform.right * 2.5f;
+        effect.AddComponent<Rigidbody2D>().AddForce(player.transform.right * 500);
+
+        if (target == null) return;
+        target.TryGetComponent(out IDamageable damageable);
+        damageable?.TakeDamage(damage);
+    }
+
     void DamageOverTime(Entity target)
     {
+        OnGlobalCooldown?.Invoke();
+        
         target.TryGetComponent(out IDamageable damageable);
         int cycle = 0;
-        int totalCycles = damageTicks / AbilitySettings.DoT_Cycles;
+        int totalCycles = damageTicks / AbilitySettings.DoT_Rate;
 
         TickManager.OnCycle += OnCycle;
-        return;
 
+        return;
         void OnCycle()
         {
             if (cycle >= totalCycles)
