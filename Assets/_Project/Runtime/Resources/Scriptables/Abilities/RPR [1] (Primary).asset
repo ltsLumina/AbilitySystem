@@ -23,5 +23,6 @@ MonoBehaviour:
   castTime: 0
   cooldown: 1.5
   damageType: 0
-  damage: 150
-  damageTicks: 0
+  potency: 0
+  duration: 3
+  effects: []

@@ -3,7 +3,6 @@
 #region
 using System;
 using System.ComponentModel;
-using System.Linq;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
@@ -24,7 +23,7 @@ public class AbilityEditor : Editor
     SerializedProperty castTime;
     SerializedProperty cooldown;
     SerializedProperty damageType;
-    SerializedProperty damage;
+    SerializedProperty potency;
     SerializedProperty duration;
     SerializedProperty effects;
 
@@ -86,7 +85,7 @@ public class AbilityEditor : Editor
         castTime = serializedObject.FindProperty("castTime");
         cooldown = serializedObject.FindProperty("cooldown");
         damageType = serializedObject.FindProperty("damageType");
-        damage = serializedObject.FindProperty("damage");
+        potency = serializedObject.FindProperty("potency");
         duration = serializedObject.FindProperty("duration");
         effects = serializedObject.FindProperty("effects");
     }
@@ -173,19 +172,19 @@ public class AbilityEditor : Editor
                     if (damageType.enumValueIndex == 0)
                     {
                         EditorGUILayout.HelpBox("This ability deals direct damage.", MessageType.Info);
-                        EditorGUILayout.PropertyField(damage);
+                        EditorGUILayout.PropertyField(potency);
                     }
                     else
                     {
                         EditorGUILayout.HelpBox("This ability deals damage over time.", MessageType.Info);
 
-                        damage.floatValue = EditorGUILayout.FloatField("Damage per Cycle", damage.floatValue);
+                        potency.floatValue = EditorGUILayout.FloatField("Damage per Cycle", potency.floatValue);
                         duration.intValue = EditorGUILayout.IntField("Cycles (seconds)", Mathf.Clamp(duration.intValue, 3, 60));
                         if (duration.intValue < 9) EditorGUILayout.HelpBox("DoT has a very short duration.", MessageType.Warning);
 
                         int tickRate = TickManager.Instance.TickRate;
-                        float damagePerTick = damage.floatValue / tickRate;
-                        float totalDamage = damage.floatValue * duration.intValue;
+                        float damagePerTick = potency.floatValue / tickRate;
+                        float totalDamage = potency.floatValue * duration.intValue;
 
                         EditorGUILayout.LabelField("Damage Per Tick", damagePerTick.ToString("F2"));
                         EditorGUILayout.LabelField("Total Damage", totalDamage.ToString("F0"));
@@ -202,53 +201,53 @@ public class AbilityEditor : Editor
                     EditorGUILayout.EndFoldoutHeaderGroup();
 
                     GUILayout.Space(10);
-                    
-                    var statusEffects = Enum.GetValues(typeof(StatusEffect.Effect.Effects)).Cast<StatusEffect.Effect.Effects>().ToList();
-                    var displayOptions = statusEffects.Select(e => e.ToString()).ToArray();
-                    
-                    using (new EditorGUILayout.HorizontalScope())
-                    {
-                        selectedEffect = EditorGUILayout.Popup("Add Status Effect", selectedEffect, displayOptions);
 
-                        using (new EditorGUI.DisabledScope(selectedEffect == 0))
-                        {
-                            if (GUILayout.Button("Add", GUILayout.Width(50)))
-                            {
-                                var effectTemplate = StatusEffect.Effect.GetEffect(statusEffects[selectedEffect]);
-                                effects.InsertArrayElementAtIndex(effects.arraySize);
-                                var effect = effects.GetArrayElementAtIndex(effects.arraySize - 1);
-                                effect.FindPropertyRelative("name").stringValue = effectTemplate.Name;
-                                effect.FindPropertyRelative("duration").intValue = effectTemplate.Duration;
-                                effect.FindPropertyRelative("description").stringValue = effectTemplate.Description;
-                                effect.FindPropertyRelative("time").floatValue = effectTemplate.Duration;
-                                
-                                serializedObject.ApplyModifiedProperties();
-                            }
-                        }
+                    if (GUILayout.Button("Add Status Effect"))
+                    {
+                        var effectTemplate = new StatusEffect<Effect>();
+
+                        effects.InsertArrayElementAtIndex(effects.arraySize);
+                        SerializedProperty effect = effects.GetArrayElementAtIndex(effects.arraySize - 1);
+                        effect.FindPropertyRelative("name").stringValue = effectTemplate.Name;
+                        effect.FindPropertyRelative("description").stringValue = effectTemplate.Description;
+                        effect.FindPropertyRelative("duration").floatValue = effectTemplate.Duration;
+                        effect.FindPropertyRelative("time").floatValue = effectTemplate.Time;
+                        effect.FindPropertyRelative("effect").objectReferenceValue = effectTemplate.Effect;
+
+                        serializedObject.ApplyModifiedProperties();
                     }
 
+                    // var statusEffects = Enum.GetValues(typeof(StatusEffect.Effects)).Cast<StatusEffect.Effects>().ToList();
+                    // var displayOptions = statusEffects.Select(e => e.ToString()).ToArray();
+                    //
+                    // using (new EditorGUILayout.HorizontalScope())
+                    // {
+                    //     selectedEffect = EditorGUILayout.Popup("Add Status Effect", selectedEffect, displayOptions);
+                    //
+                    //     using (new EditorGUI.DisabledScope(selectedEffect == 0))
+                    //     {
+                    //         if (GUILayout.Button("Add", GUILayout.Width(50)))
+                    //         {
+                    //             var effectTemplate = StatusEffect.Effect.GetEffect(statusEffects[selectedEffect]);
+                    //             effects.InsertArrayElementAtIndex(effects.arraySize);
+                    //             var effect = effects.GetArrayElementAtIndex(effects.arraySize - 1);
+                    //             effect.FindPropertyRelative("name").stringValue = effectTemplate.Name;
+                    //             effect.FindPropertyRelative("duration").intValue = effectTemplate.Duration;
+                    //             effect.FindPropertyRelative("description").stringValue = effectTemplate.Description;
+                    //             effect.FindPropertyRelative("time").floatValue = effectTemplate.Duration;
+                    //             
+                    //             serializedObject.ApplyModifiedProperties();
+                    //         }
+                    //     }
+                    // }
+
                     EditorGUILayout.PropertyField(effects, true);
-                    
+
                     if (effects.arraySize > 0)
                     {
                         EditorGUILayout.HelpBox("This ability applies status effects.", MessageType.Info);
-                        var infoContent = new GUIContent($"The \"Duration\" field is controlled by the \"Cycles\" field above."); // TODO: THIS
+                        var infoContent = new GUIContent("The \"Duration\" field is controlled by the \"Cycles\" field above.");
                         EditorGUILayout.LabelField(infoContent, EditorStyles.centeredGreyMiniLabel);
-
-                        // check if the inspector has been updated
-                        if (serializedObject.ApplyModifiedProperties())
-                        {
-                            for (int i = 0; i < effects.arraySize; i++)
-                            {
-                                var effect = effects.GetArrayElementAtIndex(i);
-                                var time = effect.FindPropertyRelative("time");
-                                var owner = effect.FindPropertyRelative("owner");
-                                
-                                var duration = effect.FindPropertyRelative("duration");
-                                time.floatValue = duration.intValue;
-                                owner.objectReferenceValue = null;
-                            }
-                        }
                     }
                 }
             }

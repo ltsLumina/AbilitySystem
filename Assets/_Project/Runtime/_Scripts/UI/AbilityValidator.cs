@@ -67,7 +67,7 @@ public class AbilityValidator : MonoBehaviour
 
             //Debug.Assert(a.Range       > 0, $"Ability range is less than 0 for {a}.", a);
             //Debug.Assert(a.Radius      > 0, $"Ability radius is less than 0 for {a}.", a);
-            Debug.Assert(a.Damage > 0, $"Ability damage is less than 0 for {a}.", a);
+            Debug.Assert(a.Potency > 0, $"Ability damage is less than 0 for {a}.", a);
             if (a.DmgType == Ability.DamageType.DoT) Debug.Assert(a.Duration > 0, $"Ability damage ticks is less than 0 for {a}.", a);
         }
     }

@@ -1,119 +1,96 @@
 ﻿#region
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Lumina.Essentials.Attributes;
 using UnityEngine;
+using Object = UnityEngine.Object;
 #endregion
 
 [Serializable]
-public class StatusEffect
+public class StatusEffect<T>
+    where T : Effect
 {
-    public enum TargetType
-    {
-        Self,
-        Enemy,
-    }
-    
-    [SerializeField] string name;
-    [SerializeField] int duration;
-    [SerializeField] string description;
-    [SerializeField] TargetType target;
-    [Tooltip("The time remaining for the status effect.")]
+    [SerializeField] T effect;
+    [SerializeField] [ReadOnly] string name;
+    [SerializeField] [ReadOnly] string description;
+    [SerializeField] [ReadOnly] float duration;
     [SerializeField, ReadOnly] float time;
-    [Tooltip("The entity that applied the status effect. (Not the entity that the status effect is applied to.)")]
-    [SerializeField, ReadOnly] Entity owner;
-    
+    [SerializeField] [ReadOnly] Entity caster;
+
     public string Name => name;
-    public int Duration
-    {
-        get => duration;
-        set => duration = value;
-    }
     public string Description => description;
+    public float Duration => duration;
     public float Time
     {
         get => time;
         set => time = value;
     }
-    public Entity Owner
+    public Entity Caster
     {
-        get => owner;
-        set => owner = value;
-    }
-    public TargetType Target => target;
-
-    public override string ToString()
-    {
-        return $"{name} ({duration} seconds)";
+        get => caster;
+        set => caster = value;
     }
 
-    public StatusEffect(Entity owner, Effect effect)
+    public T Effect => effect;
+}
+
+[Serializable]
+public abstract class Effect : Object
+{
+    public float Potency { get; private set; }
+
+    public abstract class Buff : Effect
     {
-        this.owner = owner;
-        name = effect.Name;
-        duration = effect.Duration;
-        description = effect.Description;
-        time = duration;
-    }
-
-    public class Effect
-    {
-        public enum Effects
+        public class ArcaneCircle : Buff
         {
-            None,
-            DamageUp,
-            DoT,
-        }
-        
-        public string Name { get; }
-        public int Duration { get; }
-        public string Description { get; }
+            public ArcaneCircle() { Invoke(); }
 
-        public Effect(string name, int duration, string description)
-        {
-            Name = name;
-            Duration = duration;
-            Description = description;
-        }
-
-        public override string ToString() => Name;
-
-        public static Effect GetEffect(Effects effect)
-        {
-            return effect switch
+            public void Invoke()
             {
-                Effects.DamageUp => Buffs.DamageUp(),
-                Effects.DoT => Debuffs.DoT(),
-                _ => null
-            };
+                // Implementation for increasing damage
+                Debug.Log("Damage increased.");
+                Potency = 1.5f;
+            }
+        }
+
+        public void Invoke<T>()
+            where T : Buff
+        {
+            (this as T)?.Invoke<T>();
+            Debug.Log("cool?");
+        }
+
+        // public void Invoke<T>() where T : Buff, new()
+        // {
+        //     new T().Invoke<T>();
+        // }
+    }
+
+    public abstract class Debuff : Effect
+    {
+        public class DamageDown : Debuff
+        {
+            public void Invoke() =>
+
+                // Implementation for decreasing damage
+                Debug.Log("Damage decreased.");
         }
     }
 
-    public struct Buffs
-    {
-        public static Effect DamageUp(int duration = 30) => new Effect("Damage Up", duration, "Increases damage dealt.");
-    }
-
-    public struct Debuffs
-    {
-        public static Effect DoT(int duration = 30) => new Effect("Damage Over Time", duration, "Deals damage over time.");
-    }
+    public void Invoke() => (this as Buff)?.Invoke();
 }
 
 public static class StatusEffectExtensions
 {
-    /// <summary>
-    /// Tries to get the first status effect in the entity's status effects list.
-    /// </summary>
-    /// <param name="entity"></param>
-    /// <returns> Returns the first status effect in the entity's status effects list. </returns>
-    public static StatusEffect TryGetStatusEffect(this Entity entity) => entity.StatusEffects.Count > 0 ? entity.StatusEffects[0] : null;
+    public static List<StatusEffect<Effect>> GetEffects<T>(this Entity entity) => entity.StatusEffects.Where(e => e.Effect is T).ToList();
 
-    
-    /// <summary>
-    /// Gets the status effects of the entity.
-    /// </summary>
-    /// <param name="entity"></param>
-    /// <returns> All the status effects of the entity. </returns>
-    public static List<StatusEffect> GetStatusEffects(this Entity entity) => entity.StatusEffects;
+    public static List<StatusEffect<Effect>> GetEffects<T>(this List<StatusEffect<Effect>> effects) => effects.Where(e => e.Effect is T).ToList();
+
+    public static void InvokeAll(this List<StatusEffect<Effect>> effects)
+    {
+        foreach (StatusEffect<Effect> effect in effects) effect.Effect?.Invoke();
+
+        //(effect.Effect as Effect.Debuff)?.Invoke<Effect.Debuff>();
+    }
 }

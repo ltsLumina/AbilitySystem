@@ -54,12 +54,13 @@ public sealed class Ability : ScriptableObject
 
     [Header("Damage Properties")]
     [SerializeField] DamageType damageType;
-    [SerializeField] float damage;
+    [Tooltip("The amount of damage this ability deals.")]
+    [SerializeField] float potency;
     [SerializeField] int duration;
-    
+
     [Tooltip("The status effects that this ability applies.")]
-    [SerializeField] List<StatusEffect> effects;
-    
+    [SerializeField] List<StatusEffect<Effect>> effects;
+
     public static event Action OnGlobalCooldown;
 
     public Class Job => job;
@@ -77,7 +78,7 @@ public sealed class Ability : ScriptableObject
     public float CastTime => castTime;
     public float Cooldown => cooldown;
     public DamageType DmgType => damageType;
-    public float Damage => damage;
+    public float Potency => potency;
     public int Duration => duration;
 
     static Player _player;
@@ -136,6 +137,7 @@ public sealed class Ability : ScriptableObject
         }
 
         return;
+
         [return: NotNull]
         static Entity FindClosestTarget()
         {
@@ -149,7 +151,6 @@ public sealed class Ability : ScriptableObject
 
     void OnDisable() // Won't be called with "Disable Domain Reload" enabled.
     {
-        foreach (var effect in effects) effect.Owner = null;
     }
 
     #region Casting
@@ -188,7 +189,7 @@ public sealed class Ability : ScriptableObject
         castCoroutine = player.StartCoroutine(CastCoroutine());
         var particle = Instantiate(Resources.Load<GameObject>("PREFABS/Casting Particles")).GetComponent<ParticleSystem>();
         ParticleSystem.MainModule particleMain = particle.main;
-        particleMain.duration = castTime                        + 0.5f;
+        particleMain.duration = castTime + 0.5f;
         particle.transform.position = player.transform.position + new Vector3(0, -0.8f);
         particle.Play();
         yield return new WaitWhile(Casting);
@@ -198,8 +199,7 @@ public sealed class Ability : ScriptableObject
         Effect(target);
 
         target.TryGetComponent(out IDamageable damageable);
-        damageable?.TakeDamage(damage);
-        ApplyEffects(target);
+        damageable?.TakeDamage(potency);
     }
 
     void GlobalCooldown(Entity target)
@@ -209,18 +209,15 @@ public sealed class Ability : ScriptableObject
         Effect(target);
 
         target.TryGetComponent(out IDamageable damageable);
-        damageable?.TakeDamage(damage);
-        ApplyEffects(target);
+        damageable?.TakeDamage(potency);
     }
 
     void Instant(Entity target)
     {
-        // Cast the ability
         Effect(target);
 
         target.TryGetComponent(out IDamageable damageable);
-        damageable?.TakeDamage(damage);
-        ApplyEffects(target);
+        damageable?.TakeDamage(potency);
     }
 
     void DamageOverTime(Entity target)
@@ -228,20 +225,18 @@ public sealed class Ability : ScriptableObject
         OnGlobalCooldown?.Invoke();
 
         Effect(target);
-        
+
         target.TryGetComponent(out IDamageable damageable);
-        damageable?.TakeDamage(damage);
-        ApplyEffects(target);
+        damageable?.TakeDamage(potency);
 
         int cycle = 0;
         int dotTick = 0;
         int dotTicks = duration / AbilitySettings.DoT_Rate - 1;
 
-        // TODO: if the DoT is already running when it is re-applied, reset the cycle count.
-        //  Probably will check if they have a debuff applied.
         TickManager.OnCycle += OnCycle;
 
         return;
+
         void OnCycle()
         {
             if (dotTick == dotTicks)
@@ -255,7 +250,7 @@ public sealed class Ability : ScriptableObject
             if (cycle % AbilitySettings.DoT_Rate == 0) // If DoT_Rate is 3, this will tick on cycle 3, 6, 9, etc.
             {
                 Effect(target, true);
-                damageable?.TakeDamage(damage);
+                damageable?.TakeDamage(potency);
                 dotTick++;
             }
         }
@@ -277,19 +272,5 @@ public sealed class Ability : ScriptableObject
             sprite.DOFade(1, 0);
             pooled.SetActive(false);
         });
-    }
-
-    void ApplyEffects(Entity nearestTarget)
-    {
-        if (effects.Count <= 0) return;
-
-        foreach (StatusEffect effect in effects)
-        {
-            Entity target = effect.Target == StatusEffect.TargetType.Self ? player : nearestTarget;
-            effect.Time = effect.Duration;
-            effect.Owner = player; // The owner of an effect applied by an ability will always be the player. (An effect applied by an enemy will have the enemy as the owner.)
-
-            target.ApplyStatusEffects(effect);
-        }
     }
 }
