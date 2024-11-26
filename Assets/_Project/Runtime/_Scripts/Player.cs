@@ -8,7 +8,7 @@ using VInspector;
 using static Lumina.Essentials.Modules.Helpers;
 #endregion
 
-public class Player : Entity, IDamageable
+public class Player : Entity
 {
     [HideInInspector, UsedImplicitly]
     public VInspectorData data;
@@ -104,6 +104,14 @@ public class Player : Entity, IDamageable
         rb.AddForce(dir * speed);
     }
 
+    public override void TakeDamage(float damage)
+    {
+        base.TakeDamage(damage);
+
+        health -= Mathf.RoundToInt(damage);
+        if (health <= 0) Logger.Log("Player has died.");
+    }
+
     public void OnHit(Enemy enemy = default)
     {
         health--;
@@ -130,11 +138,5 @@ public class Player : Entity, IDamageable
         Gizmos.DrawRay(transform.position, dir);
         var point = transform.position + (Vector3) dir;
         Gizmos.DrawWireSphere(point, 0.3f);
-    }
-
-    public void TakeDamage(float damage, params StatusEffect[] statusEffects)
-    {
-        health -= Mathf.RoundToInt(damage);
-        if (health <= 0) Logger.Log("Player has died.");
     }
 }

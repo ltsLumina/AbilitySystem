@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
@@ -14,10 +15,11 @@ using Debug = UnityEngine.Debug;
 ///         A game object is not an entity unless it inherits from this class.
 ///     </para>
 /// </summary>
-public abstract class Entity : MonoBehaviour, IEntity
+public abstract class Entity : MonoBehaviour, IEntity, IDamageable
 {
-    [SerializeField]
-    protected List<StatusEffect> statusEffects = new ();
+    [SerializeField] protected List<StatusEffect> statusEffects = new ();
+    
+    public List<StatusEffect> StatusEffects => statusEffects;
 
     public enum ActiveState
     {
@@ -38,6 +40,29 @@ public abstract class Entity : MonoBehaviour, IEntity
     void IEntity.OnDisable() => OnEntityDisable?.Invoke(this);
 
     void IEntity.OnDestroy() => OnEntityDestroy?.Invoke(this);
+
+    public virtual void TakeDamage(float damage)
+    {
+        Debug.Log($"{name} took {damage} damage.");
+    }
+
+    public void ApplyStatusEffects(params StatusEffect[] effects)
+    {
+        foreach (StatusEffect effect in effects)
+        {
+            var existingEffect = statusEffects.FirstOrDefault(e => e.Name == effect.Name);
+
+            if (existingEffect != null)
+            {
+                if (existingEffect.Owner != effect.Owner) statusEffects.Add(effect);
+                else existingEffect.Time = effect.Duration;
+            }
+            else
+            {
+                statusEffects.Add(effect); 
+            }
+        }
+    }
 
     public override string ToString() => $"{name} ({GetType().Name}) \n" + $"State: {State}";
 
@@ -85,6 +110,23 @@ public abstract class Entity : MonoBehaviour, IEntity
             };
 
             OnEntityDestroy += e => { Logger.Log($"{e.name} has been destroyed."); };
+        }
+    }
+
+    void Update()
+    {
+        foreach (StatusEffect effect in statusEffects.ToList())
+        {
+            effect.Time -= Time.deltaTime;
+            if (effect.Time <= 0) statusEffects.Remove(effect);
+            
+            // apply effect
+            switch (effect)
+            {
+                case var _ when effect.Name == StatusEffect.Buffs.DamageUp(0).Name:
+                    Debug.Log($"{name} has a damage buff.");
+                    break;
+            }
         }
     }
 

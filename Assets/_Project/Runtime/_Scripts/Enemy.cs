@@ -17,8 +17,10 @@ public class Enemy : Entity, IDamageable
         }
     }
 
-    public void TakeDamage(float damage, params StatusEffect[] statusEffects)
+    public override void TakeDamage(float damage)
     {
+        base.TakeDamage(damage);
+        
         Debug.Log($"{name} took {damage} damage.");
 
         var spriteRenderer = GetComponent<SpriteRenderer>();

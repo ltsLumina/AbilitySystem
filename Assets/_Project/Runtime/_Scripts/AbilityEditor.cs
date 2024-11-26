@@ -3,6 +3,7 @@
 #region
 using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
@@ -25,6 +26,7 @@ public class AbilityEditor : Editor
     SerializedProperty damageType;
     SerializedProperty damage;
     SerializedProperty duration;
+    SerializedProperty effects;
 
     #region Properties
     static Player player => FindAnyObjectByType<Player>();
@@ -86,12 +88,14 @@ public class AbilityEditor : Editor
         damageType = serializedObject.FindProperty("damageType");
         damage = serializedObject.FindProperty("damage");
         duration = serializedObject.FindProperty("duration");
+        effects = serializedObject.FindProperty("effects");
     }
 
     bool showInfo = true;
     bool showProperties = true;
     bool showAdditional;
     bool showTextures;
+    int selectedEffect;
 
     public override void OnInspectorGUI()
     {
@@ -191,6 +195,60 @@ public class AbilityEditor : Editor
                         EditorGUILayout.LabelField(dotInfoContent, EditorStyles.centeredGreyMiniLabel);
 
                         if (damagePerTick > 2.75) EditorGUILayout.HelpBox("This DoT deals a considerable amount of damage." + " \nConsider reducing the damage per cycle or the number of cycles.", MessageType.Warning);
+
+                        if (effects.arraySize == 0) EditorGUILayout.HelpBox("A DoT ability must apply a \"Damage Over Time\" status effect!", MessageType.Error);
+                    }
+
+                    EditorGUILayout.EndFoldoutHeaderGroup();
+
+                    GUILayout.Space(10);
+                    
+                    var statusEffects = Enum.GetValues(typeof(StatusEffect.Effect.Effects)).Cast<StatusEffect.Effect.Effects>().ToList();
+                    var displayOptions = statusEffects.Select(e => e.ToString()).ToArray();
+                    
+                    using (new EditorGUILayout.HorizontalScope())
+                    {
+                        selectedEffect = EditorGUILayout.Popup("Add Status Effect", selectedEffect, displayOptions);
+
+                        using (new EditorGUI.DisabledScope(selectedEffect == 0))
+                        {
+                            if (GUILayout.Button("Add", GUILayout.Width(50)))
+                            {
+                                var effectTemplate = StatusEffect.Effect.GetEffect(statusEffects[selectedEffect]);
+                                effects.InsertArrayElementAtIndex(effects.arraySize);
+                                var effect = effects.GetArrayElementAtIndex(effects.arraySize - 1);
+                                effect.FindPropertyRelative("name").stringValue = effectTemplate.Name;
+                                effect.FindPropertyRelative("duration").intValue = effectTemplate.Duration;
+                                effect.FindPropertyRelative("description").stringValue = effectTemplate.Description;
+                                effect.FindPropertyRelative("time").floatValue = effectTemplate.Duration;
+                                
+                                serializedObject.ApplyModifiedProperties();
+                            }
+                        }
+                    }
+
+                    EditorGUILayout.PropertyField(effects, true);
+                    
+                    if (effects.arraySize > 0)
+                    {
+                        EditorGUILayout.HelpBox("This ability applies status effects.", MessageType.Info);
+                        var infoContent = new GUIContent($"The \"Duration\" field is controlled by the \"Cycles\" field above."); // TODO: THIS
+                        EditorGUILayout.LabelField(infoContent, EditorStyles.centeredGreyMiniLabel);
+
+                        // check if the inspector has been updated
+                        if (serializedObject.ApplyModifiedProperties())
+                        {
+                            for (int i = 0; i < effects.arraySize; i++)
+                            {
+                                var effect = effects.GetArrayElementAtIndex(i);
+                                var time = effect.FindPropertyRelative("time");
+                                var owner = effect.FindPropertyRelative("owner");
+                                
+                                var duration = effect.FindPropertyRelative("duration");
+                                time.floatValue = duration.intValue;
+                                owner.objectReferenceValue = null;
+                            }
+                        }
                     }
                 }
             }

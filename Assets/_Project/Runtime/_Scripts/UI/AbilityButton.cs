@@ -1,5 +1,4 @@
 #region
-using System;
 using System.Collections;
 using System.Globalization;
 using DG.Tweening;

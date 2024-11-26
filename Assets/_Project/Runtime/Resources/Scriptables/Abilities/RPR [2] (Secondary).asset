@@ -24,4 +24,5 @@ MonoBehaviour:
   cooldown: 2.5
   damageType: 0
   damage: 250
-  damageTicks: 0
+  duration: 0
+  effects: []

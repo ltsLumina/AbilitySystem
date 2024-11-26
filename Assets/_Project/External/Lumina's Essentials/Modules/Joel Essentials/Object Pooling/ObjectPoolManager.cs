@@ -22,7 +22,11 @@ public static class ObjectPoolManager
         }
     }
 
-    public static void Reset() => objectPools.Clear();
+    public static void Reset()
+    {
+        objectPools.Clear();
+        ObjectPoolLookup.Clear();
+    }
 
     /// <summary>
     ///     Adds an existing pool to the list of object pools.

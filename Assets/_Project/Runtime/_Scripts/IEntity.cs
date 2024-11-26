@@ -13,5 +13,5 @@
 
 public interface IDamageable
 {
-    void TakeDamage(float damage, params StatusEffect[] statusEffects);
+    void TakeDamage(float damage);
 }

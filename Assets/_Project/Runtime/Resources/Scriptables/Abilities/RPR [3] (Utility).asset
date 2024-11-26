@@ -21,7 +21,14 @@ MonoBehaviour:
   radius: 0
   cooldownType: 1
   castTime: 0
-  cooldown: 8
+  cooldown: 2
   damageType: 1
   damage: 65
   duration: 12
+  effects:
+  - name: Damage Over Time
+    duration: 30
+    description: Deals damage over time.
+    target: 0
+    time: 30
+    owner: {fileID: 0}

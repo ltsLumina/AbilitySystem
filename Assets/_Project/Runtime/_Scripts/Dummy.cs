@@ -1,10 +1,12 @@
 #region
+using System;
 using System.Collections;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 #endregion
 
-public class Dummy : Entity, IDamageable
+public class Dummy : Entity
 {
     [SerializeField] TextMeshProUGUI dpsText;
 
@@ -17,11 +19,10 @@ public class Dummy : Entity, IDamageable
 
     protected override void OnCycle() { }
 
-    public void TakeDamage(float damage, params StatusEffect[] statusEffects)
+    public override void TakeDamage(float damage)
     {
-        // add all status effects to the list
-        foreach (StatusEffect statusEffect in statusEffects) this.statusEffects.Add(statusEffect);
-
+       base.TakeDamage(damage);
+       
         damageTaken += damage;
         timeSinceLastDamage = 0f; // Reset the timer when damage is taken
 
