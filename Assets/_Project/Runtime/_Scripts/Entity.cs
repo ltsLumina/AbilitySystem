@@ -1,8 +1,11 @@
+#region
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
+#endregion
 
 /// <summary>
 ///     <para>
@@ -13,6 +16,9 @@ using Debug = UnityEngine.Debug;
 /// </summary>
 public abstract class Entity : MonoBehaviour, IEntity
 {
+    [SerializeField]
+    protected List<StatusEffect> statusEffects = new ();
+
     public enum ActiveState
     {
         Enabled,

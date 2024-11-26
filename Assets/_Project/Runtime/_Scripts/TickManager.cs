@@ -111,7 +111,11 @@ public class TickManager : Singleton<TickManager>
         }
     }
 
-    void OnDestroy() => OnTick = null;
+    void OnDestroy()
+    {
+        OnTick = null;
+        OnCycle = null;
+    }
 
     public static Task WaitForNextCycle()
     {

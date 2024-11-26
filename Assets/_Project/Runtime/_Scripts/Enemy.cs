@@ -17,7 +17,7 @@ public class Enemy : Entity, IDamageable
         }
     }
 
-    public void TakeDamage(float damage)
+    public void TakeDamage(float damage, params StatusEffect[] statusEffects)
     {
         Debug.Log($"{name} took {damage} damage.");
 

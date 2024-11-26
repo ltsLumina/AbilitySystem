@@ -132,7 +132,7 @@ public class Player : Entity, IDamageable
         Gizmos.DrawWireSphere(point, 0.3f);
     }
 
-    public void TakeDamage(float damage)
+    public void TakeDamage(float damage, params StatusEffect[] statusEffects)
     {
         health -= Mathf.RoundToInt(damage);
         if (health <= 0) Logger.Log("Player has died.");

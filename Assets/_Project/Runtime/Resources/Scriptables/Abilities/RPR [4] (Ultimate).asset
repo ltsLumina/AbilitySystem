@@ -21,7 +21,7 @@ MonoBehaviour:
   radius: 0
   cooldownType: 1
   castTime: 0
-  cooldown: 1.5
+  cooldown: 10
   damageType: 0
   damage: 650
   damageTicks: 0

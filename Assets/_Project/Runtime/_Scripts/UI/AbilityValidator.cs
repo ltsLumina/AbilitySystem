@@ -36,7 +36,7 @@ public class AbilityValidator : MonoBehaviour
     void Start()
     {
         ValidateButtonName();
-        
+
         ValidateAbilityAssetFields();
     }
 
@@ -45,12 +45,13 @@ public class AbilityValidator : MonoBehaviour
     void ValidateAbilityAssetFields()
     {
         var job = FindAnyObjectByType<Player>().Job;
-        
+
         Debug.Assert(job.Abilities.Count != 0, $"No abilities found for {job}.", job);
         Debug.Assert(job.Abilities.Count == 4, $"Not enough abilities for {job}.", job);
 
         // TODO: Uncomment these lines after more work has been done on the Ability class
         var randomNames = NameGenerator.GenerateRandomNames(job.Abilities.Count);
+
         foreach (Ability a in job.Abilities)
         {
             if (string.IsNullOrEmpty(a.Name))
@@ -59,14 +60,15 @@ public class AbilityValidator : MonoBehaviour
                 a.Name = randomNames[randIndex];
                 randomNames.RemoveAt(randIndex);
             }
+
             //Debug.Assert(!string.IsNullOrEmpty(a.Description), $"Ability description is null for {a}.", a);
-            Debug.Assert(a.Icon        != null, $"Ability icon is null for {a}.", a);
-            Debug.Assert(a.Cooldown    > 0, $"Ability cooldown is less than 0 for {a}.", a);
+            Debug.Assert(a.Icon != null, $"Ability icon is null for {a}.", a);
+            Debug.Assert(a.Cooldown > 0, $"Ability cooldown is less than 0 for {a}.", a);
+
             //Debug.Assert(a.Range       > 0, $"Ability range is less than 0 for {a}.", a);
             //Debug.Assert(a.Radius      > 0, $"Ability radius is less than 0 for {a}.", a);
-            Debug.Assert(a.Damage      > 0, $"Ability damage is less than 0 for {a}.", a);
-            if (a.DmgType == Ability.DamageType.DoT) 
-                Debug.Assert(a.DamageTicks > 0, $"Ability damage ticks is less than 0 for {a}.", a);
+            Debug.Assert(a.Damage > 0, $"Ability damage is less than 0 for {a}.", a);
+            if (a.DmgType == Ability.DamageType.DoT) Debug.Assert(a.Duration > 0, $"Ability damage ticks is less than 0 for {a}.", a);
         }
     }
 }

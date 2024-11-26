@@ -4,6 +4,7 @@ using System.Collections;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using DG.Tweening;
 using UnityEngine;
 using static Job;
 #endregion
@@ -19,12 +20,12 @@ public sealed class Ability : ScriptableObject
         Utility,
         Ultimate,
     }
-    
+
     public enum CooldownType
     {
-        GCD, // Weaponskill
+        GCD,     // Weaponskill
         Instant, // Ability (oGCD)
-        Cast, // Spell
+        Cast,    // Spell
     }
 
     [SuppressMessage("ReSharper", "UnusedMember.Global")]
@@ -53,10 +54,10 @@ public sealed class Ability : ScriptableObject
     [Header("Damage Properties")]
     [SerializeField] DamageType damageType;
     [SerializeField] float damage;
-    [SerializeField] int damageTicks;
+    [SerializeField] int duration;
 
     public static event Action OnGlobalCooldown;
-    
+
     public Class Job => job;
     public string Name
     {
@@ -73,7 +74,7 @@ public sealed class Ability : ScriptableObject
     public float Cooldown => cooldown;
     public DamageType DmgType => damageType;
     public float Damage => damage;
-    public int DamageTicks => damageTicks;
+    public int Duration => duration;
 
     static Player _player;
 
@@ -102,31 +103,31 @@ public sealed class Ability : ScriptableObject
     public void Invoke()
     {
         Entity nearestTarget = FindClosestTarget();
-        bool isCast = cooldownType == CooldownType.Cast;
         bool isGCD = cooldownType == CooldownType.GCD;
+        bool isCast = cooldownType == CooldownType.Cast;
         bool isInstant = cooldownType == CooldownType.Instant;
         bool isDoT = damageType == DamageType.DoT;
 
         switch (true)
         {
-            case true when isCast:
-                Logger.Log("Casting...");
-                player.StartCoroutine(Cast(nearestTarget));
+            case true when isDoT: // DoT needs to be handled first as it can be all types of cooldown types.
+                Logger.Log("Applying DoT...");
+                DamageOverTime(nearestTarget);
                 break;
 
             case true when isGCD:
                 Logger.Log("On global cooldown.");
                 GlobalCooldown(nearestTarget);
                 break;
-            
+
+            case true when isCast:
+                Logger.Log("Casting...");
+                player.StartCoroutine(Cast(nearestTarget));
+                break;
+
             case true when isInstant:
                 Logger.Log("Instant cast...");
                 Instant(nearestTarget);
-                break;
-
-            case true when isDoT:
-                Logger.Log("Applying DoT...");
-                DamageOverTime(nearestTarget);
                 break;
         }
 
@@ -146,10 +147,10 @@ public sealed class Ability : ScriptableObject
     #region Casting
     Coroutine castCoroutine;
 
-    IEnumerator Cast(Entity target = null)
+    IEnumerator Cast(Entity target)
     {
         OnGlobalCooldown?.Invoke();
-        
+
         castCoroutine = player.StartCoroutine(CastCoroutine());
         var particle = Instantiate(Resources.Load<GameObject>("PREFABS/Casting Particles")).GetComponent<ParticleSystem>();
         ParticleSystem.MainModule particleMain = particle.main;
@@ -160,12 +161,8 @@ public sealed class Ability : ScriptableObject
 
         if (cancelled) yield break;
 
-        // Cast the ability
-        GameObject effect = Instantiate(Resources.Load<GameObject>("PREFABS/Effect"));
-        effect.transform.position = player.transform.position + player.transform.right * 2.5f;
-        effect.AddComponent<Rigidbody2D>().AddForce(player.transform.right * 500);
+        Effect(target);
 
-        if (!target) yield break;
         target.TryGetComponent(out IDamageable damageable);
         damageable?.TakeDamage(damage);
     }
@@ -196,29 +193,21 @@ public sealed class Ability : ScriptableObject
     }
     #endregion
 
-    void GlobalCooldown(Entity target = null)
+    void GlobalCooldown(Entity target)
     {
         OnGlobalCooldown?.Invoke();
-        
-        // Cast the ability
-        GameObject effect = Instantiate(Resources.Load<GameObject>("PREFABS/Effect"));
-        var player = GameObject.FindGameObjectWithTag("Player");
-        effect.transform.position = player.transform.position + player.transform.right * 2.5f;
-        effect.AddComponent<Rigidbody2D>().AddForce(player.transform.right * 500);
 
-        if (target == null) return;
+        Effect(target);
+
         target.TryGetComponent(out IDamageable damageable);
         damageable?.TakeDamage(damage);
     }
 
-    void Instant(Entity target = null)
+    void Instant(Entity target)
     {
         // Cast the ability
-        GameObject effect = Instantiate(Resources.Load<GameObject>("PREFABS/Effect"));
-        effect.transform.position = player.transform.position + player.transform.right * 2.5f;
-        effect.AddComponent<Rigidbody2D>().AddForce(player.transform.right * 500);
+        Effect(target);
 
-        if (target == null) return;
         target.TryGetComponent(out IDamageable damageable);
         damageable?.TakeDamage(damage);
     }
@@ -226,17 +215,25 @@ public sealed class Ability : ScriptableObject
     void DamageOverTime(Entity target)
     {
         OnGlobalCooldown?.Invoke();
-        
-        target.TryGetComponent(out IDamageable damageable);
-        int cycle = 0;
-        int totalCycles = damageTicks / AbilitySettings.DoT_Rate;
 
+        Effect(target);
+
+        target.TryGetComponent(out IDamageable damageable);
+        damageable?.TakeDamage(damage, new StatusEffect("DoT", 24));
+
+        int cycle = 0;
+        int dotTick = 0;
+        int dotTicks = duration / AbilitySettings.DoT_Rate - 1;
+
+        // TODO: if the DoT is already running when it is re-applied, reset the cycle count.
+        //  Probably will check if they have a debuff applied.
         TickManager.OnCycle += OnCycle;
 
         return;
+
         void OnCycle()
         {
-            if (cycle >= totalCycles)
+            if (dotTick == dotTicks)
             {
                 TickManager.OnCycle -= OnCycle;
                 return;
@@ -244,11 +241,30 @@ public sealed class Ability : ScriptableObject
 
             cycle++;
 
-            if (cycle == 3)
+            if (cycle % AbilitySettings.DoT_Rate == 0) // If DoT_Rate is 3, this will tick on cycle 3, 6, 9, etc.
             {
+                Effect(target, true);
                 damageable?.TakeDamage(damage);
-                cycle = 0;
+                dotTick++;
             }
         }
+    }
+
+    static GameObject GetPooledObject(GameObject prefab) => ObjectPoolManager.FindObjectPool(prefab, 5).GetPooledObject(true);
+
+    static void Effect(Entity target, bool isDoT = false)
+    {
+        var prefab = Resources.Load<GameObject>("PREFABS/Effect");
+        GameObject pooled = GetPooledObject(prefab);
+        pooled.transform.position = target.transform.position;
+        pooled.transform.localScale = isDoT ? new (0.5f, 0.5f) : new (1, 1);
+        var sprite = pooled.GetComponent<SpriteRenderer>();
+
+        sprite.DOFade(0, 1).OnComplete
+        (() =>
+        {
+            sprite.DOFade(1, 0);
+            pooled.SetActive(false);
+        });
     }
 }

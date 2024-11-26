@@ -9,14 +9,16 @@ public class ObjectPool : MonoBehaviour
     [SerializeField] GameObject objectPrefab;
     [SerializeField] int startAmount;
 
-    readonly List<GameObject> pooledObjects = new();
+    readonly List<GameObject> pooledObjects = new ();
 
     void Awake() =>
+
         // Clear the pooledObjects list in case it's not empty. This prevents errors when using Unity Editor Mode options.
         pooledObjects.Clear();
 
     void Start()
     {
+        ObjectPoolManager.Reset();
         ObjectPoolManager.AddExistingPool(this);
         InstantiateStartAmount();
     }
@@ -29,7 +31,7 @@ public class ObjectPool : MonoBehaviour
     public void SetUpPool(GameObject objectPrefab, int startAmount)
     {
         this.objectPrefab = objectPrefab;
-        this.startAmount  = startAmount;
+        this.startAmount = startAmount;
 
         gameObject.name = objectPrefab.name + " (Pool)";
     }

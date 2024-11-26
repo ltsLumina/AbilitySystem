@@ -5,7 +5,7 @@ using UnityEngine;
 
 public static class ObjectPoolManager
 {
-    static List<ObjectPool> objectPools = new();
+    static List<ObjectPool> objectPools = new ();
 
     static Transform objectPoolParent;
     static Transform ObjectPoolParent
@@ -21,6 +21,8 @@ public static class ObjectPoolManager
             return objectPoolParent;
         }
     }
+
+    public static void Reset() => objectPools.Clear();
 
     /// <summary>
     ///     Adds an existing pool to the list of object pools.
@@ -59,7 +61,7 @@ public static class ObjectPoolManager
     }
 
     // Dictionary to cache the object pools by prefab for faster lookup.
-    readonly static Dictionary<GameObject, ObjectPool> ObjectPoolLookup = new();
+    readonly static Dictionary<GameObject, ObjectPool> ObjectPoolLookup = new ();
 
     /// <summary>
     ///     Returns the pool containing the specified object prefab.
@@ -67,7 +69,7 @@ public static class ObjectPoolManager
     /// </summary>
     /// <param name="objectPrefab"></param>
     /// <returns></returns>
-    public static ObjectPool FindObjectPool(GameObject objectPrefab)
+    public static ObjectPool FindObjectPool(GameObject objectPrefab, int startAmount = 20)
     {
         if (objectPrefab == null)
         {
@@ -77,8 +79,8 @@ public static class ObjectPoolManager
 
         if (ObjectPoolLookup.TryGetValue(objectPrefab, out ObjectPool objectPool)) return objectPool;
 
-        Debug.LogWarning("That object is NOT yet pooled! Creating a new pool...");
-        objectPool                     = CreateNewPool(objectPrefab);
+        //Debug.LogWarning("That object is NOT yet pooled! Creating a new pool...");
+        objectPool = CreateNewPool(objectPrefab, startAmount);
         ObjectPoolLookup[objectPrefab] = objectPool;
         return objectPool;
     }
