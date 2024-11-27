@@ -13,16 +13,15 @@ MonoBehaviour:
   m_Name: DEV [3] (Utility)
   m_EditorClassIdentifier: 
   job: 4
-  name: 
+  abilityName: 
   description: 
   icon: {fileID: 0}
   type: 2
   range: 0
   radius: 0
-  usesCastTime: 0
+  cooldownType: 0
   castTime: 0
-  usesGlobalCooldown: 0
-  cooldown: 2.5
+  cooldown: 1.5
   damageType: 0
   damage: 150
-  damageTicks: 0
+  effects: []

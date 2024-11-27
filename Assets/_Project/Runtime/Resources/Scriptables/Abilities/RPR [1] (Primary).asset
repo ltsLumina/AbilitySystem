@@ -24,4 +24,11 @@ MonoBehaviour:
   cooldown: 1.5
   damageType: 0
   damage: 150
-  damageTicks: 0
+  duration: 3
+  effects:
+  - name: Damage Up
+    duration: 10
+    description: Increases damage dealt by 10%.
+    targets: 0
+    time: 10
+    owner: {fileID: 0}

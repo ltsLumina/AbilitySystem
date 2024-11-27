@@ -2,6 +2,7 @@
 #if USING_CUSTOM_INSPECTOR
 #region
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
@@ -25,7 +26,6 @@ public class AbilityEditor : Editor
     SerializedProperty cooldown;
     SerializedProperty damageType;
     SerializedProperty damage;
-    SerializedProperty duration;
     SerializedProperty effects;
 
     #region Properties
@@ -87,7 +87,6 @@ public class AbilityEditor : Editor
         cooldown = serializedObject.FindProperty("cooldown");
         damageType = serializedObject.FindProperty("damageType");
         damage = serializedObject.FindProperty("damage");
-        duration = serializedObject.FindProperty("duration");
         effects = serializedObject.FindProperty("effects");
     }
 
@@ -180,18 +179,18 @@ public class AbilityEditor : Editor
                         EditorGUILayout.HelpBox("This ability deals damage over time.", MessageType.Info);
 
                         damage.floatValue = EditorGUILayout.FloatField("Damage per Cycle", damage.floatValue);
-                        duration.intValue = EditorGUILayout.IntField("Cycles (seconds)", Mathf.Clamp(duration.intValue, 3, 60));
-                        if (duration.intValue < 9) EditorGUILayout.HelpBox("DoT has a very short duration.", MessageType.Warning);
 
                         int tickRate = TickManager.Instance.TickRate;
                         float damagePerTick = damage.floatValue / tickRate;
-                        float totalDamage = damage.floatValue * duration.intValue;
+                        int duration = StatusEffect.Effect.GetEffect(StatusEffect.Effects.DoT).Duration;
+                        float totalDamage = damage.floatValue * duration;
 
                         EditorGUILayout.LabelField("Damage Per Tick", damagePerTick.ToString("F2"));
                         EditorGUILayout.LabelField("Total Damage", totalDamage.ToString("F0"));
-                        EditorGUILayout.LabelField("DoT Ticks", $"{duration.intValue / AbilitySettings.DoT_Rate}");
+                        EditorGUILayout.LabelField("DoT Ticks", $"{duration / AbilitySettings.DoT_Rate}");
 
-                        var dotInfoContent = new GUIContent($"DoTs deal damage every {AbilitySettings.DoT_Rate} tick cycles. Therefore this DoT will deal damage {duration.intValue / AbilitySettings.DoT_Rate} times.");
+                        var dotInfoContent = new GUIContent($"DoTs deal damage every {AbilitySettings.DoT_Rate} tick cycles. Therefore this DoT will deal damage {duration / AbilitySettings.DoT_Rate} times.");
+
                         EditorGUILayout.LabelField(dotInfoContent, EditorStyles.centeredGreyMiniLabel);
 
                         if (damagePerTick > 2.75) EditorGUILayout.HelpBox("This DoT deals a considerable amount of damage." + " \nConsider reducing the damage per cycle or the number of cycles.", MessageType.Warning);
@@ -202,10 +201,10 @@ public class AbilityEditor : Editor
                     EditorGUILayout.EndFoldoutHeaderGroup();
 
                     GUILayout.Space(10);
-                    
-                    var statusEffects = Enum.GetValues(typeof(StatusEffect.Effect.Effects)).Cast<StatusEffect.Effect.Effects>().ToList();
+
+                    List<StatusEffect.Effects> statusEffects = Enum.GetValues(typeof(StatusEffect.Effects)).Cast<StatusEffect.Effects>().ToList();
                     var displayOptions = statusEffects.Select(e => e.ToString()).ToArray();
-                    
+
                     using (new EditorGUILayout.HorizontalScope())
                     {
                         selectedEffect = EditorGUILayout.Popup("Add Status Effect", selectedEffect, displayOptions);
@@ -221,14 +220,14 @@ public class AbilityEditor : Editor
                                 effect.FindPropertyRelative("duration").intValue = effectTemplate.Duration;
                                 effect.FindPropertyRelative("description").stringValue = effectTemplate.Description;
                                 effect.FindPropertyRelative("time").floatValue = effectTemplate.Duration;
-                                
+
                                 serializedObject.ApplyModifiedProperties();
                             }
                         }
                     }
 
                     EditorGUILayout.PropertyField(effects, true);
-                    
+
                     if (effects.arraySize > 0)
                     {
                         EditorGUILayout.HelpBox("This ability applies status effects.", MessageType.Info);
@@ -243,7 +242,7 @@ public class AbilityEditor : Editor
                                 var effect = effects.GetArrayElementAtIndex(i);
                                 var time = effect.FindPropertyRelative("time");
                                 var owner = effect.FindPropertyRelative("owner");
-                                
+
                                 var duration = effect.FindPropertyRelative("duration");
                                 time.floatValue = duration.intValue;
                                 owner.objectReferenceValue = null;

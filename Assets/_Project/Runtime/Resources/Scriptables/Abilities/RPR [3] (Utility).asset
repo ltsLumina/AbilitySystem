@@ -24,11 +24,10 @@ MonoBehaviour:
   cooldown: 2
   damageType: 1
   damage: 65
-  duration: 12
   effects:
-  - name: Damage Over Time
+  - name: DoT
     duration: 30
-    description: Deals damage over time.
-    target: 0
+    description: Deals 5 damage per second.
+    targets: 1
     time: 30
     owner: {fileID: 0}

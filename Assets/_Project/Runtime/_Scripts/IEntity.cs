@@ -5,10 +5,6 @@
     void OnDisable();
 
     void OnDestroy();
-
-    void Destroy();
-
-    void Destroy(float delay);
 }
 
 public interface IDamageable
