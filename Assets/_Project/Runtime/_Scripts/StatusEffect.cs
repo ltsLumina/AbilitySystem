@@ -73,14 +73,14 @@ public class StatusEffect
 
         public struct Debuffs
         {
-            public static Effect DoT => All.DoT;
+            public static Debuff DoT => All.DoT;
         }
 
         public struct All
         {
             public static Buff DamageUp => new ("Damage Up", 10, "Increases damage dealt by 10%.", TargetType.Self, null);
 
-            public static Effect DoT => new ("DoT", 24, "Deals X damage per second.", TargetType.Enemy, null);
+            public static Debuff DoT => new ("DoT", 24, "Deals X damage per second.", TargetType.Enemy, null);
         }
 
         public static Effect GetEffect(Effects statusEffect) => statusEffect switch
@@ -97,13 +97,9 @@ public class StatusEffect
         var effect = new Effect(name, duration, description, targets, caster);
         target.ApplyStatusEffects(effect);
     }
-
-    public void Invoke(Effect overrideEffect, Entity target) =>
-
-        // Effect logic here
-        target.ApplyStatusEffects(overrideEffect);
 }
 
 public static class StatusEffectExtensions
 {
+    
 }

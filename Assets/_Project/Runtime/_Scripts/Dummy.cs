@@ -31,7 +31,7 @@ public class Dummy : Entity
         var spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         spriteRenderer.FlashSprite(Color.red, 0.5f);
 
-        //PopUpDamageNumbers.ShowDamage(damage, transform.position);
+        PopUpDamageNumbers.ShowDamage(damage, transform.position);
     }
 
     IEnumerator CalculateDPS()
