@@ -17,7 +17,7 @@ using Debug = UnityEngine.Debug;
 /// </summary>
 public abstract class Entity : MonoBehaviour, IEntity, IDamageable
 {
-    [SerializeField] protected List<StatusEffect.Effect> statusEffects = new ();
+    [SerializeField] protected List<StatusEffect> statusEffects = new ();
 
     public enum ActiveState
     {
@@ -41,11 +41,11 @@ public abstract class Entity : MonoBehaviour, IEntity, IDamageable
 
     public virtual void TakeDamage(float damage) => Debug.Log($"{name} took {damage} damage.");
 
-    public void ApplyStatusEffects(params StatusEffect.Effect[] effects)
+    public void ApplyStatusEffects(params StatusEffect[] effects)
     {
-        foreach (StatusEffect.Effect effect in effects)
+        foreach (StatusEffect effect in effects)
         {
-            var existingEffect = statusEffects.FirstOrDefault(e => e.Name == effect.Name);
+            var existingEffect = statusEffects.FirstOrDefault(e => e.StatusName == effect.StatusName);
 
             if (existingEffect != null)
             {

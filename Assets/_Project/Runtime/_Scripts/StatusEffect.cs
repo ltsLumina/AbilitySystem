@@ -1,11 +1,14 @@
 ﻿#region
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Lumina.Essentials.Attributes;
+using Unity.Properties;
 using UnityEngine;
+using Object = UnityEngine.Object;
 #endregion
 
-[Serializable]
-public class StatusEffect
+public class StatusEffect : ScriptableObject
 {
     public enum TargetType
     {
@@ -20,16 +23,17 @@ public class StatusEffect
         DoT,
     }
 
-    [SerializeField] [ReadOnly] string name;
+    [SerializeField] [ReadOnly] string statusName;
     [SerializeField] [ReadOnly] int duration;
     [SerializeField] [ReadOnly] string description;
     [SerializeField] [ReadOnly] TargetType targets;
+    [SerializeField] public bool applyEarly;
     [Tooltip("The time remaining for the status effect.")]
     [SerializeField, ReadOnly] float time;
     [Tooltip("The entity that applied the status effect. (Not the entity that the status effect is applied to.)")]
     [SerializeField, ReadOnly] Entity owner;
-
-    public string Name => name;
+    
+    public string StatusName => statusName;
     public int Duration => duration;
     public string Description => description;
     public TargetType Targets => targets;
@@ -40,14 +44,15 @@ public class StatusEffect
     }
     public Entity Owner => owner;
 
-    public override string ToString() => $"{name} ({duration} seconds)";
+    public override string ToString() => $"{statusName} ({duration} seconds)";
 
-    [Serializable]
+    public virtual void ApplyEffect(Entity target) => target.ApplyStatusEffects(this);
+
     public class Effect : StatusEffect
     {
-        public Effect(string name, int duration, string description, TargetType targets, Entity owner)
+        public Effect(string statusName, int duration, string description, TargetType targets, Entity owner)
         {
-            this.name = name;
+            this.statusName = statusName;
             this.duration = duration;
             this.description = description;
             this.targets = targets;
@@ -55,15 +60,15 @@ public class StatusEffect
 
             time = duration;
         }
-
+        
         public class Buff : Effect // Mostly a marker class
         {
-            public Buff(string name, int duration, string description, TargetType targets, Entity owner) : base(name, duration, description, targets, owner) { }
+            public Buff(string statusName, int duration, string description, TargetType targets, Entity owner) : base(statusName, duration, description, targets, owner) { }
         }
 
         public class Debuff : Effect // Mostly a marker class
         {
-            public Debuff(string name, int duration, string description, TargetType targets, Entity owner) : base(name, duration, description, targets, owner) { }
+            public Debuff(string statusName, int duration, string description, TargetType targets, Entity owner) : base(statusName, duration, description, targets, owner) { }
         }
 
         public struct Buffs
@@ -89,17 +94,38 @@ public class StatusEffect
           Effects.DoT      => Debuffs.DoT,
           _                => new ("None", 0, "No effect.", TargetType.Self, null) };
     }
-
-    public void Invoke(Entity target, Entity caster)
-    {
-        // Effect logic here
-
-        var effect = new Effect(name, duration, description, targets, caster);
-        target.ApplyStatusEffects(effect);
-    }
 }
 
 public static class StatusEffectExtensions
 {
+    public static StatusEffect LoadEffect(this StatusEffect statusEffect)
+    {
+        StatusEffect original; 
+        
+        try
+        {
+            original = Resources.Load<DamageUp>($"Scriptables/{statusEffect}");
+        }
+        catch (InvalidPathException pathException)
+        {
+            Logger.LogException(pathException);
+            throw;
+        }
+        StatusEffect effect = Object.Instantiate(original);
+        
+        return effect;
+    }
     
+    public static void ApplyEffects(this List<StatusEffect> effects, Entity target, out List<StatusEffect> appliesEarly)
+    {
+        appliesEarly = new ();
+        
+        foreach (var effect in effects)
+        {
+            if (effect.applyEarly) appliesEarly.Add(effect);
+            else effect.ApplyEffect(target);
+        }
+        
+        // TODO: THIS
+    }
 }

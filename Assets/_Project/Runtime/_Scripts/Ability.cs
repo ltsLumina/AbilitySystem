@@ -193,47 +193,53 @@ public sealed class Ability : ScriptableObject
 
         if (cancelled) yield break;
 
-        Effect(target);
+        VisualEffect(target);
 
         target.TryGetComponent(out IDamageable damageable);
         damageable?.TakeDamage(damage);
-        ApplyEffects(target);
     }
 
     void GlobalCooldown(Entity target)
     {
         OnGlobalCooldown?.Invoke();
+        effects.ApplyEffects(target, out List<StatusEffect> appliesEarly);
 
-        Effect(target);
+        VisualEffect(target);
 
-        target.TryGetComponent(out IDamageable damageable);
-        damageable?.TakeDamage(damage);
-        ApplyEffects(target);
+        if (appliesEarly.Count > 0)
+        {
+            foreach (StatusEffect effect in appliesEarly)
+            {
+                effect.ApplyEffect(target);
+            }
+        }
+        else
+        {
+            target.TryGetComponent(out IDamageable damageable);
+            damageable?.TakeDamage(damage);
+        }
     }
 
     void Instant(Entity target)
     {
-        // Cast the ability
-        Effect(target);
+        VisualEffect(target);
 
         target.TryGetComponent(out IDamageable damageable);
         damageable?.TakeDamage(damage);
-        ApplyEffects(target);
     }
 
     void DamageOverTime(Entity target)
     {
         OnGlobalCooldown?.Invoke();
 
-        Effect(target);
+        VisualEffect(target);
 
         target.TryGetComponent(out IDamageable damageable);
         damageable?.TakeDamage(damage);
-        ApplyEffects(target);
 
         int cycle = 0;
         int dotTick = 0;
-        int dotTicks = effects.Find(effect => effect.Name == "DoT").Duration / AbilitySettings.DoT_Rate - 1;
+        int dotTicks = effects.Find(effect => effect.StatusName == "DoT").Duration / AbilitySettings.DoT_Rate - 1;
 
         // TODO: if the DoT is already running when it is re-applied, reset the cycle count.
         //  Probably will check if they have a debuff applied.
@@ -253,7 +259,7 @@ public sealed class Ability : ScriptableObject
 
             if (cycle % AbilitySettings.DoT_Rate == 0) // If DoT_Rate is 3, this will tick on cycle 3, 6, 9, etc.
             {
-                Effect(target, true);
+                VisualEffect(target, true);
                 damageable?.TakeDamage(damage);
                 dotTick++;
             }
@@ -262,7 +268,7 @@ public sealed class Ability : ScriptableObject
 
     static GameObject GetPooledObject(GameObject prefab) => ObjectPoolManager.FindObjectPool(prefab, 5).GetPooledObject(true);
 
-    static void Effect(Entity target, bool isDoT = false)
+    static void VisualEffect(Entity target, bool isDoT = false)
     {
         var prefab = Resources.Load<GameObject>("PREFABS/Effect");
         GameObject pooled = GetPooledObject(prefab);
@@ -276,16 +282,5 @@ public sealed class Ability : ScriptableObject
             sprite.DOFade(1, 0);
             pooled.SetActive(false);
         });
-    }
-
-    void ApplyEffects(Entity nearestTarget)
-    {
-        if (effects.Count <= 0) return;
-
-        foreach (StatusEffect effect in effects)
-        {
-            Entity target = effect.Targets == StatusEffect.TargetType.Self ? player : nearestTarget;
-            effect.Invoke(target, player);
-        }
     }
 }

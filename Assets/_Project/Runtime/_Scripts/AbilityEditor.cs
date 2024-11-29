@@ -216,7 +216,7 @@ public class AbilityEditor : Editor
                                 var effectTemplate = StatusEffect.Effect.GetEffect(statusEffects[selectedEffect]);
                                 effects.InsertArrayElementAtIndex(effects.arraySize);
                                 var effect = effects.GetArrayElementAtIndex(effects.arraySize - 1);
-                                effect.FindPropertyRelative("name").stringValue = effectTemplate.Name;
+                                effect.FindPropertyRelative("statusName").stringValue = effectTemplate.StatusName;
                                 effect.FindPropertyRelative("duration").intValue = effectTemplate.Duration;
                                 effect.FindPropertyRelative("description").stringValue = effectTemplate.Description;
                                 effect.FindPropertyRelative("time").floatValue = effectTemplate.Duration;
