@@ -147,8 +147,7 @@ public sealed class Ability : ScriptableObject
     }
 
     void OnDisable() // Won't be called with "Disable Domain Reload" enabled.
-    {
-    }
+    { }
 
     #region Casting
     Coroutine castCoroutine;
@@ -193,8 +192,6 @@ public sealed class Ability : ScriptableObject
 
         if (cancelled) yield break;
 
-        VisualEffect(target);
-
         target.TryGetComponent(out IDamageable damageable);
         damageable?.TakeDamage(damage);
     }
@@ -202,28 +199,18 @@ public sealed class Ability : ScriptableObject
     void GlobalCooldown(Entity target)
     {
         OnGlobalCooldown?.Invoke();
-        effects.ApplyEffects(target, out List<StatusEffect> appliesEarly);
 
-        VisualEffect(target);
+        (List<StatusEffect> early, List<StatusEffect> late) = effects.Load();
+        
+        target.TryGetComponent(out IDamageable enemy);
 
-        if (appliesEarly.Count > 0)
-        {
-            foreach (StatusEffect effect in appliesEarly)
-            {
-                effect.ApplyEffect(target);
-            }
-        }
-        else
-        {
-            target.TryGetComponent(out IDamageable damageable);
-            damageable?.TakeDamage(damage);
-        }
+        if (early.Count > 0) early.Apply(target);
+        enemy?.TakeDamage(damage);
+        if (late.Count > 0) late.Apply(target);
     }
 
     void Instant(Entity target)
     {
-        VisualEffect(target);
-
         target.TryGetComponent(out IDamageable damageable);
         damageable?.TakeDamage(damage);
     }
@@ -231,8 +218,6 @@ public sealed class Ability : ScriptableObject
     void DamageOverTime(Entity target)
     {
         OnGlobalCooldown?.Invoke();
-
-        VisualEffect(target);
 
         target.TryGetComponent(out IDamageable damageable);
         damageable?.TakeDamage(damage);
@@ -246,7 +231,6 @@ public sealed class Ability : ScriptableObject
         TickManager.OnCycle += OnCycle;
 
         return;
-
         void OnCycle()
         {
             if (dotTick == dotTicks)
@@ -259,28 +243,9 @@ public sealed class Ability : ScriptableObject
 
             if (cycle % AbilitySettings.DoT_Rate == 0) // If DoT_Rate is 3, this will tick on cycle 3, 6, 9, etc.
             {
-                VisualEffect(target, true);
                 damageable?.TakeDamage(damage);
                 dotTick++;
             }
         }
-    }
-
-    static GameObject GetPooledObject(GameObject prefab) => ObjectPoolManager.FindObjectPool(prefab, 5).GetPooledObject(true);
-
-    static void VisualEffect(Entity target, bool isDoT = false)
-    {
-        var prefab = Resources.Load<GameObject>("PREFABS/Effect");
-        GameObject pooled = GetPooledObject(prefab);
-        pooled.transform.position = target.transform.position;
-        pooled.transform.localScale = isDoT ? new (0.5f, 0.5f) : new (1, 1);
-        var sprite = pooled.GetComponent<SpriteRenderer>();
-
-        sprite.DOFade(0, 1).OnComplete
-        (() =>
-        {
-            sprite.DOFade(1, 0);
-            pooled.SetActive(false);
-        });
     }
 }

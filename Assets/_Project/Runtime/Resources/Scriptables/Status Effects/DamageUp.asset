@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 339a505c807b435ab6cf0d3bc7df7839, type: 3}
   m_Name: DamageUp
   m_EditorClassIdentifier: 
-  statusName: 
-  duration: 0
+  statusName: Damage Up
+  duration: 30
   description: 
   targets: 0
-  time: 0
+  appliesEarly: 0
+  time: -0.018983595
   owner: {fileID: 0}

@@ -41,18 +41,18 @@ public abstract class Entity : MonoBehaviour, IEntity, IDamageable
 
     public virtual void TakeDamage(float damage) => Debug.Log($"{name} took {damage} damage.");
 
-    public void ApplyStatusEffects(params StatusEffect[] effects)
+    public void ApplyStatusEffects(StatusEffect effect)
     {
-        foreach (StatusEffect effect in effects)
-        {
-            var existingEffect = statusEffects.FirstOrDefault(e => e.StatusName == effect.StatusName);
+        var existingEffect = statusEffects.FirstOrDefault(e => e.StatusName == effect.StatusName);
 
-            if (existingEffect != null)
-            {
-                if (existingEffect.Owner != effect.Owner) statusEffects.Add(effect);
-                else existingEffect.Time = effect.Duration;
-            }
-            else { statusEffects.Add(effect); }
+        if (existingEffect)
+        {
+            if (existingEffect.Caster != effect.Caster) statusEffects.Add(effect);
+            else existingEffect.Time = effect.Duration;
+        }
+        else
+        {
+            statusEffects.Add(effect); 
         }
     }
 
@@ -107,7 +107,7 @@ public abstract class Entity : MonoBehaviour, IEntity, IDamageable
 
     void Update()
     {
-        foreach (StatusEffect.Effect effect in statusEffects.ToList())
+        foreach (StatusEffect effect in statusEffects.ToList())
         {
             effect.Time -= Time.deltaTime;
             if (effect.Time <= 0) statusEffects.Remove(effect);
