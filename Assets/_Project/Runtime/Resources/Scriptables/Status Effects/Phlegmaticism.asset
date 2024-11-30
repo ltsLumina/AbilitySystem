@@ -9,13 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5d6f089abd8663b46b4d426c9c3bbaf9, type: 3}
-  m_Name: Drakes Bane
+  m_Script: {fileID: 11500000, guid: 0e243aabec6d32a42a52bdc6ef8b7a85, type: 3}
+  m_Name: Phlegmaticism
   m_EditorClassIdentifier: 
-  statusName: Drakes Bane
-  description: Lowers target physical damage dealt by 10%.
-  duration: 30
-  target: 2
-  timing: 1
+  statusName: Phlegmaticism
+  description: Cast a divine veil around yourself and your allies, protecting everyone
+    from one instance of damage.
+  duration: 12
+  target: 5
+  timing: 0
   time: 0
   caster: {fileID: 0}

@@ -1,10 +1,10 @@
-public class DrakesBane : StatusEffect.Debuff
+public class DrakesBane : Debuff
 {
-	protected override void Reset()
+	public override void Reset()
 	{
 		statusName = "Drakes Bane";
 		description = "Lowers target physical damage dealt by 10%.";
-		duration = 12;
+		duration = 30;
 		target = Target.Enemy;
 		timing = Timing.Postfix;
 	}

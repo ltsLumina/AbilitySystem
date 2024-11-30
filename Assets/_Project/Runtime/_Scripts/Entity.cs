@@ -17,7 +17,9 @@ using Debug = UnityEngine.Debug;
 /// </summary>
 public abstract class Entity : MonoBehaviour, IEntity, IDamageable
 {
-	[SerializeField] protected List<StatusEffect> statusEffects = new ();
+	public Modifiers Modifiers { get; set; } = new ();
+
+	[SerializeField] List<StatusEffect> statusEffects = new ();
 
 	#region Events
 	public event Action<Entity> OnEntityEnable;
@@ -33,8 +35,10 @@ public abstract class Entity : MonoBehaviour, IEntity, IDamageable
 
 	public virtual void TakeDamage(float damage) => Debug.Log($"{name} took {damage} damage.");
 
-	public void ApplyStatusEffects(StatusEffect effect)
+	public void AddStatusEffect(StatusEffect effect)
 	{
+		effect.OnDecayed += e => statusEffects.Remove(e);
+
 		StatusEffect existingEffect = statusEffects.FirstOrDefault(e => e.StatusName == effect.StatusName);
 
 		if (existingEffect)
@@ -98,4 +102,11 @@ public abstract class Entity : MonoBehaviour, IEntity, IDamageable
 	{
 		if (!other.gameObject.CompareTag("Player")) Debug.Log($"{name} collided with {other.gameObject.name}.");
 	}
+}
+
+public struct Modifiers
+{
+	public Modifiers(float damageMod) { DamageMod = 1; }
+
+	public float DamageMod { get; set; }
 }

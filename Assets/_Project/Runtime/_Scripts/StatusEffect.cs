@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using DG.Tweening;
+using JetBrains.Annotations;
 using Lumina.Essentials.Attributes;
 using Unity.Properties;
 using UnityEditor;
@@ -15,10 +16,12 @@ using Object = UnityEngine.Object;
 public abstract class StatusEffect : ScriptableObject
 {
 	[SuppressMessage("ReSharper", "UnusedMember.Global")]
+	[Flags]
 	protected enum Target
 	{
-		Self,
-		Enemy,
+		Self = 1,
+		Enemy = 2,
+		Ally = 4,
 	}
 
 	public enum Timing
@@ -28,6 +31,7 @@ public abstract class StatusEffect : ScriptableObject
 	}
 
 	[SerializeField] protected string statusName;
+	[TextArea, UsedImplicitly]
 	[SerializeField] protected string description;
 	[SerializeField] protected int duration;
 	[SerializeField] protected Target target;
@@ -59,27 +63,43 @@ public abstract class StatusEffect : ScriptableObject
 
 	protected Player player => FindAnyObjectByType<Player>();
 
+	/// <summary>
+	///     The entity that the status effect is applied to.
+	/// </summary>
+	protected Entity entity { get; private set; }
+
 	#region Base
-	public virtual void Invoke(Entity entityTarget)
+	/// <summary>
+	/// </summary>
+	/// <remarks>The base method for invoking a status effect must always be called in the derived class.</remarks>
+	/// <param name="entityTarget"></param>
+	public void Invoke(Entity entityTarget)
 	{
 		// set the target to the player if the target is self
 		if (target == Target.Self) entityTarget = player;
 
 		VisualEffect(entityTarget);
-		entityTarget.ApplyStatusEffects(this);
+		entityTarget.AddStatusEffect(this);
 
-		Debug.Log($"Applied {this} to {entityTarget}!");
+		entity = entityTarget;
+		OnInvoke();
+
+		Logger.Log($"Applied {this} to {entityTarget}");
 	}
 
-	protected Coroutine decayCoroutine;
+	Coroutine decayCoroutine;
 
-	protected virtual void Awake() => OnInstantiated += effect =>
+	void Awake() => OnInstantiated += effect =>
 	{
 		effect.Time = effect.Duration;
 		effect.decayCoroutine ??= CoroutineHelper.StartCoroutine(effect.Decay());
 	};
 
-	protected virtual IEnumerator Decay()
+	/// <summary>
+	///     Coroutine for the status effect to decay over time.
+	/// </summary>
+	/// <returns></returns>
+	IEnumerator Decay()
 	{
 		while (Time > 0)
 		{
@@ -87,11 +107,22 @@ public abstract class StatusEffect : ScriptableObject
 			yield return null;
 		}
 
+		OnDecay();
+		OnDecayed?.Invoke(this);
+
 		Destroy(this);
 		decayCoroutine = null;
 	}
 
-	protected virtual void Reset()
+	/// <summary>
+	///     Callback for when a status effect has decayed.
+	/// </summary>
+	protected virtual void OnDecay() { }
+	public event Action<StatusEffect> OnDecayed;
+
+	protected virtual void OnInvoke() { }
+
+	public virtual void Reset()
 	{
 		statusName = "$NAME";
 		description = "$DESCRIPTION";
@@ -99,15 +130,38 @@ public abstract class StatusEffect : ScriptableObject
 		target = Target.Self;
 		timing = Timing.Postfix;
 	}
-	#endregion
 
-	#region Effects
-	public abstract class Buff : StatusEffect // Mostly a marker class
+	protected void DamageOverTime(Entity entityTarget, float damage)
 	{
-	}
+		entityTarget.TryGetComponent(out IDamageable damageable);
+		damageable?.TakeDamage(damage);
 
-	public abstract class Debuff : StatusEffect // Mostly a marker class
-	{
+		int cycle = 0;
+		int dotTick = 0;
+		int dotTicks = duration / AbilitySettings.DoT_Rate - 1;
+
+		// TODO: if the DoT is already running when it is re-applied, reset the cycle count.
+		//  Probably will check if they have a debuff applied.
+		TickManager.OnCycle += OnCycle;
+
+		return;
+
+		void OnCycle()
+		{
+			if (dotTick == dotTicks)
+			{
+				TickManager.OnCycle -= OnCycle;
+				return;
+			}
+
+			cycle++;
+
+			if (cycle % AbilitySettings.DoT_Rate == 0) // If DoT_Rate is 3, this will tick on cycle 3, 6, 9, etc.
+			{
+				damageable?.TakeDamage(damage);
+				dotTick++;
+			}
+		}
 	}
 	#endregion
 
@@ -145,6 +199,16 @@ public abstract class StatusEffect : ScriptableObject
 	}
 	#endregion
 }
+
+#region Effects
+public abstract class Buff : StatusEffect // Just a marker class
+{
+}
+
+public abstract class Debuff : StatusEffect // Just a marker class
+{
+}
+#endregion
 
 [CustomEditor(typeof(StatusEffect), true)]
 public class StatusEffectEditor : Editor

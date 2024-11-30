@@ -1,7 +1,6 @@
 ﻿#region
 using System;
 using System.IO;
-using System.Text;
 using UnityEditor;
 using UnityEngine;
 #endregion
@@ -9,45 +8,34 @@ using UnityEngine;
 public static class ScriptWriter
 {
 	// Directory where the generated .cs scripts will be saved
-	const string savePath = "Assets/_Project/Runtime/_Scripts/Status Effects/";
+	const string savePath = AbilitySettings.FullPaths.STATUS_EFFECTS_CS;
 
-	// Function to create the .cs script for a given buff
+	// Function to create or update the .cs script for a given buff
 	public static void WriteScript(string name, string description, string type, string duration, string target, string timing)
 	{
-		// Experimental Script template
-		string scriptTemplateFile = Resources.Load<TextAsset>("TemplateStatusEffect").text;
+		// Load the template for the Reset() method
+		string resetMethodTemplate = @"
+    public override void Reset()
+    {
+        statusName = ""$NICE_NAME"";
+        description = ""$DESCRIPTION"";
+        duration = $DURATION;
+        target = $TARGET;
+        timing = $TIMING;
+    }";
 
-		// Use StringBuilder for efficient string manipulation
-		StringBuilder scriptContent = new (scriptTemplateFile);
-
-		// Perform replacements in a specific order
-
-		// Make name a valid class name (no spaces)
-		name = name.Replace(" ", string.Empty);
-		scriptContent.Replace("$NAME", name);
-
-		// Nicify name for the statusName field
-		scriptContent.Replace("$NICE_NAME", ObjectNames.NicifyVariableName(name));
-
-		// Prepend the type with "StatusEffect" to include the base class
-		type = "StatusEffect." + type;
-		scriptContent.Replace("$TYPE", type);
-
-		// Replace semicolons with commas in the description (semicolons are used instead of commas in the CSV)
+		// Replace placeholders in the Reset() template
+		name = name.Replace(" ", string.Empty); // Ensure valid class name
 		description = description.Replace(";", ",");
-		scriptContent.Replace("$DESCRIPTION", description);
-
-		// strip the seconds from the duration
 		duration = duration.Contains(" seconds") ? duration.Replace(" seconds", string.Empty) : duration;
-		scriptContent.Replace("$DURATION", duration);
 
-		// Prepend the target with "TargetType." to match the enum in the base class
-		target = "Target." + target;
-		scriptContent.Replace("$TARGET", target);
+		// replace quotes with empty string
+		target = target.Replace("\"", string.Empty);
 
-		// Convert the timing to the enum value (check if timing contains "Pre" or "Post")
 		timing = timing.Contains("Pre") ? "Timing.Prefix" : "Timing.Postfix";
-		scriptContent.Replace("$TIMING", timing);
+
+		resetMethodTemplate = resetMethodTemplate.Replace("$NICE_NAME", ObjectNames.NicifyVariableName(name)).Replace("$DESCRIPTION", description).Replace("$DURATION", duration).Replace("$TARGET", target).Replace
+				("$TIMING", timing);
 
 		// Ensure the directory exists
 		if (!Directory.Exists(savePath)) Directory.CreateDirectory(savePath);
@@ -55,38 +43,97 @@ public static class ScriptWriter
 		// Define the script file path
 		string filePath = Path.Combine(savePath, name + ".cs");
 
-		// Write the script to the specified file path
-		File.WriteAllText(filePath, scriptContent.ToString());
+		string scriptContent;
+
+		if (File.Exists(filePath))
+		{
+			// Read the existing script
+			scriptContent = File.ReadAllText(filePath);
+
+			// Replace only the Reset() method
+			int startIndex = scriptContent.IndexOf("protected override void Reset()", StringComparison.Ordinal);
+
+			if (startIndex >= 0)
+			{
+				int endIndex = scriptContent.IndexOf("}", startIndex, StringComparison.Ordinal) + 1; // Find the closing brace of Reset()
+				scriptContent = scriptContent.Remove(startIndex, endIndex - startIndex).Insert(startIndex, resetMethodTemplate);
+			}
+		}
+		else
+		{
+			// Create a new script if it doesn't exist
+			string classTemplate = $@"
+using UnityEngine;
+
+public class {name} : {type}
+{{
+    {resetMethodTemplate}
+}}";
+
+			scriptContent = classTemplate;
+		}
+
+		// Write the updated script to the file
+		File.WriteAllText(filePath, scriptContent);
 
 		// Refresh the AssetDatabase to ensure the new scripts show up in the editor
 		AssetDatabase.ImportAsset(filePath);
 		AssetDatabase.Refresh();
-
-		// After importing, create the ScriptableObject instance
-		CreateScriptableObject(name);
 	}
 
-	static void CreateScriptableObject(string name)
+	public class StatusEffectAssetPostprocessor : AssetPostprocessor
 	{
-		// Get the type of the ScriptableObject by reflection after the script has been compiled
-		var scriptType = Type.GetType(name);
-
-		if (scriptType == null)
+		static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
 		{
-			Debug.LogError($"Failed to find type for {name}. Make sure the script compiles correctly.");
-			return;
+			// Create the ScriptableObject instance for each imported script
+			foreach (string assetPath in importedAssets)
+			{
+				// Only proceed if the imported asset is in the "_Scripts/Status Effects" directory
+				if (!assetPath.Contains("_Scripts/Status Effects")) continue;
+
+				if (assetPath.Contains(".cs"))
+				{
+					string name = Path.GetFileNameWithoutExtension(assetPath);
+					CreateScriptableObject(name);
+				}
+			}
 		}
 
-		// Create an instance of the ScriptableObject
-		var instance = ScriptableObject.CreateInstance(scriptType);
+		static void CreateScriptableObject(string name)
+		{
+			string formattedName = ObjectNames.NicifyVariableName(name);
 
-		// Define where to save the ScriptableObject asset
-		string assetPath = $"Assets/_Project/Runtime/Resources/Scriptables/Status Effects/{name}.asset";
+			// Define the path where the ScriptableObject asset should be saved
+			string assetPath = $"Assets/_Project/Runtime/Resources/Scriptables/Status Effects/{name}.asset";
+			string checkPath = $"Assets/_Project/Runtime/Resources/Scriptables/Status Effects/{formattedName}.asset";
 
-		// Save the ScriptableObject asset to disk
-		AssetDatabase.CreateAsset(instance, assetPath);
-		AssetDatabase.RenameAsset(assetPath, ObjectNames.NicifyVariableName(name));
-		AssetDatabase.SaveAssets();
-		AssetDatabase.Refresh();
+			// Check if the asset already exists by name
+			var existingAsset = AssetDatabase.LoadAssetAtPath<StatusEffect>(checkPath);
+
+			if (existingAsset != null)
+			{
+				existingAsset.Reset(); // Update the values in the inspector.
+				Logger.Log($"StatusEffect {name} already exists at {assetPath}. Skipping creation.");
+				return;
+			}
+
+			// Get the type of the ScriptableObject by reflection after the script has been compiled
+			var scriptType = Type.GetType(name);
+
+			if (scriptType == null)
+			{
+				Logger.LogError($"Failed to find type for {name}. Make sure the script compiles correctly.");
+				return;
+			}
+
+			// Create an instance of the ScriptableObject
+			var instance = ScriptableObject.CreateInstance(scriptType);
+
+			// Save the ScriptableObject asset to disk
+			AssetDatabase.CreateAsset(instance, assetPath);
+			AssetDatabase.RenameAsset(assetPath, ObjectNames.NicifyVariableName(name));
+			AssetDatabase.SaveAssets();
+			AssetDatabase.Refresh();
+		}
 	}
 }

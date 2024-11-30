@@ -1,4 +1,2 @@
-Name        , Description                                                , Type  , Duration  , Target, Timing
-Dragon Sight, Grants Dragon Sight to self; increasing damage dealt by 10%, Buff  , 24 seconds, Self  , Pre
-Chaos Spring, Deals unaspected damage over time.                         , Debuff, 30 seconds, Enemy , Post
-Drakes Bane , Lowers target physical damage dealt by 10%.                , Debuff, 12 seconds, Enemy , Post
+Name         , Description                                                                     , Type  , Duration, Target      , Timing
+Dragon Sight , Grants Dragon Sight to self; increasing damage dealt by 10%                     , Buff  , 24      , "Self; Ally", Prefix

@@ -1,6 +1,10 @@
-public class DragonSight : StatusEffect.Buff
+#region
+using UnityEngine;
+#endregion
+
+public class DragonSight : Buff
 {
-	protected override void Reset()
+	public override void Reset()
 	{
 		statusName = "Dragon Sight";
 		description = "Grants Dragon Sight to self, increasing damage dealt by 10%";
@@ -9,9 +13,16 @@ public class DragonSight : StatusEffect.Buff
 		timing = Timing.Prefix;
 	}
 
-	public override void Invoke(Entity entityTarget)
+	protected override void OnInvoke() => Modify();
+
+	protected override void OnDecay() => Modify(true);
+
+	void Modify(bool remove = false)
 	{
-		base.Invoke(entityTarget);
-		Ability.damageMod = 1.5f;
+		Modifiers modifiers = entity.Modifiers;
+		modifiers.DamageMod = remove ? 1f : 1.1f;
+		entity.Modifiers = modifiers;
+
+		Debug.Log($"{entity.name} has {(remove ? "lost" : "gained")} Dragon Sight.");
 	}
 }

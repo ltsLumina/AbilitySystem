@@ -15,7 +15,7 @@ MonoBehaviour:
   statusName: Chaos Spring
   description: Deals unaspected damage over time.
   duration: 30
-  target: 1
+  target: 2
   timing: 1
   time: 0
   caster: {fileID: 0}

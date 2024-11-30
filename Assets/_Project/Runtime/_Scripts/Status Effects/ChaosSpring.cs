@@ -1,6 +1,6 @@
-public class ChaosSpring : StatusEffect.Debuff
+public class ChaosSpring : Debuff
 {
-	protected override void Reset()
+	public override void Reset()
 	{
 		statusName = "Chaos Spring";
 		description = "Deals unaspected damage over time.";

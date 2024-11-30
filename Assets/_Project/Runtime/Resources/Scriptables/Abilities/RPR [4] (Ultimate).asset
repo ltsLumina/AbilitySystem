@@ -22,6 +22,6 @@ MonoBehaviour:
   cooldownType: 1
   castTime: 0
   cooldown: 10
-  damageType: 0
   damage: 650
-  damageTicks: 0
+  effects:
+  - {fileID: 11400000, guid: 1aa2ef381d8732c4881ee1407acaa7a6, type: 2}

@@ -2,7 +2,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using UnityEngine;
@@ -28,14 +27,6 @@ public sealed class Ability : ScriptableObject
 		Cast,    // Spell
 	}
 
-	[SuppressMessage("ReSharper", "UnusedMember.Global")]
-	public enum DamageType
-	{
-		Direct,
-		[Description("DoT")] // Unity will "nicify" this to "Do T" unless I use the Description attribute.
-		DoT,
-	}
-
 	[Header("Ability Info")]
 
 	[SerializeField] Class job;
@@ -55,7 +46,6 @@ public sealed class Ability : ScriptableObject
 
 	[Header("Damage Properties")]
 
-	[SerializeField] DamageType damageType;
 	[SerializeField] float damage;
 
 	[Tooltip("The status effects that this ability applies.")]
@@ -76,7 +66,6 @@ public sealed class Ability : ScriptableObject
 	public CooldownType CDType => cooldownType;
 	public float CastTime => castTime;
 	public float Cooldown => cooldown;
-	public DamageType DmgType => damageType;
 	public float Damage => damage;
 
 	static Player _player;
@@ -109,15 +98,9 @@ public sealed class Ability : ScriptableObject
 		bool isGCD = cooldownType == CooldownType.GCD;
 		bool isCast = cooldownType == CooldownType.Cast;
 		bool isInstant = cooldownType == CooldownType.Instant;
-		bool isDoT = damageType == DamageType.DoT;
 
 		switch (true)
 		{
-			case true when isDoT: // DoT needs to be handled first as it can be all types of cooldown types.
-				Logger.Log("Applying DoT...");
-				DamageOverTime(nearestTarget);
-				break;
-
 			case true when isGCD:
 				Logger.Log("On global cooldown.");
 				GlobalCooldown(nearestTarget);
@@ -194,29 +177,27 @@ public sealed class Ability : ScriptableObject
 
 		if (cancelled) yield break;
 
-		target.TryGetComponent(out IDamageable damageable);
-		damageable?.TakeDamage(damage);
+		ApplyEffects(target);
 	}
-
-	public static float damageMod = 1f; // TODO: this works :)
 
 	void GlobalCooldown(Entity target)
 	{
 		OnGlobalCooldown?.Invoke();
 
+		ApplyEffects(target);
+	}
+
+	void Instant(Entity target) => ApplyEffects(target);
+
+	void ApplyEffects(Entity target)
+	{
 		(List<StatusEffect> prefix, List<StatusEffect> postfix) = effects.Load();
 
 		target.TryGetComponent(out IDamageable enemy);
 
 		if (prefix.Count > 0) prefix.Apply((target, player));
-		enemy?.TakeDamage(damage * damageMod);
+		enemy?.TakeDamage(damage * target.Modifiers.DamageMod);
 		if (postfix.Count > 0) postfix.Apply((target, player));
-	}
-
-	void Instant(Entity target)
-	{
-		target.TryGetComponent(out IDamageable damageable);
-		damageable?.TakeDamage(damage);
 	}
 
 	void DamageOverTime(Entity target)

@@ -1,10 +1,7 @@
 ﻿#define USING_CUSTOM_INSPECTOR
 #if USING_CUSTOM_INSPECTOR
 #region
-using System;
-using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -23,7 +20,6 @@ public class AbilityEditor : Editor
 	SerializedProperty cooldownType;
 	SerializedProperty castTime;
 	SerializedProperty cooldown;
-	SerializedProperty damageType;
 	SerializedProperty damage;
 	SerializedProperty effects;
 
@@ -84,7 +80,6 @@ public class AbilityEditor : Editor
 		cooldownType = serializedObject.FindProperty("cooldownType");
 		castTime = serializedObject.FindProperty("castTime");
 		cooldown = serializedObject.FindProperty("cooldown");
-		damageType = serializedObject.FindProperty("damageType");
 		damage = serializedObject.FindProperty("damage");
 		effects = serializedObject.FindProperty("effects");
 	}
@@ -136,6 +131,7 @@ public class AbilityEditor : Editor
 					EditorGUILayout.PropertyField(type);
 					GUILayout.Label($"Key: {abilityTypeKey}", EditorStyles.centeredGreyMiniLabel);
 
+					damage.floatValue = EditorGUILayout.FloatField("Damage", Mathf.Clamp(damage.floatValue, 0f, 1000));
 					range.floatValue = EditorGUILayout.Slider("Range", range.floatValue, 0f, 25);
 					radius.floatValue = EditorGUILayout.Slider("Radius", radius.floatValue, 0f, 25);
 
@@ -172,36 +168,6 @@ public class AbilityEditor : Editor
 							break;
 					}
 
-					EditorGUILayout.PropertyField(damageType);
-
-					if (damageType.enumValueIndex == 0)
-					{
-						EditorGUILayout.HelpBox("This ability deals direct damage.", MessageType.Info);
-						EditorGUILayout.PropertyField(damage);
-					}
-					else
-					{
-						EditorGUILayout.HelpBox("This ability deals damage over time.", MessageType.Info);
-
-						damage.floatValue = EditorGUILayout.FloatField("Damage per Cycle", damage.floatValue);
-
-						// int tickRate = TickManager.Instance.TickRate;
-						// float damagePerTick = damage.floatValue / tickRate;
-						// float totalDamage = damage.floatValue * duration;
-
-						//  EditorGUILayout.LabelField("Damage Per Tick", damagePerTick.ToString("F2"));
-						//  EditorGUILayout.LabelField("Total Damage", totalDamage.ToString("F0"));
-						//  EditorGUILayout.LabelField("DoT Ticks", $"{duration / AbilitySettings.DoT_Rate}");
-						//
-						// var dotInfoContent = new GUIContent($"DoTs deal damage every {AbilitySettings.DoT_Rate} tick cycles. Therefore this DoT will deal damage {duration / AbilitySettings.DoT_Rate} times.");
-						//
-						// EditorGUILayout.LabelField(dotInfoContent, EditorStyles.centeredGreyMiniLabel);
-						//
-						// if (damagePerTick > 2.75) EditorGUILayout.HelpBox("This DoT deals a considerable amount of damage." + " \nConsider reducing the damage per cycle or the number of cycles.", MessageType.Warning);
-						//
-						if (effects.arraySize == 0) EditorGUILayout.HelpBox("A DoT ability must apply a \"Damage Over Time\" status effect!", MessageType.Error);
-					}
-
 					EditorGUILayout.EndFoldoutHeaderGroup();
 
 					GUILayout.Space(10);
@@ -212,10 +178,15 @@ public class AbilityEditor : Editor
 					string[] displayOptions = statusEffects.Select(e => ObjectNames.NicifyVariableName(e.name)).ToArray();
 					displayOptions = displayOptions.Prepend("Select an Effect").ToArray();
 
-					try { csv = (TextAsset) EditorGUILayout.ObjectField("CSV File", csv, typeof(TextAsset), false); } catch (InvalidCastException)
+					using (new EditorGUILayout.HorizontalScope())
 					{
-						Logger.LogError("The object is not a CSV file.");
-						throw;
+						csv = (TextAsset) EditorGUILayout.ObjectField("CSV File", csv, typeof(TextAsset), false);
+
+						using (new EditorGUI.DisabledScope(Application.internetReachability == NetworkReachability.NotReachable))
+						{
+							GUIContent fetchContent = EditorGUIUtility.IconContent("Download-Available", "Fetch a CSV file from the web.");
+							if (GUILayout.Button(fetchContent, GUILayout.Height(25), GUILayout.Width(50))) csv = CSVParser.FetchCSV();
+						}
 					}
 
 					using (new EditorGUILayout.HorizontalScope())
@@ -223,12 +194,13 @@ public class AbilityEditor : Editor
 						using (new EditorGUI.DisabledScope(!csv || EditorApplication.isCompiling || EditorApplication.isUpdating))
 						{
 							var loadContent = new GUIContent("Load Effects", "Load status effects from a CSV file.");
-							var refreshContent = new GUIContent("Refresh", "Due to Unity jank, you may need to click this button again for the scriptable objects to appear.");
 
-							if (GUILayout.Button(loadStage == 1 ? refreshContent : loadContent, GUILayout.Height(25)))
+							GUILayout.FlexibleSpace();
+
+							if (GUILayout.Button(loadContent, GUILayout.Height(25), GUILayout.Width(270)))
 							{
 								// ReSharper disable once SuggestVarOrType_Elsewhere
-								var effectDataList = CSVParser.Parse((TextAsset) (csv ?? Selection.activeObject));
+								var effectDataList = CSVParser.Parse(csv);
 
 								// Check if the CSV data was valid
 								if (effectDataList != null)
@@ -247,10 +219,10 @@ public class AbilityEditor : Editor
 									loadStage = 0;
 								}
 							}
-						}
 
-						var refreshIcon = new GUIContent(string.Empty, EditorTextures.Refresh);
-						if (GUILayout.Button(refreshIcon, GUILayout.Width(50), GUILayout.Height(25))) loadStage = 0;
+							var refreshIcon = new GUIContent(string.Empty, EditorTextures.All.Refresh);
+							if (GUILayout.Button(refreshIcon, GUILayout.Width(50), GUILayout.Height(25))) loadStage = 0;
+						}
 					}
 
 					using (new EditorGUILayout.HorizontalScope())
@@ -337,41 +309,6 @@ public class AbilityEditor : Editor
 			AssetDatabase.SaveAssets();
 			AssetDatabase.Refresh();
 			ability.name = newName;
-		}
-	}
-
-	[CustomPropertyDrawer(typeof(Ability.DamageType))]
-	public class DamageTypeDrawer : PropertyDrawer
-	{
-		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-		{
-			// Get the enum type
-			Type enumType = fieldInfo.FieldType;
-
-			// Get the enum names and their descriptions
-			string[] enumNames = Enum.GetNames(enumType);
-			string[] enumDescriptions = new string[enumNames.Length];
-
-			for (int i = 0; i < enumNames.Length; i++)
-			{
-				object enumValue = Enum.Parse(enumType, enumNames[i]);
-				enumDescriptions[i] = GetEnumDescription((Enum) enumValue);
-			}
-
-			// Get the current index
-			int currentIndex = property.enumValueIndex;
-			currentIndex = Mathf.Clamp(currentIndex, 0, enumDescriptions.Length - 1);
-
-			// Display the popup with descriptions
-			int newIndex = EditorGUI.Popup(position, label.text, currentIndex, enumDescriptions);
-			if (newIndex != currentIndex) property.enumValueIndex = newIndex;
-		}
-
-		string GetEnumDescription(Enum value)
-		{
-			FieldInfo fieldInfo = value.GetType().GetField(value.ToString());
-			var descriptionAttributes = (DescriptionAttribute[]) fieldInfo.GetCustomAttributes(typeof(DescriptionAttribute), false);
-			return descriptionAttributes.Length > 0 ? descriptionAttributes[0].Description : value.ToString();
 		}
 	}
 }
