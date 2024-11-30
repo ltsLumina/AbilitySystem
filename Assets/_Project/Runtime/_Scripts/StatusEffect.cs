@@ -77,11 +77,11 @@ public abstract class StatusEffect : ScriptableObject
 	{
 		// set the target to the player if the target is self
 		if (target == Target.Self) entityTarget = player;
+		entity = entityTarget;
 
 		VisualEffect(entityTarget);
 		entityTarget.AddStatusEffect(this);
 
-		entity = entityTarget;
 		OnInvoke();
 
 		Logger.Log($"Applied {this} to {entityTarget}");
@@ -288,7 +288,7 @@ public static class StatusEffectExtensions
 	{
 		try
 		{
-			string path = $"Scriptables/Status Effects/{original.name}";
+			string path = $"{AbilitySettings.ResourcePaths.STATUS_EFFECTS}/{original.name}";
 			original = Resources.Load<StatusEffect>(path);
 		} catch (InvalidPathException pathException)
 		{

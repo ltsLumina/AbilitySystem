@@ -19,3 +19,4 @@ MonoBehaviour:
   timing: 1
   time: 0
   caster: {fileID: 0}
+  damage: 65

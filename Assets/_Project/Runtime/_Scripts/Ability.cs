@@ -163,6 +163,13 @@ public sealed class Ability : ScriptableObject
 	}
 	#endregion
 
+	void GlobalCooldown(Entity target)
+	{
+		OnGlobalCooldown?.Invoke();
+
+		ApplyEffects(target);
+	}
+
 	IEnumerator Cast(Entity target)
 	{
 		OnGlobalCooldown?.Invoke();
@@ -180,13 +187,6 @@ public sealed class Ability : ScriptableObject
 		ApplyEffects(target);
 	}
 
-	void GlobalCooldown(Entity target)
-	{
-		OnGlobalCooldown?.Invoke();
-
-		ApplyEffects(target);
-	}
-
 	void Instant(Entity target) => ApplyEffects(target);
 
 	void ApplyEffects(Entity target)
@@ -196,7 +196,7 @@ public sealed class Ability : ScriptableObject
 		target.TryGetComponent(out IDamageable enemy);
 
 		if (prefix.Count > 0) prefix.Apply((target, player));
-		enemy?.TakeDamage(damage * target.Modifiers.DamageMod);
+		enemy?.TakeDamage(damage);
 		if (postfix.Count > 0) postfix.Apply((target, player));
 	}
 

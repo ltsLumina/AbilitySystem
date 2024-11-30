@@ -17,12 +17,5 @@ public class DragonSight : Buff
 
 	protected override void OnDecay() => Modify(true);
 
-	void Modify(bool remove = false)
-	{
-		Modifiers modifiers = entity.Modifiers;
-		modifiers.DamageMod = remove ? 1f : 1.1f;
-		entity.Modifiers = modifiers;
-
-		Debug.Log($"{entity.name} has {(remove ? "lost" : "gained")} Dragon Sight.");
-	}
+	void Modify(bool remove = false) => Debug.Log($"{entity.name} has {(remove ? "lost" : "gained")} Dragon Sight.");
 }

@@ -1,5 +1,11 @@
+#region
+using UnityEngine;
+#endregion
+
 public class ChaosSpring : Debuff
 {
+	[SerializeField] float damage = 65;
+
 	public override void Reset()
 	{
 		statusName = "Chaos Spring";
@@ -8,4 +14,6 @@ public class ChaosSpring : Debuff
 		target = Target.Enemy;
 		timing = Timing.Postfix;
 	}
+
+	protected override void OnInvoke() => DamageOverTime(entity, damage);
 }

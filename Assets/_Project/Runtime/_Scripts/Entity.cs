@@ -17,8 +17,6 @@ using Debug = UnityEngine.Debug;
 /// </summary>
 public abstract class Entity : MonoBehaviour, IEntity, IDamageable
 {
-	public Modifiers Modifiers { get; set; } = new ();
-
 	[SerializeField] List<StatusEffect> statusEffects = new ();
 
 	#region Events
@@ -90,8 +88,6 @@ public abstract class Entity : MonoBehaviour, IEntity, IDamageable
 		}
 	}
 
-	public void Remove(StatusEffect effect) => statusEffects.Remove(effect);
-
 	protected abstract void OnTick();
 
 	protected abstract void OnCycle();
@@ -102,11 +98,4 @@ public abstract class Entity : MonoBehaviour, IEntity, IDamageable
 	{
 		if (!other.gameObject.CompareTag("Player")) Debug.Log($"{name} collided with {other.gameObject.name}.");
 	}
-}
-
-public struct Modifiers
-{
-	public Modifiers(float damageMod) { DamageMod = 1; }
-
-	public float DamageMod { get; set; }
 }
