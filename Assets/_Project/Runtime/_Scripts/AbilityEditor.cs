@@ -14,328 +14,351 @@ using UnityEngine.InputSystem;
 [CustomEditor(typeof(Ability), true)] [CanEditMultipleObjects]
 public class AbilityEditor : Editor
 {
-    SerializedProperty job;
-    SerializedProperty abilityName;
-    SerializedProperty description;
-    SerializedProperty icon;
-    SerializedProperty type;
-    SerializedProperty range;
-    SerializedProperty radius;
-    SerializedProperty cooldownType;
-    SerializedProperty castTime;
-    SerializedProperty cooldown;
-    SerializedProperty damageType;
-    SerializedProperty damage;
-    SerializedProperty effects;
+	SerializedProperty job;
+	SerializedProperty abilityName;
+	SerializedProperty description;
+	SerializedProperty icon;
+	SerializedProperty type;
+	SerializedProperty range;
+	SerializedProperty radius;
+	SerializedProperty cooldownType;
+	SerializedProperty castTime;
+	SerializedProperty cooldown;
+	SerializedProperty damageType;
+	SerializedProperty damage;
+	SerializedProperty effects;
 
-    #region Properties
-    static Player player => FindAnyObjectByType<Player>();
+	#region Properties
+	static Player player => FindAnyObjectByType<Player>();
 
-    /// <summary>
-    ///     Gets the job name based on the ability class enum value.
-    ///     <example> Reaper, Red Mage, Dark Knight, Sage, Developer </example>
-    /// </summary>
-    string jobName => job.enumValueIndex switch
-    { 0 => "Reaper",
-      1 => "Red Mage",
-      2 => "Dark Knight",
-      3 => "Sage",
-      4 => "Developer",
-      _ => "Unknown" };
+	/// <summary>
+	///     Gets the job name based on the ability class enum value.
+	///     <example> Reaper, Red Mage, Dark Knight, Sage, Developer </example>
+	/// </summary>
+	string jobName => job.enumValueIndex switch
+	{ 0 => "Reaper",
+	  1 => "Red Mage",
+	  2 => "Dark Knight",
+	  3 => "Sage",
+	  4 => "Developer",
+	  _ => "Unknown" };
 
-    /// <summary>
-    ///     Gets the job tri-code based on the ability class enum value.
-    ///     <example> RPR, RDM, DRK, SGE, DEV </example>
-    /// </summary>
-    string jobTriCode => job.enumValueIndex switch
-    { 0 => "RPR",
-      1 => "RDM",
-      2 => "DRK",
-      3 => "SGE",
-      4 => "DEV",
-      _ => "Unknown" };
+	/// <summary>
+	///     Gets the job tri-code based on the ability class enum value.
+	///     <example> RPR, RDM, DRK, SGE, DEV </example>
+	/// </summary>
+	string jobTriCode => job.enumValueIndex switch
+	{ 0 => "RPR",
+	  1 => "RDM",
+	  2 => "DRK",
+	  3 => "SGE",
+	  4 => "DEV",
+	  _ => "Unknown" };
 
-    /// <summary>
-    ///     Gets the long version of the ability type based on the ability type enum value.
-    ///     <example> Primary, Secondary, Utility, Ultimate </example>
-    /// </summary>
-    string abilityTypeNoun => type.enumValueIndex switch
-    { 0 => "Primary",
-      1 => "Secondary",
-      2 => "Utility",
-      3 => "Ultimate",
-      _ => "Unknown" };
+	/// <summary>
+	///     Gets the long version of the ability type based on the ability type enum value.
+	///     <example> Primary, Secondary, Utility, Ultimate </example>
+	/// </summary>
+	string abilityTypeNoun => type.enumValueIndex switch
+	{ 0 => "Primary",
+	  1 => "Secondary",
+	  2 => "Utility",
+	  3 => "Ultimate",
+	  _ => "Unknown" };
 
-    /// <summary>
-    ///     Get the short version of the ability type.
-    ///     <example> Q, W, E, R </example>
-    /// </summary>
-    string abilityTypeKey => $"{player.PlayerInput.actions[InputManager.AbilityKeys[type.enumValueIndex]].GetBindingDisplayString()}";
-    #endregion
+	/// <summary>
+	///     Get the short version of the ability type.
+	///     <example> Q, W, E, R </example>
+	/// </summary>
+	string abilityTypeKey => $"{player.PlayerInput.actions[InputManager.AbilityKeys[type.enumValueIndex]].GetBindingDisplayString()}";
+	#endregion
 
-    void OnEnable()
-    {
-        job = serializedObject.FindProperty("job");
-        abilityName = serializedObject.FindProperty("abilityName");
-        description = serializedObject.FindProperty("description");
-        icon = serializedObject.FindProperty("icon");
-        type = serializedObject.FindProperty("type");
-        range = serializedObject.FindProperty("range");
-        radius = serializedObject.FindProperty("radius");
-        cooldownType = serializedObject.FindProperty("cooldownType");
-        castTime = serializedObject.FindProperty("castTime");
-        cooldown = serializedObject.FindProperty("cooldown");
-        damageType = serializedObject.FindProperty("damageType");
-        damage = serializedObject.FindProperty("damage");
-        effects = serializedObject.FindProperty("effects");
-    }
+	void OnEnable()
+	{
+		job = serializedObject.FindProperty("job");
+		abilityName = serializedObject.FindProperty("abilityName");
+		description = serializedObject.FindProperty("description");
+		icon = serializedObject.FindProperty("icon");
+		type = serializedObject.FindProperty("type");
+		range = serializedObject.FindProperty("range");
+		radius = serializedObject.FindProperty("radius");
+		cooldownType = serializedObject.FindProperty("cooldownType");
+		castTime = serializedObject.FindProperty("castTime");
+		cooldown = serializedObject.FindProperty("cooldown");
+		damageType = serializedObject.FindProperty("damageType");
+		damage = serializedObject.FindProperty("damage");
+		effects = serializedObject.FindProperty("effects");
+	}
 
-    bool showInfo = true;
-    bool showProperties = true;
-    bool showAdditional;
-    bool showTextures;
-    int selectedEffect;
+	bool showInfo = true;
+	bool showProperties = true;
+	bool showAdditional;
+	bool showTextures;
+	int selectedEffect;
 
-    public override void OnInspectorGUI()
-    {
-        serializedObject.Update();
+	public override void OnInspectorGUI()
+	{
+		serializedObject.Update();
 
-        var headerButtonStyle = new GUIStyle(GUI.skin.label)
-        { alignment = TextAnchor.MiddleCenter, fontStyle = FontStyle.Bold, fontSize = 14 };
+		var headerButtonStyle = new GUIStyle(GUI.skin.label)
+		{ alignment = TextAnchor.MiddleCenter, fontStyle = FontStyle.Bold, fontSize = 14 };
 
-        using (new GUILayout.HorizontalScope("textField")) { showInfo = EditorGUILayout.BeginFoldoutHeaderGroup(showInfo, "Ability Info", headerButtonStyle); }
+		using (new GUILayout.HorizontalScope("textField")) { showInfo = EditorGUILayout.BeginFoldoutHeaderGroup(showInfo, "Ability Info", headerButtonStyle); }
 
-        {
-            if (showInfo)
-                using (new GUILayout.VerticalScope("box"))
-                {
-                    EditorGUILayout.PropertyField(job);
-                    EditorGUILayout.LabelField(jobName, EditorStyles.centeredGreyMiniLabel);
-                    EditorGUILayout.PropertyField(abilityName);
-                    EditorGUILayout.PropertyField(description);
-                    EditorGUILayout.PropertyField(icon);
-                }
+		{
+			if (showInfo)
+				using (new GUILayout.VerticalScope("box"))
+				{
+					EditorGUILayout.PropertyField(job);
+					EditorGUILayout.LabelField(jobName, EditorStyles.centeredGreyMiniLabel);
+					EditorGUILayout.PropertyField(abilityName);
+					EditorGUILayout.PropertyField(description);
+					EditorGUILayout.PropertyField(icon);
+				}
 
-            EditorGUILayout.EndFoldoutHeaderGroup();
-        }
+			EditorGUILayout.EndFoldoutHeaderGroup();
+		}
 
-        GUILayout.Space(25);
+		GUILayout.Space(25);
 
-        using (new GUILayout.HorizontalScope("textField")) { showProperties = EditorGUILayout.BeginFoldoutHeaderGroup(showProperties, "Ability Properties", headerButtonStyle); }
+		using (new GUILayout.HorizontalScope("textField")) { showProperties = EditorGUILayout.BeginFoldoutHeaderGroup(showProperties, "Ability Properties", headerButtonStyle); }
 
-        {
-            if (showProperties)
-            {
-                using (new GUILayout.VerticalScope("box"))
-                {
-                    EditorGUILayout.PropertyField(type);
-                    GUILayout.Label($"Key: {abilityTypeKey}", EditorStyles.centeredGreyMiniLabel);
+		{
+			if (showProperties)
+			{
+				using (new GUILayout.VerticalScope("box"))
+				{
+					EditorGUILayout.PropertyField(type);
+					GUILayout.Label($"Key: {abilityTypeKey}", EditorStyles.centeredGreyMiniLabel);
 
-                    range.floatValue = EditorGUILayout.Slider("Range", range.floatValue, 0f, 25);
-                    radius.floatValue = EditorGUILayout.Slider("Radius", radius.floatValue, 0f, 25);
+					range.floatValue = EditorGUILayout.Slider("Range", range.floatValue, 0f, 25);
+					radius.floatValue = EditorGUILayout.Slider("Radius", radius.floatValue, 0f, 25);
 
-                    EditorGUILayout.PropertyField(cooldownType, new GUIContent("Cooldown Type", "Does this ability use the global cooldown (GCD & Cast)? Or is it instant?"));
+					EditorGUILayout.PropertyField(cooldownType, new GUIContent("Cooldown Type", "Does this ability use the global cooldown (GCD & Cast)? Or is it instant?"));
 
-                    switch (cooldownType.enumValueIndex)
-                    {
-                        case 0: // GCD
+					switch (cooldownType.enumValueIndex)
+					{
+						case 0: // GCD
 
-                            using (new EditorGUI.DisabledScope(true))
-                            {
-                                EditorGUILayout.PropertyField(cooldown);
-                                cooldown.floatValue = AbilitySettings.GlobalCooldown;
-                            }
+							using (new EditorGUI.DisabledScope(true))
+							{
+								EditorGUILayout.PropertyField(cooldown);
+								cooldown.floatValue = AbilitySettings.GlobalCooldown;
+							}
 
-                            EditorGUILayout.HelpBox("This ability is on the global cooldown.", MessageType.Info);
+							EditorGUILayout.HelpBox("This ability is on the global cooldown.", MessageType.Info);
 
-                            castTime.floatValue = 0;
-                            break;
+							castTime.floatValue = 0;
+							break;
 
-                        case 1: // Instant
-                            EditorGUILayout.PropertyField(cooldown);
-                            EditorGUILayout.HelpBox("This ability is instant and does not use the global cooldown.", MessageType.Info);
+						case 1: // Instant
+							EditorGUILayout.PropertyField(cooldown);
+							EditorGUILayout.HelpBox("This ability is instant and does not use the global cooldown.", MessageType.Info);
 
-                            castTime.floatValue = 0;
-                            break;
+							castTime.floatValue = 0;
+							break;
 
-                        case 2: // Cast
-                            castTime.floatValue = EditorGUILayout.FloatField("Cast Time", Mathf.Clamp(castTime.floatValue, 0f, 5));
-                            EditorGUILayout.HelpBox("This ability uses a cast time.", MessageType.Info);
+						case 2: // Cast
+							castTime.floatValue = EditorGUILayout.FloatField("Cast Time", Mathf.Clamp(castTime.floatValue, 0f, 5));
+							EditorGUILayout.HelpBox("This ability uses a cast time.", MessageType.Info);
 
-                            EditorGUILayout.PropertyField(cooldown);
-                            if (cooldown.floatValue <= 1) EditorGUILayout.HelpBox("This ability has a very short cooldown.", MessageType.Warning);
-                            break;
-                    }
+							EditorGUILayout.PropertyField(cooldown);
+							if (cooldown.floatValue <= 1) EditorGUILayout.HelpBox("This ability has a very short cooldown.", MessageType.Warning);
+							break;
+					}
 
-                    EditorGUILayout.PropertyField(damageType);
+					EditorGUILayout.PropertyField(damageType);
 
-                    if (damageType.enumValueIndex == 0)
-                    {
-                        EditorGUILayout.HelpBox("This ability deals direct damage.", MessageType.Info);
-                        EditorGUILayout.PropertyField(damage);
-                    }
-                    else
-                    {
-                        EditorGUILayout.HelpBox("This ability deals damage over time.", MessageType.Info);
+					if (damageType.enumValueIndex == 0)
+					{
+						EditorGUILayout.HelpBox("This ability deals direct damage.", MessageType.Info);
+						EditorGUILayout.PropertyField(damage);
+					}
+					else
+					{
+						EditorGUILayout.HelpBox("This ability deals damage over time.", MessageType.Info);
 
-                        damage.floatValue = EditorGUILayout.FloatField("Damage per Cycle", damage.floatValue);
+						damage.floatValue = EditorGUILayout.FloatField("Damage per Cycle", damage.floatValue);
 
-                        // int tickRate = TickManager.Instance.TickRate;
-                        // float damagePerTick = damage.floatValue / tickRate;
-                        // float totalDamage = damage.floatValue * duration;
-                        
-                        //  EditorGUILayout.LabelField("Damage Per Tick", damagePerTick.ToString("F2"));
-                        //  EditorGUILayout.LabelField("Total Damage", totalDamage.ToString("F0"));
-                        //  EditorGUILayout.LabelField("DoT Ticks", $"{duration / AbilitySettings.DoT_Rate}");
-                        //
-                        // var dotInfoContent = new GUIContent($"DoTs deal damage every {AbilitySettings.DoT_Rate} tick cycles. Therefore this DoT will deal damage {duration / AbilitySettings.DoT_Rate} times.");
-                        //
-                        // EditorGUILayout.LabelField(dotInfoContent, EditorStyles.centeredGreyMiniLabel);
-                        //
-                        // if (damagePerTick > 2.75) EditorGUILayout.HelpBox("This DoT deals a considerable amount of damage." + " \nConsider reducing the damage per cycle or the number of cycles.", MessageType.Warning);
-                        //
-                        if (effects.arraySize == 0) EditorGUILayout.HelpBox("A DoT ability must apply a \"Damage Over Time\" status effect!", MessageType.Error);
-                    }
+						// int tickRate = TickManager.Instance.TickRate;
+						// float damagePerTick = damage.floatValue / tickRate;
+						// float totalDamage = damage.floatValue * duration;
 
-                    EditorGUILayout.EndFoldoutHeaderGroup();
+						//  EditorGUILayout.LabelField("Damage Per Tick", damagePerTick.ToString("F2"));
+						//  EditorGUILayout.LabelField("Total Damage", totalDamage.ToString("F0"));
+						//  EditorGUILayout.LabelField("DoT Ticks", $"{duration / AbilitySettings.DoT_Rate}");
+						//
+						// var dotInfoContent = new GUIContent($"DoTs deal damage every {AbilitySettings.DoT_Rate} tick cycles. Therefore this DoT will deal damage {duration / AbilitySettings.DoT_Rate} times.");
+						//
+						// EditorGUILayout.LabelField(dotInfoContent, EditorStyles.centeredGreyMiniLabel);
+						//
+						// if (damagePerTick > 2.75) EditorGUILayout.HelpBox("This DoT deals a considerable amount of damage." + " \nConsider reducing the damage per cycle or the number of cycles.", MessageType.Warning);
+						//
+						if (effects.arraySize == 0) EditorGUILayout.HelpBox("A DoT ability must apply a \"Damage Over Time\" status effect!", MessageType.Error);
+					}
 
-                    GUILayout.Space(10);
+					EditorGUILayout.EndFoldoutHeaderGroup();
 
-                    StatusEffect[] statusEffects = Resources.LoadAll<StatusEffect>("Scriptables");
-                    string[] displayOptions = statusEffects.Select(e => e.name).ToArray();
-                    displayOptions = displayOptions.Prepend("Select an Effect").ToArray();
+					GUILayout.Space(10);
 
-                    using (new EditorGUILayout.HorizontalScope())
-                    {
-                        selectedEffect = EditorGUILayout.Popup("Add Status Effect", selectedEffect, displayOptions);
+					StatusEffect[] statusEffects = Resources.LoadAll<StatusEffect>("Scriptables/Status Effects");
+					string[] displayOptions = statusEffects.Select(e => e.name).ToArray();
+					displayOptions = displayOptions.Prepend("Select an Effect").ToArray();
 
-                        using (new EditorGUI.DisabledScope(selectedEffect == 0))
-                        {
-                            if (GUILayout.Button("Add", GUILayout.Width(50)))
-                            {
-                                if (selectedEffect > 0)
-                                {
-                                    var effect = statusEffects[selectedEffect - 1];
-                                    effects.InsertArrayElementAtIndex(effects.arraySize);
-                                    var newEffect = effects.GetArrayElementAtIndex(effects.arraySize - 1);
-                                    newEffect.objectReferenceValue = effect;
-                                }
+					using (new EditorGUILayout.HorizontalScope())
+					{
+						selectedEffect = EditorGUILayout.Popup("Add Status Effect", selectedEffect, displayOptions);
 
-                                serializedObject.ApplyModifiedProperties();
-                            }
-                        }
-                    }
+						using (new EditorGUI.DisabledScope(selectedEffect == 0))
+						{
+							if (GUILayout.Button("Add", GUILayout.Width(50)))
+							{
+								if (selectedEffect > 0)
+								{
+									StatusEffect effect = statusEffects[selectedEffect - 1];
+									effects.InsertArrayElementAtIndex(effects.arraySize);
+									SerializedProperty newEffect = effects.GetArrayElementAtIndex(effects.arraySize - 1);
+									newEffect.objectReferenceValue = effect;
+								}
 
-                    EditorGUILayout.PropertyField(effects, true);
+								serializedObject.ApplyModifiedProperties();
+							}
+						}
 
-                    if (effects.arraySize > 0)
-                    {
-                        EditorGUILayout.HelpBox("This ability applies status effects.", MessageType.Info);
-                        var infoContent = new GUIContent($"The \"Duration\" field is controlled by the \"Cycles\" field above."); // TODO: THIS
-                        EditorGUILayout.LabelField(infoContent, EditorStyles.centeredGreyMiniLabel);
+						if (GUILayout.Button("LOAD NEW EFFECTS", GUILayout.Width(100)))
+						{
+							// Parse the CSV and get the list of buff data tuples
+							List<(string name, string description, string type, string duration, string target, string appliesTiming)> effectDataList = CSVParser.Parse();
 
-                        // check if the inspector has been updated
-                        if (serializedObject.ApplyModifiedProperties())
-                        {
-                            for (int i = 0; i < effects.arraySize; i++)
-                            {
-                                var effect = effects.GetArrayElementAtIndex(i);
-                                var time = effect.FindPropertyRelative("time");
-                                var owner = effect.FindPropertyRelative("owner");
+							// Check if the CSV data was valid
+							if (effectDataList != null)
+							{
+								// Write a script for each buff
+								foreach ((string name, string description, string type, string duration, string target, string appliesTiming) effect in effectDataList)
+									ScriptWriter.WriteScript(effect.name, effect.description, effect.type, effect.duration, effect.target, effect.appliesTiming);
 
-                                var duration = effect.FindPropertyRelative("duration");
-                                time.floatValue = duration.intValue;
-                                owner.objectReferenceValue = null;
-                            }
-                        }
-                    }
-                }
-            }
+								Debug.Log("C# scripts created successfully!");
+							}
+							else { Debug.LogError("Failed to parse CSV data."); }
+						}
 
-            EditorGUILayout.EndFoldoutHeaderGroup();
-        }
+						if (GUILayout.Button("REFRESH EFFECTS", GUILayout.Width(100)))
+						{
+							ScriptableObject foo = CreateInstance("DamageOverTime");
+							AssetDatabase.CreateAsset(foo, "Assets/_Project/Runtime/Resources/Scriptables/Status Effects/DamageOverTime.asset");
+						}
+					}
 
-        GUILayout.Space(25);
-        using (new GUILayout.HorizontalScope("textField")) { showAdditional = EditorGUILayout.BeginFoldoutHeaderGroup(showAdditional, "Additional Information", headerButtonStyle); }
+					EditorGUILayout.PropertyField(effects, true);
 
-        if (showAdditional)
-            using (new GUILayout.VerticalScope("box"))
-            {
-                EditorGUILayout.LabelField("Debugging Information", EditorStyles.boldLabel);
-                EditorGUILayout.LabelField("Job Name", jobName);
-                EditorGUILayout.LabelField("Job Tri-Code", jobTriCode);
-                EditorGUILayout.LabelField("Ability Type", abilityTypeNoun);
-                EditorGUILayout.LabelField("Ability Key", abilityTypeKey);
-            }
+					if (effects.arraySize > 0)
+					{
+						EditorGUILayout.HelpBox("This ability applies status effects.", MessageType.Info);
+						var infoContent = new GUIContent("The \"Duration\" field is controlled by the \"Cycles\" field above."); // TODO: THIS
+						EditorGUILayout.LabelField(infoContent, EditorStyles.centeredGreyMiniLabel);
 
-        EditorGUILayout.EndFoldoutHeaderGroup();
+						// check if the inspector has been updated
+						if (serializedObject.ApplyModifiedProperties())
+						{
+							for (int i = 0; i < effects.arraySize; i++)
+							{
+								SerializedProperty effect = effects.GetArrayElementAtIndex(i);
+								SerializedProperty time = effect.FindPropertyRelative("time");
+								SerializedProperty owner = effect.FindPropertyRelative("owner");
 
-        if (serializedObject.ApplyModifiedProperties()) RenameAbilityAsset();
-    }
+								SerializedProperty duration = effect.FindPropertyRelative("duration");
+								time.floatValue = duration.intValue;
+								owner.objectReferenceValue = null;
+							}
+						}
+					}
+				}
+			}
 
-    // TODO: Implement this method
-    /// <summary>
-    ///     Find the average damage dealt by a GCD ability
-    /// </summary>
-    /// <returns></returns>
+			EditorGUILayout.EndFoldoutHeaderGroup();
+		}
 
-    // int AverageGCDRotation()
-    // {
-    //     // Find a GCD ability
-    //     var gcdAbility = FindObjectsOfType<Ability>().FirstOrDefault(a => a.abilityKey == Ability.Key.Q);
-    //     
-    //     const int time = 10;
-    //     float averageDamage = (gcdAbility.damage * gcdAbility.cooldown) * time;
-    //     return averageDamage;
-    // }
-    void RenameAbilityAsset()
-    {
-        var ability = (Ability) target;
-        string newName = $"{jobTriCode} [{abilityTypeKey}] ({abilityTypeNoun})";
-        string assetPath = AssetDatabase.GetAssetPath(ability);
+		GUILayout.Space(25);
+		using (new GUILayout.HorizontalScope("textField")) { showAdditional = EditorGUILayout.BeginFoldoutHeaderGroup(showAdditional, "Additional Information", headerButtonStyle); }
 
-        if (!string.IsNullOrEmpty(assetPath) && ability.name != newName)
-        {
-            AssetDatabase.RenameAsset(assetPath, newName);
-            AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
-            ability.name = newName;
-        }
-    }
+		if (showAdditional)
+			using (new GUILayout.VerticalScope("box"))
+			{
+				EditorGUILayout.LabelField("Debugging Information", EditorStyles.boldLabel);
+				EditorGUILayout.LabelField("Job Name", jobName);
+				EditorGUILayout.LabelField("Job Tri-Code", jobTriCode);
+				EditorGUILayout.LabelField("Ability Type", abilityTypeNoun);
+				EditorGUILayout.LabelField("Ability Key", abilityTypeKey);
+			}
 
-    [CustomPropertyDrawer(typeof(Ability.DamageType))]
-    public class DamageTypeDrawer : PropertyDrawer
-    {
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-        {
-            // Get the enum type
-            Type enumType = fieldInfo.FieldType;
+		EditorGUILayout.EndFoldoutHeaderGroup();
 
-            // Get the enum names and their descriptions
-            string[] enumNames = Enum.GetNames(enumType);
-            string[] enumDescriptions = new string[enumNames.Length];
+		if (serializedObject.ApplyModifiedProperties()) RenameAbilityAsset();
+	}
 
-            for (int i = 0; i < enumNames.Length; i++)
-            {
-                object enumValue = Enum.Parse(enumType, enumNames[i]);
-                enumDescriptions[i] = GetEnumDescription((Enum) enumValue);
-            }
+	// TODO: Implement this method
+	/// <summary>
+	///     Find the average damage dealt by a GCD ability
+	/// </summary>
+	/// <returns></returns>
 
-            // Get the current index
-            int currentIndex = property.enumValueIndex;
-            currentIndex = Mathf.Clamp(currentIndex, 0, enumDescriptions.Length - 1);
+	// int AverageGCDRotation()
+	// {
+	//     // Find a GCD ability
+	//     var gcdAbility = FindObjectsOfType<Ability>().FirstOrDefault(a => a.abilityKey == Ability.Key.Q);
+	//     
+	//     const int time = 10;
+	//     float averageDamage = (gcdAbility.damage * gcdAbility.cooldown) * time;
+	//     return averageDamage;
+	// }
+	void RenameAbilityAsset()
+	{
+		var ability = (Ability) target;
+		string newName = $"{jobTriCode} [{abilityTypeKey}] ({abilityTypeNoun})";
+		string assetPath = AssetDatabase.GetAssetPath(ability);
 
-            // Display the popup with descriptions
-            int newIndex = EditorGUI.Popup(position, label.text, currentIndex, enumDescriptions);
-            if (newIndex != currentIndex) property.enumValueIndex = newIndex;
-        }
+		if (!string.IsNullOrEmpty(assetPath) && ability.name != newName)
+		{
+			AssetDatabase.RenameAsset(assetPath, newName);
+			AssetDatabase.SaveAssets();
+			AssetDatabase.Refresh();
+			ability.name = newName;
+		}
+	}
 
-        string GetEnumDescription(Enum value)
-        {
-            FieldInfo fieldInfo = value.GetType().GetField(value.ToString());
-            var descriptionAttributes = (DescriptionAttribute[]) fieldInfo.GetCustomAttributes(typeof(DescriptionAttribute), false);
-            return descriptionAttributes.Length > 0 ? descriptionAttributes[0].Description : value.ToString();
-        }
-    }
+	[CustomPropertyDrawer(typeof(Ability.DamageType))]
+	public class DamageTypeDrawer : PropertyDrawer
+	{
+		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+		{
+			// Get the enum type
+			Type enumType = fieldInfo.FieldType;
+
+			// Get the enum names and their descriptions
+			string[] enumNames = Enum.GetNames(enumType);
+			string[] enumDescriptions = new string[enumNames.Length];
+
+			for (int i = 0; i < enumNames.Length; i++)
+			{
+				object enumValue = Enum.Parse(enumType, enumNames[i]);
+				enumDescriptions[i] = GetEnumDescription((Enum) enumValue);
+			}
+
+			// Get the current index
+			int currentIndex = property.enumValueIndex;
+			currentIndex = Mathf.Clamp(currentIndex, 0, enumDescriptions.Length - 1);
+
+			// Display the popup with descriptions
+			int newIndex = EditorGUI.Popup(position, label.text, currentIndex, enumDescriptions);
+			if (newIndex != currentIndex) property.enumValueIndex = newIndex;
+		}
+
+		string GetEnumDescription(Enum value)
+		{
+			FieldInfo fieldInfo = value.GetType().GetField(value.ToString());
+			var descriptionAttributes = (DescriptionAttribute[]) fieldInfo.GetCustomAttributes(typeof(DescriptionAttribute), false);
+			return descriptionAttributes.Length > 0 ? descriptionAttributes[0].Description : value.ToString();
+		}
+	}
 }
 #endif

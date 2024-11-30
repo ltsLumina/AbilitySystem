@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using DG.Tweening;
 using UnityEngine;
 using static Job;
 #endregion
@@ -13,239 +12,243 @@ using static Job;
 [CreateAssetMenu(fileName = "New Ability", menuName = "Abilities/Ability")]
 public sealed class Ability : ScriptableObject
 {
-    [SuppressMessage("ReSharper", "UnusedMember.Local")]
-    public enum AbilityType
-    {
-        Primary,
-        Secondary,
-        Utility,
-        Ultimate,
-    }
+	[SuppressMessage("ReSharper", "UnusedMember.Local")]
+	enum AbilityType // Marker enum
+	{
+		Primary,
+		Secondary,
+		Utility,
+		Ultimate,
+	}
 
-    public enum CooldownType
-    {
-        GCD,     // Weaponskill
-        Instant, // Ability (oGCD)
-        Cast,    // Spell
-    }
+	public enum CooldownType
+	{
+		GCD,     // Weaponskill
+		Instant, // Ability (oGCD)
+		Cast,    // Spell
+	}
 
-    [SuppressMessage("ReSharper", "UnusedMember.Global")]
-    public enum DamageType
-    {
-        Direct,
-        [Description("DoT")] // Unity will "nicify" this to "Do T" unless I use the Description attribute.
-        DoT,
-    }
+	[SuppressMessage("ReSharper", "UnusedMember.Global")]
+	public enum DamageType
+	{
+		Direct,
+		[Description("DoT")] // Unity will "nicify" this to "Do T" unless I use the Description attribute.
+		DoT,
+	}
 
-    [Header("Ability Info")]
-    [SerializeField] Class job;
-    [SerializeField] string abilityName;
-    [TextArea]
-    [SerializeField] string description;
-    [SerializeField] Sprite icon;
-    [SerializeField] AbilityType type;
+	[Header("Ability Info")]
 
-    [Header("Ability Properties")]
-    [SerializeField] float range;
-    [SerializeField] float radius;
-    [SerializeField] CooldownType cooldownType;
-    [SerializeField] float castTime;
-    [SerializeField] float cooldown;
+	[SerializeField] Class job;
+	[SerializeField] string abilityName;
+	[TextArea]
+	[SerializeField] string description;
+	[SerializeField] Sprite icon;
+	[SerializeField] AbilityType type;
 
-    [Header("Damage Properties")]
-    [SerializeField] DamageType damageType;
-    [SerializeField] float damage;
+	[Header("Ability Properties")]
 
-    [Tooltip("The status effects that this ability applies.")]
-    [SerializeField] List<StatusEffect> effects;
+	[SerializeField] float range;
+	[SerializeField] float radius;
+	[SerializeField] CooldownType cooldownType;
+	[SerializeField] float castTime;
+	[SerializeField] float cooldown;
 
-    public static event Action OnGlobalCooldown;
+	[Header("Damage Properties")]
 
-    public Class Job => job;
-    public string Name
-    {
-        get => abilityName;
-        set => abilityName = value;
-    }
-    public string Description => description;
-    public Sprite Icon => icon;
-    public AbilityType Type => type;
-    public float Range => range;
-    public float Radius => radius;
-    public CooldownType CDType => cooldownType;
-    public float CastTime => castTime;
-    public float Cooldown => cooldown;
-    public DamageType DmgType => damageType;
-    public float Damage => damage;
+	[SerializeField] DamageType damageType;
+	[SerializeField] float damage;
 
-    static Player _player;
+	[Tooltip("The status effects that this ability applies.")]
+	[SerializeField] List<StatusEffect> effects;
 
-    static Player player
-    {
-        get
-        {
-            if (!_player) _player = FindFirstObjectByType<Player>();
-            return _player;
-        }
-    }
+	public static event Action OnGlobalCooldown;
 
-    public bool cancellable => cooldownType == CooldownType.Cast;
+	public Class Job => job;
+	public string Name
+	{
+		get => abilityName;
+		set => abilityName = value;
+	}
+	public string Description => description;
+	public Sprite Icon => icon;
+	public float Range => range;
+	public float Radius => radius;
+	public CooldownType CDType => cooldownType;
+	public float CastTime => castTime;
+	public float Cooldown => cooldown;
+	public DamageType DmgType => damageType;
+	public float Damage => damage;
 
-    public bool cancelled
-    {
-        get
-        {
-            InputManager inputManager = player.Inputs;
-            return inputManager.MoveInput != Vector2.zero;
-        }
-    }
+	static Player _player;
 
-    public override string ToString() => abilityName == string.Empty ? name : abilityName;
+	static Player player
+	{
+		get
+		{
+			if (!_player) _player = FindFirstObjectByType<Player>();
+			return _player;
+		}
+	}
 
-    public void Invoke()
-    {
-        Entity nearestTarget = FindClosestTarget();
-        bool isGCD = cooldownType == CooldownType.GCD;
-        bool isCast = cooldownType == CooldownType.Cast;
-        bool isInstant = cooldownType == CooldownType.Instant;
-        bool isDoT = damageType == DamageType.DoT;
+	public bool cancellable => cooldownType == CooldownType.Cast;
 
-        switch (true)
-        {
-            case true when isDoT: // DoT needs to be handled first as it can be all types of cooldown types.
-                Logger.Log("Applying DoT...");
-                DamageOverTime(nearestTarget);
-                break;
+	public bool cancelled
+	{
+		get
+		{
+			InputManager inputManager = player.Inputs;
+			return inputManager.MoveInput != Vector2.zero;
+		}
+	}
 
-            case true when isGCD:
-                Logger.Log("On global cooldown.");
-                GlobalCooldown(nearestTarget);
-                break;
+	public override string ToString() => abilityName == string.Empty ? name : abilityName;
 
-            case true when isCast:
-                Logger.Log("Casting...");
-                player.StartCoroutine(Cast(nearestTarget));
-                break;
+	public void Invoke()
+	{
+		Entity nearestTarget = FindClosestTarget();
+		bool isGCD = cooldownType == CooldownType.GCD;
+		bool isCast = cooldownType == CooldownType.Cast;
+		bool isInstant = cooldownType == CooldownType.Instant;
+		bool isDoT = damageType == DamageType.DoT;
 
-            case true when isInstant:
-                Logger.Log("Instant cast...");
-                Instant(nearestTarget);
-                break;
-        }
+		switch (true)
+		{
+			case true when isDoT: // DoT needs to be handled first as it can be all types of cooldown types.
+				Logger.Log("Applying DoT...");
+				DamageOverTime(nearestTarget);
+				break;
 
-        return;
+			case true when isGCD:
+				Logger.Log("On global cooldown.");
+				GlobalCooldown(nearestTarget);
+				break;
 
-        [return: NotNull]
-        static Entity FindClosestTarget()
-        {
-            Entity[] entities = FindObjectsByType<Entity>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+			case true when isCast:
+				Logger.Log("Casting...");
+				player.StartCoroutine(Cast(nearestTarget));
+				break;
 
-            // Find the closest entity to the player. If anything is null, throw an exception.
-            return (player == null ? null : entities.Where(entity => entity != player).OrderBy(entity => Vector2.Distance(player.transform.position, entity.transform.position)).FirstOrDefault()) ??
-                   throw new InvalidOperationException();
-        }
-    }
+			case true when isInstant:
+				Logger.Log("Instant cast...");
+				Instant(nearestTarget);
+				break;
+		}
 
-    void OnDisable() // Won't be called with "Disable Domain Reload" enabled.
-    { }
+		return;
 
-    #region Casting
-    Coroutine castCoroutine;
+		[return: NotNull]
+		static Entity FindClosestTarget()
+		{
+			Entity[] entities = FindObjectsByType<Entity>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
 
-    /// <summary>
-    ///     Check if the ability is actively being cast.
-    /// </summary>
-    /// <returns> Returns true if the ability is actively being cast, otherwise false. </returns>
-    bool Casting() => castCoroutine != null;
+			// Find the closest entity to the player. If anything is null, throw an exception.
+			return (player == null ? null : entities.Where(entity => entity != player).OrderBy(entity => Vector2.Distance(player.transform.position, entity.transform.position)).FirstOrDefault()) ??
+			       throw new InvalidOperationException();
+		}
+	}
 
-    IEnumerator CastCoroutine()
-    {
-        float elapsedTime = 0f;
+	void OnDisable() // Won't be called with "Disable Domain Reload" enabled.
+	{
+	}
 
-        while (elapsedTime < castTime)
-        {
-            if (cancelled)
-            {
-                castCoroutine = null;
-                yield break;
-            }
+	#region Casting
+	Coroutine castCoroutine;
 
-            elapsedTime += Time.deltaTime;
-            yield return null;
-        }
+	/// <summary>
+	///     Check if the ability is actively being cast.
+	/// </summary>
+	/// <returns> Returns true if the ability is actively being cast, otherwise false. </returns>
+	bool Casting() => castCoroutine != null;
 
-        castCoroutine = null;
-    }
-    #endregion
+	IEnumerator CastCoroutine()
+	{
+		float elapsedTime = 0f;
 
-    IEnumerator Cast(Entity target)
-    {
-        OnGlobalCooldown?.Invoke();
+		while (elapsedTime < castTime)
+		{
+			if (cancelled)
+			{
+				castCoroutine = null;
+				yield break;
+			}
 
-        castCoroutine = player.StartCoroutine(CastCoroutine());
-        var particle = Instantiate(Resources.Load<GameObject>("PREFABS/Casting Particles")).GetComponent<ParticleSystem>();
-        ParticleSystem.MainModule particleMain = particle.main;
-        particleMain.duration = castTime + 0.5f;
-        particle.transform.position = player.transform.position + new Vector3(0, -0.8f);
-        particle.Play();
-        yield return new WaitWhile(Casting);
+			elapsedTime += Time.deltaTime;
+			yield return null;
+		}
 
-        if (cancelled) yield break;
+		castCoroutine = null;
+	}
+	#endregion
 
-        target.TryGetComponent(out IDamageable damageable);
-        damageable?.TakeDamage(damage);
-    }
+	IEnumerator Cast(Entity target)
+	{
+		OnGlobalCooldown?.Invoke();
 
-    void GlobalCooldown(Entity target)
-    {
-        OnGlobalCooldown?.Invoke();
+		castCoroutine = player.StartCoroutine(CastCoroutine());
+		var particle = Instantiate(Resources.Load<GameObject>("PREFABS/Casting Particles")).GetComponent<ParticleSystem>();
+		ParticleSystem.MainModule particleMain = particle.main;
+		particleMain.duration = castTime + 0.5f;
+		particle.transform.position = player.transform.position + new Vector3(0, -0.8f);
+		particle.Play();
+		yield return new WaitWhile(Casting);
 
-        (List<StatusEffect> early, List<StatusEffect> late) = effects.Load();
-        
-        target.TryGetComponent(out IDamageable enemy);
+		if (cancelled) yield break;
 
-        if (early.Count > 0) early.Apply(target);
-        enemy?.TakeDamage(damage);
-        if (late.Count > 0) late.Apply(target);
-    }
+		target.TryGetComponent(out IDamageable damageable);
+		damageable?.TakeDamage(damage);
+	}
 
-    void Instant(Entity target)
-    {
-        target.TryGetComponent(out IDamageable damageable);
-        damageable?.TakeDamage(damage);
-    }
+	void GlobalCooldown(Entity target)
+	{
+		OnGlobalCooldown?.Invoke();
 
-    void DamageOverTime(Entity target)
-    {
-        OnGlobalCooldown?.Invoke();
+		(List<StatusEffect> early, List<StatusEffect> late) = effects.Load();
 
-        target.TryGetComponent(out IDamageable damageable);
-        damageable?.TakeDamage(damage);
+		target.TryGetComponent(out IDamageable enemy);
 
-        int cycle = 0;
-        int dotTick = 0;
-        int dotTicks = effects.Find(effect => effect.StatusName == "DoT").Duration / AbilitySettings.DoT_Rate - 1;
+		if (early.Count > 0) early.Apply(target);
+		enemy?.TakeDamage(damage);
+		if (late.Count > 0) late.Apply(target);
+	}
 
-        // TODO: if the DoT is already running when it is re-applied, reset the cycle count.
-        //  Probably will check if they have a debuff applied.
-        TickManager.OnCycle += OnCycle;
+	void Instant(Entity target)
+	{
+		target.TryGetComponent(out IDamageable damageable);
+		damageable?.TakeDamage(damage);
+	}
 
-        return;
-        void OnCycle()
-        {
-            if (dotTick == dotTicks)
-            {
-                TickManager.OnCycle -= OnCycle;
-                return;
-            }
+	void DamageOverTime(Entity target)
+	{
+		OnGlobalCooldown?.Invoke();
 
-            cycle++;
+		target.TryGetComponent(out IDamageable damageable);
+		damageable?.TakeDamage(damage);
 
-            if (cycle % AbilitySettings.DoT_Rate == 0) // If DoT_Rate is 3, this will tick on cycle 3, 6, 9, etc.
-            {
-                damageable?.TakeDamage(damage);
-                dotTick++;
-            }
-        }
-    }
+		int cycle = 0;
+		int dotTick = 0;
+		int dotTicks = effects.Find(effect => effect.StatusName == "DoT").Duration / AbilitySettings.DoT_Rate - 1;
+
+		// TODO: if the DoT is already running when it is re-applied, reset the cycle count.
+		//  Probably will check if they have a debuff applied.
+		TickManager.OnCycle += OnCycle;
+
+		return;
+
+		void OnCycle()
+		{
+			if (dotTick == dotTicks)
+			{
+				TickManager.OnCycle -= OnCycle;
+				return;
+			}
+
+			cycle++;
+
+			if (cycle % AbilitySettings.DoT_Rate == 0) // If DoT_Rate is 3, this will tick on cycle 3, 6, 9, etc.
+			{
+				damageable?.TakeDamage(damage);
+				dotTick++;
+			}
+		}
+	}
 }

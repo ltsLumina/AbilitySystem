@@ -10,133 +10,134 @@ using static Lumina.Essentials.Modules.Helpers;
 
 public class Player : Entity
 {
-    [HideInInspector, UsedImplicitly]
-    public VInspectorData data;
+	[HideInInspector] [UsedImplicitly]
+	public VInspectorData data;
 
-    [SerializeField] Job job;
+	[SerializeField] Job job;
 
-    [SerializeField] int health = 10;
-    [Foldout("Movement")]
-    [SerializeField] List<float> speeds = new (2)
-    { 75, 35 };
-    [EndFoldout]
-    [SerializeField] float topSpeed = 15;
-    [SerializeField] float moveDamping = 5;
-    [SerializeField] float stopDamping = 15;
+	[SerializeField] int health = 10;
+	[Foldout("Movement")]
+	[SerializeField] List<float> speeds = new (2)
+	{ 75, 35 };
+	[EndFoldout]
+	[SerializeField] float topSpeed = 15;
+	[SerializeField] float moveDamping = 5;
+	[SerializeField] float stopDamping = 15;
 
-    [Header("Other")]
-    [SerializeField] bool mouseMove;
+	[Header("Other")]
 
-    InputManager inputs;
-    PlayerInput playerInput;
-    Rigidbody2D rb;
+	[SerializeField] bool mouseMove;
 
-    float speed
-    {
-        get => mouseMove ? speeds[1] : speeds[0];
-        set
-        {
-            if (mouseMove) speeds[1] = value;
-            else speeds[0] = value;
-        }
-    }
+	InputManager inputs;
+	PlayerInput playerInput;
+	Rigidbody2D rb;
 
-    public Job Job => job;
-    public InputManager Inputs => GetComponentInChildren<InputManager>();
-    public PlayerInput PlayerInput => Inputs.GetComponent<PlayerInput>();
+	float speed
+	{
+		get => mouseMove ? speeds[1] : speeds[0];
+		set
+		{
+			if (mouseMove) speeds[1] = value;
+			else speeds[0] = value;
+		}
+	}
 
-    protected override void OnTick() { }
+	public Job Job => job;
+	public InputManager Inputs => GetComponentInChildren<InputManager>();
+	public PlayerInput PlayerInput => Inputs.GetComponent<PlayerInput>();
 
-    protected override void OnCycle() { }
+	protected override void OnTick() { }
 
-    void Reset() => gameObject.tag = "Player";
+	protected override void OnCycle() { }
 
-    protected override IEnumerator Start()
-    {
-        inputs = GetComponentInChildren<InputManager>();
-        playerInput = inputs.GetComponent<PlayerInput>();
-        rb = GetComponent<Rigidbody2D>();
+	void Reset() => gameObject.tag = "Player";
 
-        Rebind(mouseMove);
+	protected override IEnumerator Start()
+	{
+		inputs = GetComponentInChildren<InputManager>();
+		playerInput = inputs.GetComponent<PlayerInput>();
+		rb = GetComponent<Rigidbody2D>();
 
-        return base.Start();
-    }
+		Rebind(mouseMove);
 
-    void Rebind(bool useMouseBindings)
-    {
-        switch (useMouseBindings)
-        {
-            case true: // Using Mouse bindings (Q, W, E, R)
-                playerInput.actions[InputManager.AbilityKeys[0]].ApplyBindingOverride("<Keyboard>/q");
-                playerInput.actions[InputManager.AbilityKeys[1]].ApplyBindingOverride("<Keyboard>/w");
-                playerInput.actions[InputManager.AbilityKeys[2]].ApplyBindingOverride("<Keyboard>/e");
-                playerInput.actions[InputManager.AbilityKeys[3]].ApplyBindingOverride("<Keyboard>/r");
-                break;
+		return base.Start();
+	}
 
-            case false: // Using Keyboard bindings (1, 2, 3, 4)
-                playerInput.actions[InputManager.AbilityKeys[0]].ApplyBindingOverride("<Keyboard>/1");
-                playerInput.actions[InputManager.AbilityKeys[1]].ApplyBindingOverride("<Keyboard>/2");
-                playerInput.actions[InputManager.AbilityKeys[2]].ApplyBindingOverride("<Keyboard>/3");
-                playerInput.actions[InputManager.AbilityKeys[3]].ApplyBindingOverride("<Keyboard>/4");
-                break;
-        }
-    }
+	void Rebind(bool useMouseBindings)
+	{
+		switch (useMouseBindings)
+		{
+			case true: // Using Mouse bindings (Q, W, E, R)
+				playerInput.actions[InputManager.AbilityKeys[0]].ApplyBindingOverride("<Keyboard>/q");
+				playerInput.actions[InputManager.AbilityKeys[1]].ApplyBindingOverride("<Keyboard>/w");
+				playerInput.actions[InputManager.AbilityKeys[2]].ApplyBindingOverride("<Keyboard>/e");
+				playerInput.actions[InputManager.AbilityKeys[3]].ApplyBindingOverride("<Keyboard>/r");
+				break;
 
-    void FixedUpdate()
-    {
-        if (mouseMove) MouseMove();
-        else Move();
-    }
+			case false: // Using Keyboard bindings (1, 2, 3, 4)
+				playerInput.actions[InputManager.AbilityKeys[0]].ApplyBindingOverride("<Keyboard>/1");
+				playerInput.actions[InputManager.AbilityKeys[1]].ApplyBindingOverride("<Keyboard>/2");
+				playerInput.actions[InputManager.AbilityKeys[2]].ApplyBindingOverride("<Keyboard>/3");
+				playerInput.actions[InputManager.AbilityKeys[3]].ApplyBindingOverride("<Keyboard>/4");
+				break;
+		}
+	}
 
-    void Move()
-    {
-        rb.AddForce(inputs.MoveInput * speed);
-        rb.linearVelocity = Vector2.ClampMagnitude(rb.linearVelocity, topSpeed);
-        bool changingDir = Vector2.Dot(rb.linearVelocity, inputs.MoveInput) < 0;
-        rb.linearDamping = changingDir ? stopDamping : moveDamping;
-        if (!inputs.IsMoving) rb.linearDamping = Mathf.Lerp(rb.linearDamping, 100, 0.1f);
-    }
+	void FixedUpdate()
+	{
+		if (mouseMove) MouseMove();
+		else Move();
+	}
 
-    void MouseMove()
-    {
-        var mousePos = CameraMain.ScreenToWorldPoint(Input.mousePosition);
-        var dir = (mousePos - transform.position).normalized;
-        rb.AddForce(dir * speed);
-    }
+	void Move()
+	{
+		rb.AddForce(inputs.MoveInput * speed);
+		rb.linearVelocity = Vector2.ClampMagnitude(rb.linearVelocity, topSpeed);
+		bool changingDir = Vector2.Dot(rb.linearVelocity, inputs.MoveInput) < 0;
+		rb.linearDamping = changingDir ? stopDamping : moveDamping;
+		if (!inputs.IsMoving) rb.linearDamping = Mathf.Lerp(rb.linearDamping, 100, 0.1f);
+	}
 
-    public override void TakeDamage(float damage)
-    {
-        base.TakeDamage(damage);
+	void MouseMove()
+	{
+		Vector3 mousePos = CameraMain.ScreenToWorldPoint(Input.mousePosition);
+		Vector3 dir = (mousePos - transform.position).normalized;
+		rb.AddForce(dir * speed);
+	}
 
-        health -= Mathf.RoundToInt(damage);
-        if (health <= 0) Logger.Log("Player has died.");
-    }
+	public override void TakeDamage(float damage)
+	{
+		base.TakeDamage(damage);
 
-    public void OnHit(Enemy enemy = default)
-    {
-        health--;
+		health -= Mathf.RoundToInt(damage);
+		if (health <= 0) Logger.Log("Player has died.");
+	}
 
-        var sprite = GetComponentInChildren<SpriteRenderer>();
-        sprite.FlashSprite(Color.red, 0.3f);
-        StartCoroutine(sprite.CreateAfterImages(0.05f, 0.25f, 5));
+	public void OnHit(Enemy enemy = default)
+	{
+		health--;
 
-        StartCoroutine(Foo());
-    }
+		var sprite = GetComponentInChildren<SpriteRenderer>();
+		sprite.FlashSprite(Color.red, 0.3f);
+		StartCoroutine(sprite.CreateAfterImages(0.05f, 0.25f, 5));
 
-    IEnumerator Foo()
-    {
-        speed *= 1.5f;
-        yield return new WaitForSeconds(0.5f);
-        speed /= 1.5f;
-    }
+		StartCoroutine(Foo());
+	}
 
-    void OnDrawGizmos()
-    {
-        Gizmos.color = Color.green;
-        if (!rb) return;
-        Vector2 dir = rb.linearVelocity.normalized * 5;
-        Gizmos.DrawRay(transform.position, dir);
-        var point = transform.position + (Vector3) dir;
-        Gizmos.DrawWireSphere(point, 0.3f);
-    }
+	IEnumerator Foo()
+	{
+		speed *= 1.5f;
+		yield return new WaitForSeconds(0.5f);
+		speed /= 1.5f;
+	}
+
+	void OnDrawGizmos()
+	{
+		Gizmos.color = Color.green;
+		if (!rb) return;
+		Vector2 dir = rb.linearVelocity.normalized * 5;
+		Gizmos.DrawRay(transform.position, dir);
+		Vector3 point = transform.position + (Vector3) dir;
+		Gizmos.DrawWireSphere(point, 0.3f);
+	}
 }

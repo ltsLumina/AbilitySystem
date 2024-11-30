@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: DamageUp
   m_EditorClassIdentifier: 
   statusName: Damage Up
+  description: Please enter a description.
   duration: 30
-  description: 
-  targets: 0
+  target: 0
   appliesEarly: 0
-  time: -0.018983595
-  owner: {fileID: 0}
+  time: 0
+  caster: {fileID: 0}

@@ -1,0 +1,29 @@
+﻿using UnityEngine;
+
+[CreateAssetMenu]
+public class $NAME : $TYPE
+{
+	public override void ApplyEffect(Entity enemy)
+	{
+		base.ApplyEffect(enemy);
+		Debug.Log($"Applied {name} to {enemy}.");
+	}
+
+	void Awake()
+	{
+		OnInstantiated += effect =>
+		{
+			effect.Time = effect.Duration;
+			Debug.Log($"Instantiated: {effect}");
+		};
+	}
+
+	void Reset()
+	{
+		statusName = "$NICE_NAME";
+		description = "$DESCRIPTION";
+		duration = $DURATION;
+		target = $TARGET;
+		appliesEarly = $APPLIES_TIMING;
+	}
+}
