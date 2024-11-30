@@ -1,5 +1,6 @@
 ﻿#region
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -11,25 +12,30 @@ using UnityEngine;
 using Object = UnityEngine.Object;
 #endregion
 
-[CreateAssetMenu]
 public abstract class StatusEffect : ScriptableObject
 {
 	[SuppressMessage("ReSharper", "UnusedMember.Global")]
-	protected enum TargetType
+	protected enum Target
 	{
 		Self,
 		Enemy,
 	}
 
+	public enum Timing
+	{
+		Prefix,
+		Postfix,
+	}
+
 	[SerializeField] protected string statusName;
 	[SerializeField] protected string description;
 	[SerializeField] protected int duration;
-	[SerializeField] protected TargetType target;
-	[SerializeField] public bool appliesEarly;
+	[SerializeField] protected Target target;
+	[SerializeField] public Timing timing;
 	[Tooltip("The time remaining for the status effect.")]
 	[SerializeField] [ReadOnly] float time;
 	[Tooltip("The entity that applied the status effect. (Not the entity that the status effect is applied to.)")]
-	[SerializeField] [ReadOnly] Entity caster;
+	[SerializeField] [ReadOnly] protected Entity caster;
 
 	public string StatusName => statusName;
 	public int Duration => duration;
@@ -38,7 +44,11 @@ public abstract class StatusEffect : ScriptableObject
 		get => time;
 		set => time = value;
 	}
-	public Entity Caster => caster;
+	public Entity Caster
+	{
+		get => caster;
+		set => caster = value;
+	}
 
 	protected new string name => base.name = string.IsNullOrEmpty
 			(Path.GetFileName(AssetDatabase.GetAssetPath(this)).Replace(".asset", string.Empty))
@@ -47,17 +57,49 @@ public abstract class StatusEffect : ScriptableObject
 
 	public override string ToString() => $"{statusName} ({duration} seconds)";
 
-	Player player => FindAnyObjectByType<Player>();
+	protected Player player => FindAnyObjectByType<Player>();
 
-	public virtual void ApplyEffect(Entity enemy)
+	#region Base
+	public virtual void Invoke(Entity entityTarget)
 	{
-		time = duration;
-		caster = target == TargetType.Self ? player : enemy;
-		enemy = target == TargetType.Self ? player : enemy;
+		// set the target to the player if the target is self
+		if (target == Target.Self) entityTarget = player;
 
-		VisualEffect(enemy);
-		enemy.ApplyStatusEffects(this);
+		VisualEffect(entityTarget);
+		entityTarget.ApplyStatusEffects(this);
+
+		Debug.Log($"Applied {this} to {entityTarget}!");
 	}
+
+	protected Coroutine decayCoroutine;
+
+	protected virtual void Awake() => OnInstantiated += effect =>
+	{
+		effect.Time = effect.Duration;
+		effect.decayCoroutine ??= CoroutineHelper.StartCoroutine(effect.Decay());
+	};
+
+	protected virtual IEnumerator Decay()
+	{
+		while (Time > 0)
+		{
+			Time -= UnityEngine.Time.deltaTime;
+			yield return null;
+		}
+
+		Destroy(this);
+		decayCoroutine = null;
+	}
+
+	protected virtual void Reset()
+	{
+		statusName = "$NAME";
+		description = "$DESCRIPTION";
+		duration = 24;
+		target = Target.Self;
+		timing = Timing.Postfix;
+	}
+	#endregion
 
 	#region Effects
 	public abstract class Buff : StatusEffect // Mostly a marker class
@@ -88,6 +130,10 @@ public abstract class StatusEffect : ScriptableObject
 		});
 	}
 
+	/// <summary>
+	///     Callback for when a status effect is instantiated.
+	///     The parameters are the status effect that was instantiated and the entity that the status effect was applied to.
+	/// </summary>
 	protected static event Action<StatusEffect> OnInstantiated;
 
 	public static StatusEffect Instantiate(StatusEffect original)
@@ -107,7 +153,7 @@ public class StatusEffectEditor : Editor
 	SerializedProperty description;
 	SerializedProperty duration;
 	new SerializedProperty target;
-	SerializedProperty appliesEarly;
+	SerializedProperty timing;
 	SerializedProperty time;
 	SerializedProperty caster;
 
@@ -117,7 +163,7 @@ public class StatusEffectEditor : Editor
 		description = serializedObject.FindProperty("description");
 		duration = serializedObject.FindProperty("duration");
 		target = serializedObject.FindProperty("target");
-		appliesEarly = serializedObject.FindProperty("appliesEarly");
+		timing = serializedObject.FindProperty("timing");
 		time = serializedObject.FindProperty("time");
 		caster = serializedObject.FindProperty("caster");
 	}
@@ -145,15 +191,19 @@ public class StatusEffectEditor : Editor
 
 					EditorGUILayout.PropertyField(target);
 
-					if (appliesEarly.boolValue)
+					switch (timing.enumValueIndex)
 					{
-						var earlyContent = new GUIContent("Applies Early", "Applies before damage is applied.");
-						appliesEarly.boolValue = EditorGUILayout.Toggle(earlyContent, appliesEarly.boolValue);
-					}
-					else
-					{
-						var lateContent = new GUIContent("Applies Late", "Applies after damage is applied.");
-						appliesEarly.boolValue = EditorGUILayout.Toggle(lateContent, appliesEarly.boolValue);
+						case 0: {
+							var earlyContent = new GUIContent("Prefix", "Applies before damage is applied.");
+							timing.enumValueIndex = EditorGUILayout.Popup(earlyContent, timing.enumValueIndex, Enum.GetNames(typeof(StatusEffect.Timing)));
+							break;
+						}
+
+						case 1: {
+							var lateContent = new GUIContent("Postfix", "Applies after damage is applied.");
+							timing.enumValueIndex = EditorGUILayout.Popup(lateContent, timing.enumValueIndex, Enum.GetNames(typeof(StatusEffect.Timing)));
+							break;
+						}
 					}
 				}
 
@@ -197,32 +247,36 @@ public static class StatusEffectExtensions
 	/// </returns>
 	public static (List<StatusEffect> appliesEarly, List<StatusEffect> appliesLate) Load(this List<StatusEffect> effects)
 	{
-		List<StatusEffect> appliesEarly = new ();
-		List<StatusEffect> appliesLate = new ();
+		List<StatusEffect> prefix = new ();
+		List<StatusEffect> postfix = new ();
 
 		foreach (StatusEffect effect in effects)
 		{
-			if (effect.appliesEarly)
+			switch (effect.timing)
 			{
-				StatusEffect instantiatedEffect = Load(effect);
-				appliesEarly.Add(instantiatedEffect);
-			}
-			else
-			{
-				StatusEffect instantiatedEffect = Load(effect);
-				appliesLate.Add(instantiatedEffect);
+				case StatusEffect.Timing.Prefix: {
+					StatusEffect instantiatedEffect = Load(effect);
+					prefix.Add(instantiatedEffect);
+					break;
+				}
+
+				case StatusEffect.Timing.Postfix: {
+					StatusEffect instantiatedEffect = Load(effect);
+					postfix.Add(instantiatedEffect);
+					break;
+				}
 			}
 		}
 
-		return (appliesEarly, appliesLate);
+		return (prefix, postfix);
 	}
 
-	/// <summary>
-	/// </summary>
-	/// <param name="effects">
-	///     <param name="target"></param>
-	public static void Apply(this List<StatusEffect> effects, Entity target)
+	public static void Apply(this List<StatusEffect> effects, (Entity target, Entity caster) target)
 	{
-		foreach (StatusEffect effect in effects) effect.ApplyEffect(target);
+		foreach (StatusEffect effect in effects)
+		{
+			effect.Caster = target.caster;
+			effect.Invoke(target.target);
+		}
 	}
 }

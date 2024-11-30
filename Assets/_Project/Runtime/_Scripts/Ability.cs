@@ -198,17 +198,19 @@ public sealed class Ability : ScriptableObject
 		damageable?.TakeDamage(damage);
 	}
 
+	public static float damageMod = 1f; // TODO: this works :)
+
 	void GlobalCooldown(Entity target)
 	{
 		OnGlobalCooldown?.Invoke();
 
-		(List<StatusEffect> early, List<StatusEffect> late) = effects.Load();
+		(List<StatusEffect> prefix, List<StatusEffect> postfix) = effects.Load();
 
 		target.TryGetComponent(out IDamageable enemy);
 
-		if (early.Count > 0) early.Apply(target);
-		enemy?.TakeDamage(damage);
-		if (late.Count > 0) late.Apply(target);
+		if (prefix.Count > 0) prefix.Apply((target, player));
+		enemy?.TakeDamage(damage * damageMod);
+		if (postfix.Count > 0) postfix.Apply((target, player));
 	}
 
 	void Instant(Entity target)

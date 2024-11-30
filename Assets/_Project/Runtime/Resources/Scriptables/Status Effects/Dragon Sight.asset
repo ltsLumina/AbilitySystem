@@ -9,13 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 339a505c807b435ab6cf0d3bc7df7839, type: 3}
-  m_Name: DamageUp
+  m_Script: {fileID: 11500000, guid: bb05f076e17c75642ae150628add174e, type: 3}
+  m_Name: Dragon Sight
   m_EditorClassIdentifier: 
-  statusName: Damage Up
-  description: Please enter a description.
-  duration: 30
+  statusName: Dragon Sight
+  description: Grants Dragon Sight to self, increasing damage dealt by 10%
+  duration: 24
   target: 0
-  appliesEarly: 0
+  timing: 0
   time: 0
   caster: {fileID: 0}

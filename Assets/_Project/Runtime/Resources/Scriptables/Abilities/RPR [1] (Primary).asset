@@ -25,4 +25,5 @@ MonoBehaviour:
   damageType: 0
   damage: 150
   effects:
-  - {fileID: 11400000, guid: a3a25e79c2e5e0f41820549f5a076cae, type: 2}
+  - {fileID: 11400000, guid: 5966dc5e6af828440ac5db4fad080b9a, type: 2}
+  - {fileID: 11400000, guid: 06e2d27d10d3d724f99fdc5fe3ee26c2, type: 2}

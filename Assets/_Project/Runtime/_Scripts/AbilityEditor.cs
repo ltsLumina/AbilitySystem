@@ -2,7 +2,6 @@
 #if USING_CUSTOM_INSPECTOR
 #region
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
@@ -95,6 +94,12 @@ public class AbilityEditor : Editor
 	bool showAdditional;
 	bool showTextures;
 	int selectedEffect;
+	TextAsset csv;
+	int loadStage
+	{
+		get => EditorPrefs.GetInt("LoadStage", 0);
+		set => EditorPrefs.SetInt("LoadStage", value);
+	}
 
 	public override void OnInspectorGUI()
 	{
@@ -200,10 +205,53 @@ public class AbilityEditor : Editor
 					EditorGUILayout.EndFoldoutHeaderGroup();
 
 					GUILayout.Space(10);
+					GUILayout.Label(string.Empty, GUI.skin.horizontalSlider);
+					GUILayout.Space(20);
 
 					StatusEffect[] statusEffects = Resources.LoadAll<StatusEffect>("Scriptables/Status Effects");
-					string[] displayOptions = statusEffects.Select(e => e.name).ToArray();
+					string[] displayOptions = statusEffects.Select(e => ObjectNames.NicifyVariableName(e.name)).ToArray();
 					displayOptions = displayOptions.Prepend("Select an Effect").ToArray();
+
+					try { csv = (TextAsset) EditorGUILayout.ObjectField("CSV File", csv, typeof(TextAsset), false); } catch (InvalidCastException)
+					{
+						Logger.LogError("The object is not a CSV file.");
+						throw;
+					}
+
+					using (new EditorGUILayout.HorizontalScope())
+					{
+						using (new EditorGUI.DisabledScope(!csv || EditorApplication.isCompiling || EditorApplication.isUpdating))
+						{
+							var loadContent = new GUIContent("Load Effects", "Load status effects from a CSV file.");
+							var refreshContent = new GUIContent("Refresh", "Due to Unity jank, you may need to click this button again for the scriptable objects to appear.");
+
+							if (GUILayout.Button(loadStage == 1 ? refreshContent : loadContent, GUILayout.Height(25)))
+							{
+								// ReSharper disable once SuggestVarOrType_Elsewhere
+								var effectDataList = CSVParser.Parse((TextAsset) (csv ?? Selection.activeObject));
+
+								// Check if the CSV data was valid
+								if (effectDataList != null)
+								{
+									// Write a script for each buff
+									foreach ((string name, string description, string type, string duration, string target, string timing) effect in effectDataList)
+										ScriptWriter.WriteScript(effect.name, effect.description, effect.type, effect.duration, effect.target, effect.timing);
+
+									Logger.Log("C# scripts created successfully!");
+
+									loadStage = loadStage == 0 ? 1 : 0;
+								}
+								else
+								{
+									Logger.LogError("Failed to parse CSV data.");
+									loadStage = 0;
+								}
+							}
+						}
+
+						var refreshIcon = new GUIContent(string.Empty, EditorTextures.Refresh);
+						if (GUILayout.Button(refreshIcon, GUILayout.Width(50), GUILayout.Height(25))) loadStage = 0;
+					}
 
 					using (new EditorGUILayout.HorizontalScope())
 					{
@@ -221,31 +269,9 @@ public class AbilityEditor : Editor
 									newEffect.objectReferenceValue = effect;
 								}
 
+								selectedEffect = 0;
 								serializedObject.ApplyModifiedProperties();
 							}
-						}
-
-						if (GUILayout.Button("LOAD NEW EFFECTS", GUILayout.Width(100)))
-						{
-							// Parse the CSV and get the list of buff data tuples
-							List<(string name, string description, string type, string duration, string target, string appliesTiming)> effectDataList = CSVParser.Parse();
-
-							// Check if the CSV data was valid
-							if (effectDataList != null)
-							{
-								// Write a script for each buff
-								foreach ((string name, string description, string type, string duration, string target, string appliesTiming) effect in effectDataList)
-									ScriptWriter.WriteScript(effect.name, effect.description, effect.type, effect.duration, effect.target, effect.appliesTiming);
-
-								Debug.Log("C# scripts created successfully!");
-							}
-							else { Debug.LogError("Failed to parse CSV data."); }
-						}
-
-						if (GUILayout.Button("REFRESH EFFECTS", GUILayout.Width(100)))
-						{
-							ScriptableObject foo = CreateInstance("DamageOverTime");
-							AssetDatabase.CreateAsset(foo, "Assets/_Project/Runtime/Resources/Scriptables/Status Effects/DamageOverTime.asset");
 						}
 					}
 
@@ -258,19 +284,7 @@ public class AbilityEditor : Editor
 						EditorGUILayout.LabelField(infoContent, EditorStyles.centeredGreyMiniLabel);
 
 						// check if the inspector has been updated
-						if (serializedObject.ApplyModifiedProperties())
-						{
-							for (int i = 0; i < effects.arraySize; i++)
-							{
-								SerializedProperty effect = effects.GetArrayElementAtIndex(i);
-								SerializedProperty time = effect.FindPropertyRelative("time");
-								SerializedProperty owner = effect.FindPropertyRelative("owner");
-
-								SerializedProperty duration = effect.FindPropertyRelative("duration");
-								time.floatValue = duration.intValue;
-								owner.objectReferenceValue = null;
-							}
-						}
+						serializedObject.ApplyModifiedProperties();
 					}
 				}
 			}

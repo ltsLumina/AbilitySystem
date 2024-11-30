@@ -17,111 +17,85 @@ using Debug = UnityEngine.Debug;
 /// </summary>
 public abstract class Entity : MonoBehaviour, IEntity, IDamageable
 {
-    [SerializeField] protected List<StatusEffect> statusEffects = new ();
+	[SerializeField] protected List<StatusEffect> statusEffects = new ();
 
-    public enum ActiveState
-    {
-        Enabled,
-        Disabled,
-    }
+	#region Events
+	public event Action<Entity> OnEntityEnable;
+	public event Action<Entity> OnEntityDisable;
+	public event Action<Entity> OnEntityDestroy;
+	#endregion
 
-    public ActiveState State { get; private set; }
+	void IEntity.OnEnable() => OnEntityEnable?.Invoke(this);
 
-    #region Events
-    public event Action<Entity> OnEntityEnable;
-    public event Action<Entity> OnEntityDisable;
-    public event Action<Entity> OnEntityDestroy;
-    #endregion
+	void IEntity.OnDisable() => OnEntityDisable?.Invoke(this);
 
-    void IEntity.OnEnable() => OnEntityEnable?.Invoke(this);
+	void IEntity.OnDestroy() => OnEntityDestroy?.Invoke(this);
 
-    void IEntity.OnDisable() => OnEntityDisable?.Invoke(this);
+	public virtual void TakeDamage(float damage) => Debug.Log($"{name} took {damage} damage.");
 
-    void IEntity.OnDestroy() => OnEntityDestroy?.Invoke(this);
+	public void ApplyStatusEffects(StatusEffect effect)
+	{
+		StatusEffect existingEffect = statusEffects.FirstOrDefault(e => e.StatusName == effect.StatusName);
 
-    public virtual void TakeDamage(float damage) => Debug.Log($"{name} took {damage} damage.");
+		if (existingEffect)
+		{
+			if (existingEffect.Caster != effect.Caster) statusEffects.Add(effect);
+			else existingEffect.Time = effect.Duration;
+		}
+		else { statusEffects.Add(effect); }
+	}
 
-    public void ApplyStatusEffects(StatusEffect effect)
-    {
-        var existingEffect = statusEffects.FirstOrDefault(e => e.StatusName == effect.StatusName);
+	public override string ToString() => $"{name} ({GetType().Name}) \n";
 
-        if (existingEffect)
-        {
-            if (existingEffect.Caster != effect.Caster) statusEffects.Add(effect);
-            else existingEffect.Time = effect.Duration;
-        }
-        else
-        {
-            statusEffects.Add(effect); 
-        }
-    }
+	bool hasTicked;
 
-    public override string ToString() => $"{name} ({GetType().Name}) \n" + $"State: {State}";
+	protected virtual IEnumerator Start()
+	{
+		Initialize();
 
-    bool hasTicked;
+		TaskCompletionSource<bool> tickTask = InitializeTick();
 
-    protected virtual IEnumerator Start()
-    {
-        Initialize();
+		yield return new WaitForSeconds(1);
+		Debug.Assert(tickTask.Task.IsCompleted, $"{name} has not ticked after 1 second. " + "\nEnsure the TickManager is running and that your entity is calling base.Start() in its Start method.");
 
-        var tickTask = InitializeTick();
+		yield break;
 
-        yield return new WaitForSeconds(1);
-        Debug.Assert(tickTask.Task.IsCompleted, $"{name} has not ticked after 1 second. " + "\nEnsure the TickManager is running and that your entity is calling base.Start() in its Start method.");
+		TaskCompletionSource<bool> InitializeTick()
+		{
+			var tcs = new TaskCompletionSource<bool>();
 
-        yield break;
+			TickManager.OnTick += () =>
+			{
+				OnTick();
+				tcs.TrySetResult(true);
+			};
 
-        TaskCompletionSource<bool> InitializeTick()
-        {
-            var tcs = new TaskCompletionSource<bool>();
+			TickManager.OnCycle += OnCycle;
 
-            TickManager.OnTick += () =>
-            {
-                OnTick();
-                tcs.TrySetResult(true);
-            };
+			return tcs;
+		}
 
-            TickManager.OnCycle += OnCycle;
+		void Initialize()
+		{
+			// any other initialization code here
+			OnEntityEnable += e => { Logger.Log($"{e.name} has been enabled."); };
 
-            return tcs;
-        }
+			OnEntityDisable += e => { Logger.Log($"{e.name} has been disabled."); };
 
-        void Initialize()
-        {
-            // any other initialization code here
-            OnEntityEnable += e =>
-            {
-                Logger.Log($"{e.name} has been enabled.");
-                State = ActiveState.Enabled;
-            };
+			OnEntityDestroy += e => { Logger.Log($"{e.name} has been destroyed."); };
+		}
+	}
 
-            OnEntityDisable += e =>
-            {
-                Logger.Log($"{e.name} has been disabled.");
-                State = ActiveState.Disabled;
-            };
+	public void Remove(StatusEffect effect) => statusEffects.Remove(effect);
 
-            OnEntityDestroy += e => { Logger.Log($"{e.name} has been destroyed."); };
-        }
-    }
+	protected abstract void OnTick();
 
-    void Update()
-    {
-        foreach (StatusEffect effect in statusEffects.ToList())
-        {
-            effect.Time -= Time.deltaTime;
-            if (effect.Time <= 0) statusEffects.Remove(effect);
-        }
-    }
+	protected abstract void OnCycle();
 
-    protected abstract void OnTick();
+	int tickCycles;
 
-    protected abstract void OnCycle();
-
-    int tickCycles;
-
-    void OnCollisionEnter2D(Collision2D other)
-    {
-        if (!other.gameObject.CompareTag("Player")) { Debug.Log($"{name} collided with {other.gameObject.name}."); }
-    }
+	void OnCollisionEnter2D(Collision2D other)
+	{
+		if (!other.gameObject.CompareTag("Player")) Debug.Log($"{name} collided with {other.gameObject.name}.");
+	}
 }

@@ -6,22 +6,18 @@ using UnityEngine;
 
 public static class CSVParser
 {
-	const string filePath = "Effects"; // Path to your CSV file (Resources relative)
-
 	// This method reads the CSV file and returns a list of tuples containing each row's data
-	public static List<(string name, string description, string type, string duration, string target, string appliesTiming)> Parse()
+	public static List<(string name, string description, string type, string duration, string target, string timing)> Parse(TextAsset obj)
 	{
-		var csvData = Resources.Load<TextAsset>(filePath);
-
-		if (csvData == null)
+		if (obj == null)
 		{
-			Debug.LogError("CSV file not found at path: " + filePath);
+			Debug.LogError("CSV file not found.");
 			return null;
 		}
 
-		List<(string name, string description, string type, string duration, string target, string appliesTiming)> buffDataList = new ();
+		List<(string name, string description, string type, string duration, string target, string timing)> buffDataList = new ();
 
-		string[] rows = csvData.text.Split
+		string[] rows = obj.text.Split
 		(new[]
 		 { "\n" }, StringSplitOptions.RemoveEmptyEntries);
 

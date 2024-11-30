@@ -321,6 +321,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a827b104469f4ade8ad61c007a943047, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  statusEffects: []
   data: {fileID: 902245447}
   job: {fileID: 11400000, guid: b6f539e5710b64641bf28e90f7f12a17, type: 2}
   health: 10
@@ -1266,8 +1267,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 553850d4d2c23164daf5d6c9eb9bf2f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  statusEffects: []
   dpsText: {fileID: 1861841997}
-  time: 10
 --- !u!1 &1181066823
 GameObject:
   m_ObjectHideFlags: 0
@@ -2364,54 +2365,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 265365406232580808, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
   m_PrefabInstance: {fileID: 1977180916}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &2085328508
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2085328509}
-  - component: {fileID: 2085328510}
-  m_Layer: 0
-  m_Name: EntityManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &2085328509
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2085328508}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2085328510
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2085328508}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a0205ce402864302940c402eeac5e60c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  entities: []
-  entityStates:
-    serializedKvps: []
-    dividerPos: 0.33
 --- !u!1001 &5898334225754631765
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2537,7 +2490,6 @@ SceneRoots:
   - {fileID: 1582539043}
   - {fileID: 619394802}
   - {fileID: 211791242}
-  - {fileID: 2085328509}
   - {fileID: 1502134708}
   - {fileID: 454836619}
   - {fileID: 1034962083}
