@@ -1,4 +1,10 @@
-﻿/// <summary>
+﻿#region
+using System.Globalization;
+using UnityEditor;
+using UnityEngine;
+#endregion
+
+/// <summary>
 ///     Contains the default settings for abilities.
 /// </summary>
 public struct AbilitySettings
@@ -28,5 +34,23 @@ public struct AbilitySettings
 		public const string STATUS_EFFECTS = "Assets/_Project/Runtime/Resources/Scriptables/Status Effects";
 		public const string STATUS_EFFECTS_CS = "Assets/_Project/Runtime/_Scripts/Status Effects";
 		public const string JOB = "Assets/_Project/Runtime/_Scriptables/Jobs";
+	}
+}
+
+public static class ProjectSettingsProvider
+{
+	[SettingsProvider]
+	public static SettingsProvider CreateProjectSettingsProvider()
+	{
+		var provider = new SettingsProvider("Project/Ability Settings", SettingsScope.Project)
+		{ label = "Ability Settings",
+		  guiHandler = searchContext =>
+		  {
+			  GUILayout.Label("Ability Settings", EditorStyles.boldLabel);
+			  EditorGUILayout.LabelField("Global Cooldown", AbilitySettings.GlobalCooldown.ToString(CultureInfo.InvariantCulture));
+			  EditorGUILayout.LabelField("DoT Rate", AbilitySettings.DoT_Rate.ToString());
+		  } };
+
+		return provider;
 	}
 }

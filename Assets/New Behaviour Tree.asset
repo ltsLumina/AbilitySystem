@@ -1,0 +1,179 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d285eb63c2cdd74180de7cfceaa96ad, type: 3}
+  m_Name: New Behaviour Tree
+  m_EditorClassIdentifier: 
+  rootNode:
+    rid: 8718651143110787265
+  nodes:
+  - rid: 8718651143110787265
+  - rid: 8718651143110787286
+  - rid: 8718651143110787289
+  - rid: 8718651143110787296
+  - rid: 8718651143110787297
+  - rid: 8718651143110787298
+  - rid: 8718651143110787305
+  - rid: 8718651143110787310
+  - rid: 8718651143110787312
+  - rid: 8718651143110787318
+  blackboard:
+    keys:
+    - rid: 8718651143110787306
+  viewPosition: {x: 349, y: 101, z: 0}
+  viewScale: {x: 0.57175326, y: 0.57175326, z: 1}
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 8718651143110787265
+      type: {class: RootNode, ns: TheKiwiCoder, asm: thekiwicoder.behaviourtreeeditor}
+      data:
+        started: 0
+        guid: 962fc2c1-71be-41b8-876f-82fb8d239d87
+        position: {x: 0, y: 0}
+        blackboard:
+          keys: []
+        description: 
+        drawGizmos: 0
+        child:
+          rid: 8718651143110787305
+    - rid: 8718651143110787286
+      type: {class: Wait, ns: TheKiwiCoder, asm: thekiwicoder.behaviourtreeeditor}
+      data:
+        started: 0
+        guid: 23505be6c95d86549b0840482fa4203a
+        position: {x: 240, y: 675}
+        blackboard:
+          keys: []
+        description: 
+        drawGizmos: 0
+        duration:
+          reference:
+            rid: -2
+          defaultValue: 1
+    - rid: 8718651143110787289
+      type: {class: CompareProperty, ns: TheKiwiCoder, asm: thekiwicoder.behaviourtreeeditor}
+      data:
+        started: 0
+        guid: bca5e71f831a5e24895d4532107859a3
+        position: {x: -465, y: 675}
+        blackboard:
+          keys: []
+        description: 
+        drawGizmos: 0
+        pair:
+          key:
+            rid: 8718651143110787306
+          value:
+            rid: 8718651143110787295
+    - rid: 8718651143110787295
+      type: {class: BooleanKey, ns: TheKiwiCoder, asm: thekiwicoder.behaviourtreeeditor}
+      data:
+        name: 
+        typeName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+        value: 0
+    - rid: 8718651143110787296
+      type: {class: Sequencer, ns: TheKiwiCoder, asm: thekiwicoder.behaviourtreeeditor}
+      data:
+        started: 0
+        guid: 2be2ca5fefc410c46bca413e9a60f737
+        position: {x: -105, y: 450}
+        blackboard:
+          keys: []
+        description: 
+        drawGizmos: 0
+        children:
+        - rid: 8718651143110787318
+        - rid: 8718651143110787310
+        - rid: 8718651143110787286
+        - rid: 8718651143110787312
+    - rid: 8718651143110787297
+      type: {class: Sequencer, ns: TheKiwiCoder, asm: thekiwicoder.behaviourtreeeditor}
+      data:
+        started: 0
+        guid: 5780ee6e549a66a48bede4b756e97255
+        position: {x: -285, y: 450}
+        blackboard:
+          keys: []
+        description: 
+        drawGizmos: 0
+        children:
+        - rid: 8718651143110787289
+        - rid: 8718651143110787298
+    - rid: 8718651143110787298
+      type: {class: Log, ns: TheKiwiCoder, asm: thekiwicoder.behaviourtreeeditor}
+      data:
+        started: 0
+        guid: ec359c1b3255cc24c913137e1ce63755
+        position: {x: -285, y: 675}
+        blackboard:
+          keys: []
+        description: 
+        drawGizmos: 0
+        message:
+          reference:
+            rid: -2
+          defaultValue: Fallback!
+    - rid: 8718651143110787305
+      type: {class: Selector, ns: TheKiwiCoder, asm: thekiwicoder.behaviourtreeeditor}
+      data:
+        started: 0
+        guid: 6841a8f6a270e7449b22fd3c448549a9
+        position: {x: 0, y: 225}
+        blackboard:
+          keys: []
+        description: 
+        drawGizmos: 0
+        children:
+        - rid: 8718651143110787297
+        - rid: 8718651143110787296
+    - rid: 8718651143110787306
+      type: {class: BooleanKey, ns: TheKiwiCoder, asm: thekiwicoder.behaviourtreeeditor}
+      data:
+        name: Health > 50%
+        typeName: System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089
+        value: 1
+    - rid: 8718651143110787310
+      type: {class: Move, ns: , asm: Assembly-CSharp}
+      data:
+        started: 0
+        guid: 52ce7ea3fa31c0f41862ec19546e2834
+        position: {x: 90, y: 675}
+        blackboard:
+          keys: []
+        description: 
+        drawGizmos: 0
+    - rid: 8718651143110787312
+      type: {class: Attack, ns: , asm: Assembly-CSharp}
+      data:
+        started: 0
+        guid: 4073ee1dd5e9d2f46b0f7c855cb23443
+        position: {x: 390, y: 675}
+        blackboard:
+          keys: []
+        description: 
+        drawGizmos: 0
+    - rid: 8718651143110787318
+      type: {class: Wait, ns: TheKiwiCoder, asm: thekiwicoder.behaviourtreeeditor}
+      data:
+        started: 0
+        guid: 6ebdf2e51e6844f4b9151d8313dac1ae
+        position: {x: -60, y: 675}
+        blackboard:
+          keys: []
+        description: 
+        drawGizmos: 0
+        duration:
+          reference:
+            rid: -2
+          defaultValue: 5
