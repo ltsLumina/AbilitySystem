@@ -559,7 +559,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 1
-  m_AdditionalShaderChannelsFlag: 1
+  m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
@@ -577,6 +577,8 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 208732000}
+  - {fileID: 1653493229}
+  - {fileID: 1824034229}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -1677,6 +1679,156 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Asset: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_ActionId: 44b200b1-1557-4083-816c-b22cbdf77ddf
+--- !u!1001 &1653493228
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 489482139}
+    m_Modifications:
+    - target: {fileID: 1186182694337519504, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1186182694337519504, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1186182694337519504, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1785921475954316490, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1785921475954316490, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1785921475954316490, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2226479572751101321, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_Name
+      value: Golem's Claymore
+      objectReference: {fileID: 0}
+    - target: {fileID: 3416775825951618982, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4512618014219007455, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4512618014219007455, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4512618014219007455, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4512618014219007455, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4512618014219007455, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4512618014219007455, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4512618014219007455, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 4512618014219007455, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 4512618014219007455, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4512618014219007455, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4512618014219007455, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4512618014219007455, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4512618014219007455, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4512618014219007455, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4512618014219007455, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4512618014219007455, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 450
+      objectReference: {fileID: 0}
+    - target: {fileID: 4512618014219007455, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4512618014219007455, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4512618014219007455, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4512618014219007455, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7306515147655849752, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_text
+      value: "Every 20 seconds, grants you Dragon Sight for 5 seconds, and then slices
+        the air around you, dealing 500 damage to nearby enemies. \nAlso slows your
+        movement speed slightly."
+      objectReference: {fileID: 0}
+    - target: {fileID: 8279445739444331097, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8279445739444331097, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8972371443920382038, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: description
+      value: "Every {3} seconds, grants you {0} for {2} seconds, and then slices
+        the air around you, dealing {1} damage to nearby enemies. \nAlso slows your
+        movement speed slightly."
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+--- !u!224 &1653493229 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 4512618014219007455, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+  m_PrefabInstance: {fileID: 1653493228}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1800267624
 GameObject:
   m_ObjectHideFlags: 0
@@ -1911,6 +2063,191 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 519420031}
+--- !u!1001 &1824034228
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 489482139}
+    m_Modifications:
+    - target: {fileID: 1186182694337519504, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1186182694337519504, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1186182694337519504, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1186182694337519504, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1186182694337519504, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -36.666664
+      objectReference: {fileID: 0}
+    - target: {fileID: 1785921475954316490, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1785921475954316490, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1785921475954316490, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1785921475954316490, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1785921475954316490, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -18.333332
+      objectReference: {fileID: 0}
+    - target: {fileID: 2226479572751101321, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_Name
+      value: Witch's Cloak (W.I.P)
+      objectReference: {fileID: 0}
+    - target: {fileID: 2226479572751101321, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3416775825951618982, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4512618014219007455, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4512618014219007455, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4512618014219007455, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4512618014219007455, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4512618014219007455, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4512618014219007455, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4512618014219007455, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 4512618014219007455, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 4512618014219007455, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4512618014219007455, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4512618014219007455, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4512618014219007455, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4512618014219007455, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4512618014219007455, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4512618014219007455, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4512618014219007455, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -352.4685
+      objectReference: {fileID: 0}
+    - target: {fileID: 4512618014219007455, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4512618014219007455, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4512618014219007455, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4512618014219007455, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7306515147655849752, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_text
+      value: "Every 20 seconds, grants you Dragon Sight for 5 seconds, and then slices
+        the air around you, dealing 500 damage to nearby enemies. \nAlso slows your
+        movement speed slightly."
+      objectReference: {fileID: 0}
+    - target: {fileID: 8279445739444331097, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8279445739444331097, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8279445739444331097, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8279445739444331097, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8972371443920382038, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: name
+      value: Witch's Cloak
+      objectReference: {fileID: 0}
+    - target: {fileID: 8972371443920382038, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+      propertyPath: description
+      value: 'Your Secondary deals {x} more damage.
+
+        Debuffs you place deal
+        {y} more damage.
+
+        Slightly increases movement speed.'
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+--- !u!224 &1824034229 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 4512618014219007455, guid: 11e5993b396a9454e9e8476f4ca4a096, type: 3}
+  m_PrefabInstance: {fileID: 1824034228}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1861841995
 GameObject:
   m_ObjectHideFlags: 0

@@ -9,10 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0e243aabec6d32a42a52bdc6ef8b7a85, type: 3}
-  m_Name: Phlegmaticism
+  m_Script: {fileID: 11500000, guid: 27279103bad799a4e9a25365fe2cbdaa, type: 3}
+  m_Name: Phlegmacism
   m_EditorClassIdentifier: 
-  statusName: Phlegmaticism
+  statusName: Phlegmacism
   description: Cast a divine veil around yourself and your allies, protecting everyone
     from one instance of damage.
   duration: 12
