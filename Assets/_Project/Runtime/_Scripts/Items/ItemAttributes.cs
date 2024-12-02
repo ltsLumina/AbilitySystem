@@ -8,7 +8,7 @@ public abstract class ItemAttributes : ScriptableObject
 {
 	[Header("Active Item Properties")]
 
-	[SerializeField] Buff buff;
+	[SerializeField] StatusEffect effect;
 	[SerializeField] int damage;
 	[SerializeField] float duration; // The duration of the potential effect the item has.
 	[SerializeField] float cooldown;
@@ -20,10 +20,10 @@ public abstract class ItemAttributes : ScriptableObject
 	public TMP_Text cooldownText { get; set; }
 	TMP_Text cooldownValueText { get; set; }
 
-	public Buff Buff
+	public StatusEffect Effect
 	{
-		get => buff;
-		set => buff = value;
+		get => effect;
+		set => effect = value;
 	}
 	public int Damage
 	{
@@ -46,6 +46,8 @@ public abstract class ItemAttributes : ScriptableObject
 
 	void OnValidate()
 	{
+		if (damageText == null || durationText == null || cooldownText == null) return;
+
 		damageValueText = damageText.transform.GetChild(0).GetComponent<TMP_Text>();
 		durationValueText = durationText.transform.GetChild(0).GetComponent<TMP_Text>();
 		cooldownValueText = cooldownText.transform.GetChild(0).GetComponent<TMP_Text>();
@@ -54,7 +56,7 @@ public abstract class ItemAttributes : ScriptableObject
 		durationValueText.text = $"({Duration}s)";
 		cooldownValueText.text = $"{Cooldown}s";
 
-		Item.RefreshText();
+		Item.RefreshDescription();
 	}
 
 	public void Invoke()

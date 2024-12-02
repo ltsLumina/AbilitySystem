@@ -552,6 +552,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3473167100580430663}
+  - {fileID: 5799713459123775153}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -572,14 +573,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   name: Golem's Claymore
-  description: "Every {2} seconds, grants you STONESKIN for {1} seconds, and then
-    slices the air around you, dealing {0} damage to nearby enemies. \nAlso slows
-    your movement speed slightly."
-  rarity: 0
+  description: "Every {3} seconds, grants you {0} for {2} seconds, and then slices
+    the air around you, dealing {1} damage to nearby enemies. \nAlso slows your movement
+    speed slightly."
+  rarity: 2
   type: 1
-  hasAttributes: 1
-  attributes: {fileID: 11400000, guid: 750701d0e6e69af4190e860d66b6c74c, type: 2}
-  attributesParent: {fileID: 3506369311116152691}
+  active: {fileID: 11400000, guid: 750701d0e6e69af4190e860d66b6c74c, type: 2}
+  passive: {fileID: 0}
 --- !u!1 &2338120087279898319
 GameObject:
   m_ObjectHideFlags: 0
@@ -605,12 +605,12 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2338120087279898319}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 3473167100580430663}
+  m_Father: {fileID: 4512618014219007455}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1773,7 +1773,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 307226881833561041}
-  - {fileID: 5799713459123775153}
   m_Father: {fileID: 4512618014219007455}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -1802,7 +1801,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.039215688, g: 0.09019608, b: 0.0627451, a: 1}
+  m_Color: {r: 0.015000001, g: 0.1, b: 0.044999998, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1831,7 +1830,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_EffectColor: {r: 0.42352945, g: 0.9607844, b: 0.6745098, a: 0.5}
+  m_EffectColor: {r: 0.15, g: 1, b: 0.45, a: 1}
   m_EffectDistance: {x: 2.5, y: 2.5}
   m_UseGraphicAlpha: 1
 --- !u!114 &3416775825951618982
@@ -1914,9 +1913,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Every 5 seconds, grants you STONESKIN for 500 seconds, and then slices
-    the air around you, dealing Dragon Sight damage to nearby enemies. \nAlso slows
-    your movement speed slightly."
+  m_text: "Every 20 seconds, grants you Dragon Sight for 5 seconds, and then slices
+    the air around you, dealing 500 damage to nearby enemies. \nAlso slows your movement
+    speed slightly."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

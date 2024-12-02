@@ -10,11 +10,11 @@ public class Item : MonoBehaviour
 {
 	public enum Rarity
 	{
-		[InspectorName("Grey")] Common,    // Grey
-		[InspectorName("Blue")] Rare,      // Blue
-		[InspectorName("Purple")] Epic,    // Purple
-		[InspectorName("Gold")] Legendary, // Gold
-		[InspectorName("Red")] Mythic,     // Red
+		Ruby,
+		Garnet,
+		Emerald,
+		Sapphire,
+		Opal,
 	}
 
 	[SuppressMessage("ReSharper", "UnusedMember.Global")]
@@ -31,58 +31,100 @@ public class Item : MonoBehaviour
 	[SerializeField] string description;
 
 	[Space(10)]
-	[SerializeField] Rarity rarity;
-	[Header("Item Type")]
+	[Header("Item Properties")]
 
+	[SerializeField] Rarity rarity;
 	[Tooltip("The type of item. \nSome items are passive, while others are active. Active Items have additional fields.")]
 	[SerializeField] ItemType type;
 
-	[Space(10)]
+	[Space(5)]
+	GameObject attributesParent;
+	[Space(5)]
 	[Tooltip("Whether or not this item has attributes such as damage, duration, and cooldown. \nUse the scriptable object to set these values.")]
-	[HideIf(nameof(type), ItemType.Passive)]
-	[SerializeField] bool hasAttributes;
-	[SerializeField] ItemAttributes attributes;
-
-	[Header("Item Attributes")]
-
-	[SerializeField] GameObject attributesParent;
+	[ShowIf(nameof(type), ItemType.Active)]
+	[SerializeField] ItemAttributes active;
+	[EndIf]
+	[Space(10)]
+	[ShowIf(nameof(type), ItemType.Passive)]
+	[SerializeField] ItemAttributes passive;
 
 	TMP_Text descriptionText;
 
 	public void Invoke()
 	{
-		if (type == ItemType.Active) attributes.Invoke();
-		else Logger.LogWarning($"{name} is a passive item and cannot be invoked.");
+		// ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
+		switch (type)
+		{
+			case ItemType.Active:
+				active.Invoke();
+				break;
+
+			case ItemType.Passive:
+				passive.Invoke();
+				break;
+		}
 	}
+
+	Color color;
 
 	public void OnValidate()
 	{
+		if (transform.childCount == 0) return;
+
 		if (!string.IsNullOrEmpty(name)) gameObject.name = name;
 		else name = gameObject.name;
 
-		var check = transform.GetComponentInChildren<VerticalLayoutGroup>(true);
-		if (!check) return;
+		attributesParent = transform.GetComponentInChildren<VerticalLayoutGroup>(true).gameObject;
 
-		attributesParent = check.gameObject;
-		attributesParent.SetActive(hasAttributes);
+		// update title text
+		attributesParent.transform.parent.GetChild(0).GetComponent<TMP_Text>().text = name;
+		RefreshDescription();
 
-		if (hasAttributes)
+		#region Properties
+		// set the color based on the name of the rarity
+		color = rarity switch
+		{ Rarity.Ruby     => new (1f, 0.3f, 0.35f),
+		  Rarity.Garnet   => new (1f, 0.7f, 0.5f),
+		  Rarity.Emerald  => new (0.15f, 1f, 0.45f),
+		  Rarity.Sapphire => new (0.1f, 0.6f, 1f),
+		  Rarity.Opal     => new (0.72f, 0.68f, 0.97f),
+		  _               => Color.white };
+
+		var background = transform.GetChild(0).GetComponent<Image>();
+		Color bgColor = color * .1f;
+		bgColor.a = 1f;
+		background.color = bgColor;
+
+		var outline = transform.GetChild(0).GetComponent<Outline>();
+		outline.effectColor = color;
+		#endregion
+
+		#region Attributes
+		attributesParent.SetActive(type == ItemType.Active);
+
+		if (type == ItemType.Active)
 		{
-			descriptionText = attributesParent.transform.parent.GetChild(2).GetComponent<TMP_Text>();
 			var damageText = attributesParent.transform.GetChild(0).GetComponentInChildren<TMP_Text>();
 			var durationText = attributesParent.transform.GetChild(1).GetComponentInChildren<TMP_Text>();
 			var cooldownText = attributesParent.transform.GetChild(2).GetComponentInChildren<TMP_Text>();
 
-			RefreshText();
+			if (active == null) return;
+			active.damageText = damageText;
+			active.durationText = durationText;
+			active.cooldownText = cooldownText;
 
-			Debug.Assert(attributes, $"{name} has attributes enabled, but an attribute type has not been set.");
-			attributes.damageText = damageText;
-			attributes.durationText = durationText;
-			attributes.cooldownText = cooldownText;
-
-			attributes.Item = this;
+			active.Item = this;
 		}
+		#endregion
 	}
 
-	public void RefreshText() => descriptionText.text = string.Format(description, attributes.Buff.StatusName, attributes.Damage, attributes.Duration, attributes.Cooldown);
+	public void RefreshDescription()
+	{
+		descriptionText = attributesParent.transform.parent.GetChild(2).GetComponent<TMP_Text>();
+
+		descriptionText.text = type switch
+		{ ItemType.Active  => string.Format(description, active?.Effect.StatusName, active?.Damage, active?.Duration, active?.Cooldown),
+		  ItemType.Passive => string.Format(description, passive?.Effect.StatusName, passive?.Damage, passive?.Duration, passive?.Cooldown),
+		  _                => descriptionText.text };
+	}
 }
