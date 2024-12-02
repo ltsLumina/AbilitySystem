@@ -4,7 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using DG.Tweening;
 using JetBrains.Annotations;
 using Lumina.Essentials.Attributes;
 using Unity.Properties;
@@ -54,10 +53,12 @@ public abstract class StatusEffect : ScriptableObject
 		set => caster = value;
 	}
 
+#if UNITY_EDITOR
 	protected new string name => base.name = string.IsNullOrEmpty
 			(Path.GetFileName(AssetDatabase.GetAssetPath(this)).Replace(".asset", string.Empty))
 			? statusName
 			: Path.GetFileName(AssetDatabase.GetAssetPath(this)).Replace(".asset", string.Empty);
+#endif
 
 	public override string ToString() => $"{statusName} ({duration} seconds)";
 
@@ -79,11 +80,9 @@ public abstract class StatusEffect : ScriptableObject
 		if (target == Target.Self) entityTarget = player;
 		entity = entityTarget;
 
-		VisualEffect(entityTarget);
 		entityTarget.AddStatusEffect(this);
 
 		OnInvoke();
-
 		Logger.Log($"Applied {this} to {entityTarget}");
 	}
 
@@ -115,12 +114,18 @@ public abstract class StatusEffect : ScriptableObject
 	}
 
 	/// <summary>
-	///     Callback for when a status effect has decayed.
+	/// OnInvoke is called when the status effect is invoked.
+	/// </summary>
+	protected virtual void OnInvoke() { }
+	/// <summary>
+	/// OnDecay is called when the status effect has decayed.
 	/// </summary>
 	protected virtual void OnDecay() { }
-	public event Action<StatusEffect> OnDecayed;
 
-	protected virtual void OnInvoke() { }
+	/// <summary>
+	///     Callback for when a status effect has decayed.
+	/// </summary>
+	public event Action<StatusEffect> OnDecayed;
 
 	public virtual void Reset()
 	{
@@ -131,8 +136,23 @@ public abstract class StatusEffect : ScriptableObject
 		timing = Timing.Postfix;
 	}
 
-	protected void DamageOverTime(Entity entityTarget, float damage)
+	public void Reapply()
 	{
+		entity.StopCoroutine(decayCoroutine);
+		Time = Duration;
+		decayCoroutine = CoroutineHelper.StartCoroutine(Decay());
+	}
+
+	/// <summary>
+	///     The StatusEffect base class provides a method for applying damage over time to an entity.
+	///     There are multiple effects that apply a DoT, so this method is provided to avoid code duplication.
+	/// </summary>
+	/// <param name="entityTarget"> The entity to apply the DoT to. </param>
+	/// <param name="damage"> The amount of damage to apply. </param>
+	/// <param name="onTick"> An optional callback for when the DoT ticks. </param>
+	protected void DamageOverTime(Entity entityTarget, float damage, Action onTick = null)
+	{
+		// initial damage
 		entityTarget.TryGetComponent(out IDamageable damageable);
 		damageable?.TakeDamage(damage);
 
@@ -160,30 +180,13 @@ public abstract class StatusEffect : ScriptableObject
 			{
 				damageable?.TakeDamage(damage);
 				dotTick++;
+				onTick?.Invoke();
 			}
 		}
 	}
 	#endregion
 
 	#region Utility
-	static GameObject GetPooledObject(GameObject prefab) => ObjectPoolManager.FindObjectPool(prefab, 5).GetPooledObject(true);
-
-	protected static void VisualEffect(Entity target, bool isDoT = false)
-	{
-		var prefab = Resources.Load<GameObject>("PREFABS/Effect");
-		GameObject pooled = GetPooledObject(prefab);
-		pooled.transform.position = target.transform.position;
-		pooled.transform.localScale = isDoT ? new (0.5f, 0.5f) : new (1, 1);
-		var sprite = pooled.GetComponent<SpriteRenderer>();
-
-		sprite.DOFade(0, 1).OnComplete
-		(() =>
-		{
-			sprite.DOFade(1, 0);
-			pooled.SetActive(false);
-		});
-	}
-
 	/// <summary>
 	///     Callback for when a status effect is instantiated.
 	///     The parameters are the status effect that was instantiated and the entity that the status effect was applied to.
@@ -209,74 +212,6 @@ public abstract class Debuff : StatusEffect // Just a marker class
 {
 }
 #endregion
-
-[CustomEditor(typeof(StatusEffect), true)]
-public class StatusEffectEditor : Editor
-{
-	SerializedProperty statusName;
-	SerializedProperty description;
-	SerializedProperty duration;
-	new SerializedProperty target;
-	SerializedProperty timing;
-	SerializedProperty time;
-	SerializedProperty caster;
-
-	void OnEnable()
-	{
-		statusName = serializedObject.FindProperty("statusName");
-		description = serializedObject.FindProperty("description");
-		duration = serializedObject.FindProperty("duration");
-		target = serializedObject.FindProperty("target");
-		timing = serializedObject.FindProperty("timing");
-		time = serializedObject.FindProperty("time");
-		caster = serializedObject.FindProperty("caster");
-	}
-
-	bool showInfo = true;
-
-	public override void OnInspectorGUI()
-	{
-		serializedObject.Update();
-
-		var headerButtonStyle = new GUIStyle(GUI.skin.label)
-		{ alignment = TextAnchor.MiddleCenter, fontStyle = FontStyle.Bold, fontSize = 14 };
-
-		using (new GUILayout.HorizontalScope("textField")) { showInfo = EditorGUILayout.BeginFoldoutHeaderGroup(showInfo, "Ability Info", headerButtonStyle); }
-
-		{
-			if (showInfo)
-				using (new GUILayout.VerticalScope("box"))
-				{
-					EditorGUILayout.PropertyField(statusName);
-					EditorGUILayout.PropertyField(description);
-
-					if (Application.isPlaying) EditorGUILayout.LabelField("Time Remaining", time.floatValue.ToString("F1"), GUI.skin.textField);
-					else EditorGUILayout.PropertyField(duration);
-
-					EditorGUILayout.PropertyField(target);
-
-					switch (timing.enumValueIndex)
-					{
-						case 0: {
-							var earlyContent = new GUIContent("Prefix", "Applies before damage is applied.");
-							timing.enumValueIndex = EditorGUILayout.Popup(earlyContent, timing.enumValueIndex, Enum.GetNames(typeof(StatusEffect.Timing)));
-							break;
-						}
-
-						case 1: {
-							var lateContent = new GUIContent("Postfix", "Applies after damage is applied.");
-							timing.enumValueIndex = EditorGUILayout.Popup(lateContent, timing.enumValueIndex, Enum.GetNames(typeof(StatusEffect.Timing)));
-							break;
-						}
-					}
-				}
-
-			EditorGUILayout.EndFoldoutHeaderGroup();
-		}
-
-		serializedObject.ApplyModifiedProperties();
-	}
-}
 
 public static class StatusEffectExtensions
 {

@@ -42,16 +42,16 @@ public abstract class Entity : MonoBehaviour, IEntity, IDamageable
 		if (existingEffect)
 		{
 			if (existingEffect.Caster != effect.Caster) statusEffects.Add(effect);
-			else existingEffect.Time = effect.Duration;
+			else existingEffect.Reapply();
 		}
-		else { statusEffects.Add(effect); }
+		else statusEffects.Add(effect);
 	}
 
 	public override string ToString() => $"{name} ({GetType().Name}) \n";
 
 	bool hasTicked;
 
-	protected virtual IEnumerator Start()
+	protected IEnumerator Start()
 	{
 		Initialize();
 
@@ -73,12 +73,13 @@ public abstract class Entity : MonoBehaviour, IEntity, IDamageable
 			};
 
 			TickManager.OnCycle += OnCycle;
-
 			return tcs;
 		}
 
 		void Initialize()
 		{
+			OnStart();
+
 			// any other initialization code here
 			OnEntityEnable += e => { Logger.Log($"{e.name} has been enabled."); };
 
@@ -88,9 +89,11 @@ public abstract class Entity : MonoBehaviour, IEntity, IDamageable
 		}
 	}
 
-	protected abstract void OnTick();
+	protected virtual void OnStart() { }
 
-	protected abstract void OnCycle();
+	protected virtual void OnTick() { }
+
+	protected virtual void OnCycle() { }
 
 	int tickCycles;
 

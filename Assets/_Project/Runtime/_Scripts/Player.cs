@@ -52,15 +52,13 @@ public class Player : Entity
 
 	void Reset() => gameObject.tag = "Player";
 
-	protected override IEnumerator Start()
+	protected override void OnStart()
 	{
 		inputs = GetComponentInChildren<InputManager>();
 		playerInput = inputs.GetComponent<PlayerInput>();
 		rb = GetComponent<Rigidbody2D>();
 
 		Rebind(mouseMove);
-
-		return base.Start();
 	}
 
 	void Rebind(bool useMouseBindings)
@@ -100,6 +98,8 @@ public class Player : Entity
 
 	void MouseMove()
 	{
+		inputs.OverrideMoveInput((CameraMain.ScreenToWorldPoint(Input.mousePosition) - transform.position).normalized);
+
 		Vector3 mousePos = CameraMain.ScreenToWorldPoint(Input.mousePosition);
 		Vector3 dir = (mousePos - transform.position).normalized;
 		rb.AddForce(dir * speed);

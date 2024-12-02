@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using DG.Tweening;
 using UnityEngine;
 using static Job;
 #endregion
@@ -79,6 +80,10 @@ public sealed class Ability : ScriptableObject
 		}
 	}
 
+	/// <returns> Returns true if the ability is actively being cast, otherwise false. </returns>
+	public bool casting => castCoroutine != null;
+
+	/// <returns> Returns true if the ability uses a cast time, otherwise false. </returns>
 	public bool cancellable => cooldownType == CooldownType.Cast;
 
 	public bool cancelled
@@ -91,6 +96,10 @@ public sealed class Ability : ScriptableObject
 	}
 
 	public override string ToString() => abilityName == string.Empty ? name : abilityName;
+
+	void OnDisable()
+	{ /* not called when Disable Domain Reload is active. */
+	}
 
 	public void Invoke()
 	{
@@ -128,10 +137,6 @@ public sealed class Ability : ScriptableObject
 			return (player == null ? null : entities.Where(entity => entity != player).OrderBy(entity => Vector2.Distance(player.transform.position, entity.transform.position)).FirstOrDefault()) ??
 			       throw new InvalidOperationException();
 		}
-	}
-
-	void OnDisable() // Won't be called with "Disable Domain Reload" enabled.
-	{
 	}
 
 	#region Casting
@@ -191,6 +196,8 @@ public sealed class Ability : ScriptableObject
 
 	void ApplyEffects(Entity target)
 	{
+		VisualEffect(target);
+
 		(List<StatusEffect> prefix, List<StatusEffect> postfix) = effects.Load();
 
 		target.TryGetComponent(out IDamageable enemy);
@@ -200,38 +207,23 @@ public sealed class Ability : ScriptableObject
 		if (postfix.Count > 0) postfix.Apply((target, player));
 	}
 
-	void DamageOverTime(Entity target)
+	static void VisualEffect(Entity target, bool isDoT = false)
 	{
-		OnGlobalCooldown?.Invoke();
+		var prefab = Resources.Load<GameObject>("PREFABS/Effect");
+		GameObject pooled = GetPooledObject();
+		pooled.transform.position = target.transform.position;
+		pooled.transform.localScale = isDoT ? new (0.5f, 0.5f) : new (1, 1);
+		var sprite = pooled.GetComponent<SpriteRenderer>();
 
-		target.TryGetComponent(out IDamageable damageable);
-		damageable?.TakeDamage(damage);
-
-		int cycle = 0;
-		int dotTick = 0;
-		int dotTicks = effects.Find(effect => effect.StatusName == "DoT").Duration / AbilitySettings.DoT_Rate - 1;
-
-		// TODO: if the DoT is already running when it is re-applied, reset the cycle count.
-		//  Probably will check if they have a debuff applied.
-		TickManager.OnCycle += OnCycle;
+		sprite.DOFade(0, 1).OnComplete
+		(() =>
+		{
+			sprite.DOFade(1, 0);
+			pooled.SetActive(false);
+		});
 
 		return;
 
-		void OnCycle()
-		{
-			if (dotTick == dotTicks)
-			{
-				TickManager.OnCycle -= OnCycle;
-				return;
-			}
-
-			cycle++;
-
-			if (cycle % AbilitySettings.DoT_Rate == 0) // If DoT_Rate is 3, this will tick on cycle 3, 6, 9, etc.
-			{
-				damageable?.TakeDamage(damage);
-				dotTick++;
-			}
-		}
+		GameObject GetPooledObject() => ObjectPoolManager.FindObjectPool(prefab, 5).GetPooledObject(true);
 	}
 }

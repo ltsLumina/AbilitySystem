@@ -1,17 +1,50 @@
-﻿/// <summary>
+﻿#region
+using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+#endregion
+
+/// <summary>
 ///     Contains the default settings for abilities.
 /// </summary>
-public struct AbilitySettings
+public class AbilitySettings : ScriptableObject
 {
-	/// <summary>
-	///     The default GCD cooldown.
-	/// </summary>
-	public static float GlobalCooldown => 1.5f;
+	const string k_MyCustomSettingsPath = "Assets/_Project/Editor/AbilitySettings.asset";
 
-	/// <summary>
-	///     <para> A DoT will deal damage every X tick cycles. </para>
-	/// </summary>
-	public static int DoT_Rate => 3;
+#pragma warning disable CS0414 // Field is assigned but its value is never used
+	[SerializeField] float globalCooldown = 1.5f;
+	[SerializeField] int dotRate = 3;
+#pragma warning restore CS0414 // Field is assigned but its value is never used
+
+#if UNITY_EDITOR
+	static AbilitySettings GetOrCreateSettings()
+	{
+		var settings = AssetDatabase.LoadAssetAtPath<AbilitySettings>(k_MyCustomSettingsPath);
+
+		if (settings == null)
+		{
+			settings = CreateInstance<AbilitySettings>();
+			settings.globalCooldown = 1.5f;
+			settings.dotRate = 3;
+
+			AssetDatabase.CreateAsset(settings, k_MyCustomSettingsPath);
+			AssetDatabase.SaveAssets();
+		}
+
+		return settings;
+	}
+
+	public static SerializedObject GetSerializedSettings() => new (GetOrCreateSettings());
+#endif
+
+#if UNITY_EDITOR
+	public static float GlobalCooldown => GetOrCreateSettings().globalCooldown;
+	public static int DoT_Rate => GetOrCreateSettings().dotRate;
+#else
+ public static float GlobalCooldown => 1.5f;
+ public static int DoT_Rate => 3;
+#endif
 
 	public struct ResourcePaths
 	{
