@@ -166,7 +166,7 @@ public sealed class Ability : ScriptableObject
 	void GlobalCooldown(Entity target)
 	{
 		OnGlobalCooldown?.Invoke();
-
+		
 		ApplyEffects(target);
 	}
 
