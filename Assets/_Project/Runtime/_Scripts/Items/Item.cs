@@ -1,82 +1,53 @@
-﻿using System;
-using System.Collections.Generic;
+﻿#region
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using TMPro;
 using UnityEngine;
-using VInspector;
+#endregion
 
-public abstract class Item : MonoBehaviour
+public abstract class Item : ScriptableObject
 {
-    [SuppressMessage("ReSharper", "UnusedMember.Global")]
-    public enum Rarity
-    {
-        [InspectorName("Grey")] Common,    // Grey
-        [InspectorName("Blue")] Rare,      // Blue
-        [InspectorName("Purple")] Epic,    // Purple
-        [InspectorName("Gold")] Legendary, // Gold
-        [InspectorName("Red")] Mythic,     // Red
-    }
-    
-    [Serializable]
-    public enum Attributes
-    {
-        Damage,
-        Duration,
-        Cooldown,
-        Buff,
-    }
+	[SuppressMessage("ReSharper", "UnusedMember.Global")]
+	public enum Rarity
+	{
+		Jade,
+		Amber,
+		Quartz,
+		Sapphire,
+		Ruby,
+	}
 
-    #region
-    public (Rarity rarity, Color color) RarityColor => 
-        rarity switch
-        { Rarity.Common    => (Rarity.Common, Color.grey),
-          Rarity.Rare      => (Rarity.Rare, Color.blue),
-          Rarity.Epic      => (Rarity.Epic, Color.magenta),
-          Rarity.Legendary => (Rarity.Legendary, Color.yellow),
-          Rarity.Mythic    => (Rarity.Mythic, Color.red),
-          _                => (Rarity.Common, Color.grey) };
-    #endregion
-    
-    [Header("Item Info")]
-    [SerializeField] new string name;
-    [TextArea(3, 5)]
-    [SerializeField] string description;
-    [Space(10)]
+	#region Rarity
+	public (Rarity rarity, Color color) RarityColor => rarity switch
+	{ Rarity.Jade     => (Rarity.Jade, new (0.42f, 0.96f, 0.67f)),
+	  Rarity.Amber    => (Rarity.Amber, new (1f, 0.74f, 0.44f)),
+	  Rarity.Quartz   => (Rarity.Quartz, new (0.85f, 0.85f, 0.95f)),
+	  Rarity.Sapphire => (Rarity.Sapphire, new (0.1f, 0.55f, 0.86f)),
+	  Rarity.Ruby     => (Rarity.Ruby, new Color(0.88f, 0.07f, 0.37f)),
+	  _               => (Rarity.Jade, new Color(0.42f, 0.96f, 0.67f)) };
+	#endregion
 
-    [Header("Attributes")]
-    [SerializeField] int damage;
-    [SerializeField] float duration;
-    [SerializeField] float cooldown;
-    [SerializeField] StatusEffect buff;
-    
-    [Space(10)]
-    [SerializeField] Rarity rarity;
-    [Space(10)]
-    
-    [Header("UI")]
-    [SerializeField] TextMeshProUGUI descriptionText;
+	[Header("Item Info")]
 
-    public virtual void Action() { }
-    
-    public void OnValidate()
-    {
-        if (!string.IsNullOrEmpty(name)) gameObject.name = name;
-        else name = gameObject.name;
-        
-        FormatDescription();
-    }
+	[SerializeField] protected new string name;
+	[TextArea(3, 5)]
+	[SerializeField] protected string description;
+	[Space(10)]
+	[Header("Attributes")]
 
-    void FormatDescription()
-    {
-        string[] keywords = { "[damage]", "[duration]", "[cooldown]", "[buff]" };
-        string format = description;
+	[SerializeField] protected int damage;
+	[SerializeField] protected float duration;
+	[SerializeField] protected float cooldown;
+	[SerializeField] protected StatusEffect buff;
 
-        for (int i = 0; i < keywords.Length; i++)
-        {
-            if (format.Contains(keywords[i])) format = format.Replace(keywords[i], $"{{{i}}}");
-        }
+	public string Name => name;
+	public string Description => description;
+	public int Damage => damage;
+	public float Duration => duration;
+	public StatusEffect Buff => buff;
 
-        descriptionText.text = string.Format(format, damage, duration, cooldown, buff.StatusName);
-    }
+	[Space(10)]
+	[SerializeField] Rarity rarity;
+
+	public float Cooldown => cooldown;
+
+	public virtual void Action() { }
 }

@@ -34,8 +34,7 @@ public static class ScriptWriter
 
 		timing = timing.Contains("Pre") ? "Timing.Prefix" : "Timing.Postfix";
 
-		resetMethodTemplate = resetMethodTemplate.Replace("$NICE_NAME", ObjectNames.NicifyVariableName(name)).Replace("$DESCRIPTION", description).Replace("$DURATION", duration).Replace("$TARGET", target).Replace
-				("$TIMING", timing);
+		resetMethodTemplate = resetMethodTemplate.Replace("$NICE_NAME", ObjectNames.NicifyVariableName(name)).Replace("$DESCRIPTION", description).Replace("$DURATION", duration).Replace("$TARGET", target).Replace("$TIMING", timing);
 
 		// Ensure the directory exists
 		if (!Directory.Exists(savePath)) Directory.CreateDirectory(savePath);
@@ -113,7 +112,7 @@ public class {name} : {type}
 			if (existingAsset != null)
 			{
 				existingAsset.Reset(); // Update the values in the inspector.
-				Logger.Log($"StatusEffect {name} already exists at {assetPath}. Skipping creation.");
+				Logger.Log($"The StatusEffect \"{name}\" already exists at [{assetPath}]. Skipping creation.");
 				return;
 			}
 

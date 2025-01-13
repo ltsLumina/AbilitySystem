@@ -1,33 +1,35 @@
-using System;
-using System.Collections;
+#region
 using Lumina.Essentials.Modules;
 using UnityEngine;
-using static Lumina.Essentials.Modules.Helpers;
+#endregion
 
+[CreateAssetMenu(fileName = "New Golem's Claymore", menuName = "Items/Golem's Claymore")]
 public class GolemClaymore : Item
 {
-    void Start()
-    {
-        Action();
-    }
+	public override void Action()
+	{
+		Debug.Log("Golem Claymore invoked.");
 
-    public override void Action()
-    {
-        Debug.Log("Golem Claymore invoked.");
+		var player = Helpers.Find<Player>();
+		var quickSpell = StatusEffect.CreateCustomStatusEffect("Golem's Might", "Movement speed is reduced.", 5, StatusEffect.Target.Self, StatusEffect.Timing.Prefix);
+		player.AddStatusEffect(quickSpell);
 
-        while (true)
-        {
-            StartCoroutine(Wait());
-            break;
-        }
+		GameObject enemy = GameObject.Find("Enemy");
+		enemy.GetComponent<Dummy>().TakeDamage(damage); // temp
+	}
 
-        return;
-        IEnumerator Wait()
-        {
-            Player player = Find<Player>();
-            
-            Debug.Log("Golem Claymore effect applied.");
-            yield return new WaitForSeconds(20);
-        }
-    }
+	// public void ReducePlayerMovementSpeed()
+	// {
+	//     var player = Helpers.Find<Player>();
+	//     float originalSpeed = player.MovementSpeed;
+	//     player.MovementSpeed *= 0.75f; // Reduce speed by 25%
+	//
+	//     StartCoroutine(RestoreMovementSpeed(player, originalSpeed, 5f));
+	// }
+	//
+	// IEnumerator RestoreMovementSpeed(Player player, float originalSpeed, float delay)
+	// {
+	//     yield return new WaitForSeconds(delay);
+	//     player.MovementSpeed = originalSpeed;
+	// }
 }

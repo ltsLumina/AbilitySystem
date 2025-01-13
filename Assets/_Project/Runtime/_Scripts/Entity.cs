@@ -44,7 +44,7 @@ public abstract class Entity : MonoBehaviour, IEntity, IDamageable
 			if (existingEffect.Caster != effect.Caster) statusEffects.Add(effect);
 			else existingEffect.Time = effect.Duration;
 		}
-		else { statusEffects.Add(effect); }
+		else statusEffects.Add(effect);
 	}
 
 	public override string ToString() => $"{name} ({GetType().Name}) \n";

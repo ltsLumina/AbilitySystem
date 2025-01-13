@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Linq;
 using DG.Tweening;
 using JetBrains.Annotations;
 using Lumina.Essentials.Attributes;
@@ -13,11 +14,11 @@ using UnityEngine;
 using Object = UnityEngine.Object;
 #endregion
 
-public abstract class StatusEffect : ScriptableObject
+public class StatusEffect : ScriptableObject
 {
 	[SuppressMessage("ReSharper", "UnusedMember.Global")]
 	[Flags]
-	protected enum Target
+	public enum Target
 	{
 		Self = 1,
 		Enemy = 2,
@@ -54,10 +55,7 @@ public abstract class StatusEffect : ScriptableObject
 		set => caster = value;
 	}
 
-	protected new string name => base.name = string.IsNullOrEmpty
-			(Path.GetFileName(AssetDatabase.GetAssetPath(this)).Replace(".asset", string.Empty))
-			? statusName
-			: Path.GetFileName(AssetDatabase.GetAssetPath(this)).Replace(".asset", string.Empty);
+	protected new string name => base.name = string.IsNullOrEmpty(Path.GetFileNameWithoutExtension(AssetDatabase.GetAssetPath(this))) ? statusName : Path.GetFileNameWithoutExtension(AssetDatabase.GetAssetPath(this));
 
 	public override string ToString() => $"{statusName} ({duration} seconds)";
 
@@ -68,6 +66,20 @@ public abstract class StatusEffect : ScriptableObject
 	/// </summary>
 	protected Entity entity { get; private set; }
 
+	public static StatusEffect CreateCustomStatusEffect(string name, string description, int duration, Target target, Timing timing)
+	{
+		var customEffect = CreateInstance<StatusEffect>();
+		customEffect.statusName = name;
+		customEffect.description = description;
+		customEffect.duration = duration;
+		customEffect.target = target;
+		customEffect.timing = timing;
+
+		customEffect = Instantiate(customEffect);
+		customEffect.Invoke(null);
+		return customEffect;
+	}
+
 	#region Base
 	/// <summary>
 	/// </summary>
@@ -77,8 +89,17 @@ public abstract class StatusEffect : ScriptableObject
 	{
 		// set the target to the player if the target is self
 		if (target == Target.Self) entityTarget = player;
-		entity = entityTarget;
 
+		if (entityTarget == null)
+		{
+			Entity[] entities = FindObjectsByType<Entity>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+			if (entities.Length < 2) throw new ("No entities found.");
+
+			// find nearest entity to the player
+			entityTarget = entities.OrderBy(e => Vector2.Distance(player.transform.position, e.transform.position)).FirstOrDefault();
+		}
+
+		entity = entityTarget;
 		VisualEffect(entityTarget);
 		entityTarget.AddStatusEffect(this);
 

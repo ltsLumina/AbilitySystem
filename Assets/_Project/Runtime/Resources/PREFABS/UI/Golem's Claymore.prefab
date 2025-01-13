@@ -531,7 +531,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4512618014219007455}
-  - component: {fileID: 7642288159997202687}
   m_Layer: 5
   m_Name: Golem's Claymore
   m_TagString: Untagged
@@ -559,30 +558,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &7642288159997202687
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2226479572751101321}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4de8187b142b1b74287bb9dd8384795d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  name: Golem's Claymore
-  description: 'Every [cooldown] seconds, grants you [buff] for [duration] seconds,
-    and then slices the air around you, dealing [damage] damage to nearby enemies.
-
-    Also
-    slows your movement speed slightly.'
-  damage: 500
-  duration: 5
-  cooldown: 20
-  buff: {fileID: 11400000, guid: a9199d18df4ed954ebf6cd0ed45f037e, type: 2}
-  rarity: 1
-  descriptionText: {fileID: 7306515147655849752}
 --- !u!1 &2338120087279898319
 GameObject:
   m_ObjectHideFlags: 0
