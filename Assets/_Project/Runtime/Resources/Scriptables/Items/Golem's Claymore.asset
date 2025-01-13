@@ -9,10 +9,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 370a2b896bcc5284bafaa4b7b3edc2c3, type: 3}
+  m_Script: {fileID: 11500000, guid: 4de8187b142b1b74287bb9dd8384795d, type: 3}
   m_Name: Golem's Claymore
   m_EditorClassIdentifier: 
-  buff: {fileID: 11400000, guid: a9199d18df4ed954ebf6cd0ed45f037e, type: 2}
+  name: Golem's Claymore
+  description: 'Every [cooldown] seconds, grants you Golem''s Might for [duration]
+    seconds, and then slices the air around you, dealing [damage] damage to nearby
+    enemies.
+
+    Also slows your movement speed slightly.'
   damage: 500
   duration: 5
   cooldown: 20
+  buff: {fileID: 0}
+  rarity: 0

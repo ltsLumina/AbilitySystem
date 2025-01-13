@@ -1,3 +1,4 @@
+#define DISABLED // this line was added by VUtils.ToggleDefineDisabledInScript
 #if UNITY_EDITOR
 #region
 using System;
@@ -15,166 +16,167 @@ namespace VInspector
 {
 public class VICleanerHeader
 {
-    void OnGUI()
-    {
-        var bgNorm    = EditorGUIUtility.isProSkin ? Greyscale(.248f) : Greyscale(.8f);
-        var bgHovered = EditorGUIUtility.isProSkin ? Greyscale(.28f) : Greyscale(.84f);
-        var name      = target.GetType().Name.Decamelcase();
-        var nameRect  = headerElement.contentRect.MoveX(60).SetWidth(name.GetLabelWidth(isBold: true));
+	void OnGUI()
+	{
+		Color bgNorm = EditorGUIUtility.isProSkin ? Greyscale(.248f) : Greyscale(.8f);
+		Color bgHovered = EditorGUIUtility.isProSkin ? Greyscale(.28f) : Greyscale(.84f);
+		string name = target.GetType().Name.Decamelcase();
+		Rect nameRect = headerElement.contentRect.MoveX(60).SetWidth(name.GetLabelWidth(isBold: true));
 
-        void headerClick()
-        {
-            if (curEvent.isMouseDown) mousePressedOnHeader = true;
+		void headerClick()
+		{
+			if (curEvent.isMouseDown) mousePressedOnHeader = true;
 
-            if (curEvent.isMouseUp) mousePressedOnHeader = false;
-        }
+			if (curEvent.isMouseUp) mousePressedOnHeader = false;
+		}
 
-        void scriptNameClick()
-        {
-            if (mousePressedOnScriptName && curEvent.isMouseUp) window.Repaint();
+		void scriptNameClick()
+		{
+			if (mousePressedOnScriptName && curEvent.isMouseUp) window.Repaint();
 
-            if (curEvent.isMouseUp) mousePressedOnScriptName = false;
+			if (curEvent.isMouseUp) mousePressedOnScriptName = false;
 
-            if (!nameRect.IsHovered()) return;
-            if (!curEvent.isMouseDown) return;
+			if (!nameRect.IsHovered()) return;
+			if (!curEvent.isMouseDown) return;
 
-            curEvent.Use();
+			curEvent.Use();
 
-            mousePressedOnScriptName = true;
+			mousePressedOnScriptName = true;
 
-            var script = MonoScript.FromMonoBehaviour(target as MonoBehaviour);
+			MonoScript script = MonoScript.FromMonoBehaviour(target);
 
-            if (curEvent.clickCount == 2) AssetDatabase.OpenAsset(script);
+			if (curEvent.clickCount == 2) AssetDatabase.OpenAsset(script);
 
-            if (curEvent.holdingAlt) PingObject(script);
-        }
+			if (curEvent.holdingAlt) PingObject(script);
+		}
 
-        void hideScriptText()
-        {
-            var rect = headerElement.contentRect.SetWidth(60).MoveX(name.GetLabelWidth(isBold: true) + 60).SetHeightFromMid(15);
+		void hideScriptText()
+		{
+			Rect rect = headerElement.contentRect.SetWidth(60).MoveX(name.GetLabelWidth(isBold: true) + 60).SetHeightFromMid(15);
 
-            // #if UNITY_2022_3_OR_NEWER
-            //                 rect.x *= .94f;
-            //                 rect.x += 2;
-            // #endif
+			// #if UNITY_2022_3_OR_NEWER
+			//                 rect.x *= .94f;
+			//                 rect.x += 2;
+			// #endif
 
-            rect.xMax = rect.xMax.Min(headerElement.contentRect.width - 60).Max(rect.xMin);
+			rect.xMax = rect.xMax.Min(headerElement.contentRect.width - 60).Max(rect.xMin);
 
-            rect.Draw(headerElement.contentRect.IsHovered() && (!mousePressedOnHeader || mousePressedOnScriptName) ? bgHovered : bgNorm);
-        }
+			rect.Draw(headerElement.contentRect.IsHovered() && (!mousePressedOnHeader || mousePressedOnScriptName) ? bgHovered : bgNorm);
+		}
 
-        void greyoutScriptName()
-        {
-            if (!mousePressedOnScriptName) return;
+		void greyoutScriptName()
+		{
+			if (!mousePressedOnScriptName) return;
 
-            nameRect.Resize(1).Draw(Greyscale(bgHovered.r, EditorGUIUtility.isProSkin ? .3f : .45f));
-        }
+			nameRect.Resize(1).Draw(Greyscale(bgHovered.r, EditorGUIUtility.isProSkin ? .3f : .45f));
+		}
 
-        headerClick();
-        scriptNameClick();
+		headerClick();
+		scriptNameClick();
 
-        defaultHeaderGUI();
+		defaultHeaderGUI();
 
-        hideScriptText();
-        greyoutScriptName();
-    }
+		hideScriptText();
+		greyoutScriptName();
+	}
 
-    bool mousePressedOnScriptName;
-    bool mousePressedOnHeader;
+	bool mousePressedOnScriptName;
+	bool mousePressedOnHeader;
 
-    public void Update()
-    {
-        if (headerElement is VisualElement v && v.panel == null)
-        {
-            headerElement.onGUIHandler = defaultHeaderGUI;
-            headerElement              = null;
-        }
+	public void Update()
+	{
+		if (headerElement is VisualElement v && v.panel == null)
+		{
+			headerElement.onGUIHandler = defaultHeaderGUI;
+			headerElement = null;
+		}
 
-        if (headerElement != null && headerElement.onGUIHandler == OnGUI) return;
-        if (typeof(ScriptableObject).IsAssignableFrom(target.GetType())) return;
-        if (!(editor.GetPropertyValue("propertyViewer") is EditorWindow window)) return;
+		if (headerElement != null && headerElement.onGUIHandler == OnGUI) return;
+		if (typeof(ScriptableObject).IsAssignableFrom(target.GetType())) return;
+		if (!(editor.GetPropertyValue("propertyViewer") is EditorWindow window)) return;
 
-        this.window = window;
+		this.window = window;
 
-        void findHeader(VisualElement element)
-        {
-            if (element == null) return;
+		void findHeader(VisualElement element)
+		{
+			if (element == null) return;
 
-            if (element.GetType().Name == "EditorElement")
-            {
-                IMGUIContainer curHeader = null;
+			if (element.GetType().Name == "EditorElement")
+			{
+				IMGUIContainer curHeader = null;
 
-                foreach (var child in element.Children())
-                {
-                    curHeader = curHeader ?? new[]
-                    { child as IMGUIContainer }.FirstOrDefault(r => r != null && r.name.EndsWith("Header"));
+				foreach (VisualElement child in element.Children())
+				{
+					curHeader = curHeader ?? new[]
+					{ child as IMGUIContainer }.FirstOrDefault(r => r != null && r.name.EndsWith("Header"));
 
-                    if (curHeader is null) continue;
-                    if (!(child is InspectorElement)) continue;
+					if (curHeader is null) continue;
+					if (!(child is InspectorElement)) continue;
 
-                    if (child.GetFieldValue<Editor>("m_Editor").target == target)
-                    {
-                        headerElement = curHeader;
-                        return;
-                    }
-                }
-            }
+					if (child.GetFieldValue<Editor>("m_Editor").target == target)
+					{
+						headerElement = curHeader;
+						return;
+					}
+				}
+			}
 
-            foreach (var r in element.Children())
-                if (headerElement == null)
-                    findHeader(r);
-        }
+			foreach (VisualElement r in element.Children())
+			{
+				if (headerElement == null) findHeader(r);
+			}
+		}
 
-        void setupGUICallbacks()
-        {
-            defaultHeaderGUI           = headerElement.onGUIHandler;
-            headerElement.onGUIHandler = OnGUI;
-        }
+		void setupGUICallbacks()
+		{
+			defaultHeaderGUI = headerElement.onGUIHandler;
+			headerElement.onGUIHandler = OnGUI;
+		}
 
-        findHeader(window.rootVisualElement);
+		findHeader(window.rootVisualElement);
 
-        if (headerElement != null) setupGUICallbacks();
-    }
+		if (headerElement != null) setupGUICallbacks();
+	}
 
-    IMGUIContainer headerElement;
-    Action defaultHeaderGUI;
+	IMGUIContainer headerElement;
+	Action defaultHeaderGUI;
 
-    EditorWindow window;
+	EditorWindow window;
 
-    public VICleanerHeader(MonoBehaviour script, Editor editor)
-    {
-        this.target = script;
-        this.editor = editor;
-    }
+	public VICleanerHeader(MonoBehaviour script, Editor editor)
+	{
+		target = script;
+		this.editor = editor;
+	}
 
-    MonoBehaviour target;
-    Editor editor;
+	MonoBehaviour target;
+	Editor editor;
 
-    static void UpdateAllHeaders(Editor editor) // finishedDefaultHeaderGUI
-    {
-        if (!(editor.target is GameObject gameObject)) return;
-        if (!curEvent.isLayout) return;
+	static void UpdateAllHeaders(Editor editor) // finishedDefaultHeaderGUI
+	{
+		if (!(editor.target is GameObject gameObject)) return;
+		if (!curEvent.isLayout) return;
 
-        foreach (var script in gameObject.GetComponents<MonoBehaviour>())
-        {
-            if (!cleanerHeaders.ContainsKey(script)) cleanerHeaders[script] = new VICleanerHeader(script, editor);
+		foreach (MonoBehaviour script in gameObject.GetComponents<MonoBehaviour>())
+		{
+			if (!cleanerHeaders.ContainsKey(script)) cleanerHeaders[script] = new (script, editor);
 
-            cleanerHeaders[script].Update();
-        }
-    }
+			cleanerHeaders[script].Update();
+		}
+	}
 
-    static Dictionary<MonoBehaviour, VICleanerHeader> cleanerHeaders = new Dictionary<MonoBehaviour, VICleanerHeader>();
+	static Dictionary<MonoBehaviour, VICleanerHeader> cleanerHeaders = new ();
 
 #if !DISABLED
     [InitializeOnLoadMethod]
 #endif
-    static void Init()
-    {
-        if (!VIMenuItems.cleanerHeaderEnabled) return;
+	static void Init()
+	{
+		if (!VIMenuItems.cleanerHeaderEnabled) return;
 
-        Editor.finishedDefaultHeaderGUI -= UpdateAllHeaders;
-        Editor.finishedDefaultHeaderGUI += UpdateAllHeaders;
-    }
+		Editor.finishedDefaultHeaderGUI -= UpdateAllHeaders;
+		Editor.finishedDefaultHeaderGUI += UpdateAllHeaders;
+	}
 }
 }
 #endif
