@@ -1,11 +1,8 @@
 ﻿#region
-using System.Collections;
-using System.Collections.Generic;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using VInspector;
-using static Lumina.Essentials.Modules.Helpers;
 #endregion
 
 public class Player : Entity
@@ -14,33 +11,8 @@ public class Player : Entity
 	public VInspectorData data;
 
 	[SerializeField] Job job;
-
+	[Space(10)]
 	[SerializeField] int health = 10;
-	[Foldout("Movement")]
-	[SerializeField] List<float> speeds = new (2)
-	{ 75, 35 };
-	[EndFoldout]
-	[SerializeField] float topSpeed = 15;
-	[SerializeField] float moveDamping = 5;
-	[SerializeField] float stopDamping = 15;
-
-	[Header("Other")]
-
-	[SerializeField] bool mouseMove;
-
-	InputManager inputs;
-	PlayerInput playerInput;
-	Rigidbody2D rb;
-
-	float speed
-	{
-		get => mouseMove ? speeds[1] : speeds[0];
-		set
-		{
-			if (mouseMove) speeds[1] = value;
-			else speeds[0] = value;
-		}
-	}
 
 	public Job Job => job;
 	public InputManager Inputs => GetComponentInChildren<InputManager>();
@@ -52,57 +24,14 @@ public class Player : Entity
 
 	void Reset() => gameObject.tag = "Player";
 
-	protected override IEnumerator Start()
+	public override void OnNetworkSpawn()
 	{
-		inputs = GetComponentInChildren<InputManager>();
-		playerInput = inputs.GetComponent<PlayerInput>();
-		rb = GetComponent<Rigidbody2D>();
+		base.OnNetworkSpawn();
 
-		Rebind(mouseMove);
+		Inputs.SetDictionaryKeys();
+		Job.Abilities.ForEach(a => a.owner = this);
 
-		return base.Start();
-	}
-
-	void Rebind(bool useMouseBindings)
-	{
-		switch (useMouseBindings)
-		{
-			case true: // Using Mouse bindings (Q, W, E, R)
-				playerInput.actions[InputManager.AbilityKeys[0]].ApplyBindingOverride("<Keyboard>/q");
-				playerInput.actions[InputManager.AbilityKeys[1]].ApplyBindingOverride("<Keyboard>/w");
-				playerInput.actions[InputManager.AbilityKeys[2]].ApplyBindingOverride("<Keyboard>/e");
-				playerInput.actions[InputManager.AbilityKeys[3]].ApplyBindingOverride("<Keyboard>/r");
-				break;
-
-			case false: // Using Keyboard bindings (1, 2, 3, 4)
-				playerInput.actions[InputManager.AbilityKeys[0]].ApplyBindingOverride("<Keyboard>/1");
-				playerInput.actions[InputManager.AbilityKeys[1]].ApplyBindingOverride("<Keyboard>/2");
-				playerInput.actions[InputManager.AbilityKeys[2]].ApplyBindingOverride("<Keyboard>/3");
-				playerInput.actions[InputManager.AbilityKeys[3]].ApplyBindingOverride("<Keyboard>/4");
-				break;
-		}
-	}
-
-	void FixedUpdate()
-	{
-		if (mouseMove) MouseMove();
-		else Move();
-	}
-
-	void Move()
-	{
-		rb.AddForce(inputs.MoveInput * speed);
-		rb.linearVelocity = Vector2.ClampMagnitude(rb.linearVelocity, topSpeed);
-		bool changingDir = Vector2.Dot(rb.linearVelocity, inputs.MoveInput) < 0;
-		rb.linearDamping = changingDir ? stopDamping : moveDamping;
-		if (!inputs.IsMoving) rb.linearDamping = Mathf.Lerp(rb.linearDamping, 100, 0.1f);
-	}
-
-	void MouseMove()
-	{
-		Vector3 mousePos = CameraMain.ScreenToWorldPoint(Input.mousePosition);
-		Vector3 dir = (mousePos - transform.position).normalized;
-		rb.AddForce(dir * speed);
+		Logger.Log("Player has spawned.");
 	}
 
 	public override void TakeDamage(float damage)
@@ -120,21 +49,12 @@ public class Player : Entity
 		var sprite = GetComponentInChildren<SpriteRenderer>();
 		sprite.FlashSprite(Color.red, 0.3f);
 		StartCoroutine(sprite.CreateAfterImages(0.05f, 0.25f, 5));
-
-		StartCoroutine(Foo());
-	}
-
-	IEnumerator Foo()
-	{
-		speed *= 1.5f;
-		yield return new WaitForSeconds(0.5f);
-		speed /= 1.5f;
 	}
 
 	void OnDrawGizmos()
 	{
 		Gizmos.color = Color.green;
-		if (!rb) return;
+		var rb = GetComponentInChildren<Rigidbody2D>();
 		Vector2 dir = rb.linearVelocity.normalized * 5;
 		Gizmos.DrawRay(transform.position, dir);
 		Vector3 point = transform.position + (Vector3) dir;

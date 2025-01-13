@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Unity.Netcode;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 #endregion
@@ -15,7 +16,7 @@ using Debug = UnityEngine.Debug;
 ///         A game object is not an entity unless it inherits from this class.
 ///     </para>
 /// </summary>
-public abstract class Entity : MonoBehaviour, IEntity, IDamageable
+public abstract class Entity : NetworkBehaviour, IEntity, IDamageable
 {
 	[SerializeField] List<StatusEffect> statusEffects = new ();
 

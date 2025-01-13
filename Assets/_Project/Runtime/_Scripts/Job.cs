@@ -14,49 +14,47 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Job", menuName = "Jobs/Job")]
 public sealed class Job : ScriptableObject
 {
-    [SuppressMessage("ReSharper", "UnusedMember.Global")]
-    public enum Class
-    {
-        RPR,
-        RDM,
-        DRK,
-        SGE,
+	[SuppressMessage("ReSharper", "UnusedMember.Global")]
+	public enum Class
+	{
+		RPR,
+		RDM,
+		DRK,
+		SGE,
 
-        DEV, // Special class for developers
-    }
+		DEV, // Special developer class
+	}
 
-    [SerializeField] Class job;
-    [SerializeField] [ReadOnly] List<Ability> abilities = new ();
+	[SerializeField] Class job;
+	[SerializeField] [ReadOnly] List<Ability> abilities = new ();
 
-    public List<Ability> Abilities
-    {
-        get
-        {
-            if (abilities.Count != 4) Logger.LogError($"Not enough abilities for {job}.");
-            return abilities;
-        }
-    }
+	public List<Ability> Abilities
+	{
+		get
+		{
+			if (abilities.Count != 4) Logger.LogError($"Not enough abilities for {job}.");
+			return abilities;
+		}
+	}
 
-    void OnValidate()
-    {
-        Ability[] resources = Resources.LoadAll<Ability>(AbilitySettings.ResourcePaths.ABILITIES);
-        abilities = resources.Where(a => a.Job == job).ToList();
-        if (resources.Length == 0) return;
+	void OnValidate()
+	{
+		Ability[] resources = Resources.LoadAll<Ability>(AbilitySettings.ResourcePaths.ABILITIES);
+		abilities = resources.Where(a => a.Job == job).ToList();
+		if (resources.Length == 0) return;
 
-        PlayModePreventer.preventPlayMode = abilities.Count != 4;
-        PlayModePreventer.Reason
-        ($"Not enough abilities for {job}. There must be exactly 4 abilities." + "\n" + "The following abilities were found: " + string.Join
-             (", ", abilities.Select(a => a.name) + $"(Count: {abilities.Count})"), this);
+		PlayModePreventer.preventPlayMode = abilities.Count != 4;
+		PlayModePreventer.Reason($"Not enough abilities for {job}. There must be exactly 4 abilities." + "\n" + "The following abilities were found: " + string.Join(", ", abilities.Select(a => a.name) + $"(Count: {abilities.Count})"), this);
 
-        switch (abilities.Count)
-        {
-            case 0:
-                Logger.LogError($"No abilities found for {job}.");
-                break;
+		switch (abilities.Count)
+		{
+			case 0:
+				Logger.LogError($"No abilities found for {job}.");
+				break;
 
-            case var count when count != 4:
-                Logger.LogError($"Not enough abilities for {job}. There must be exactly 4 abilities.");
-                break;
-        }
-    }
+			case var count when count != 4:
+				Logger.LogError($"Not enough abilities for {job}. There must be exactly 4 abilities.");
+				break;
+		}
+	}
 }

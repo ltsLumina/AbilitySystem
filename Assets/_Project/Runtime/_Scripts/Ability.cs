@@ -53,6 +53,7 @@ public sealed class Ability : ScriptableObject
 
 	public static event Action OnGlobalCooldown;
 
+	public Player owner { get; set; } // AKA: the player using the ability
 	public Class Job => job;
 	public string Name
 	{
@@ -68,24 +69,13 @@ public sealed class Ability : ScriptableObject
 	public float Cooldown => cooldown;
 	public float Damage => damage;
 
-	static Player _player;
-
-	static Player player
-	{
-		get
-		{
-			if (!_player) _player = FindFirstObjectByType<Player>();
-			return _player;
-		}
-	}
-
 	public bool cancellable => cooldownType == CooldownType.Cast;
 
 	public bool cancelled
 	{
 		get
 		{
-			InputManager inputManager = player.Inputs;
+			InputManager inputManager = owner.Inputs;
 			return inputManager.MoveInput != Vector2.zero;
 		}
 	}
@@ -94,7 +84,7 @@ public sealed class Ability : ScriptableObject
 
 	public void Invoke()
 	{
-		Entity nearestTarget = FindClosestTarget();
+		Entity nearestTarget = FindNearestTarget();
 		bool isGCD = cooldownType == CooldownType.GCD;
 		bool isCast = cooldownType == CooldownType.Cast;
 		bool isInstant = cooldownType == CooldownType.Instant;
@@ -108,7 +98,7 @@ public sealed class Ability : ScriptableObject
 
 			case true when isCast:
 				Logger.Log("Casting...");
-				player.StartCoroutine(Cast(nearestTarget));
+				owner.StartCoroutine(Cast(nearestTarget));
 				break;
 
 			case true when isInstant:
@@ -120,13 +110,12 @@ public sealed class Ability : ScriptableObject
 		return;
 
 		[return: NotNull]
-		static Entity FindClosestTarget()
+		Entity FindNearestTarget()
 		{
-			Entity[] entities = FindObjectsByType<Entity>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+			Entity[] entities = FindObjectsByType<Entity>(FindObjectsInactive.Exclude, FindObjectsSortMode.None).Where(entity => entity is not Player).ToArray();
 
 			// Find the closest entity to the player. If anything is null, throw an exception.
-			return (player == null ? null : entities.Where(entity => entity != player).OrderBy(entity => Vector2.Distance(player.transform.position, entity.transform.position)).FirstOrDefault()) ??
-			       throw new InvalidOperationException();
+			return (owner == null ? null : entities.Where(entity => entity != owner).OrderBy(entity => Vector2.Distance(owner.transform.position, entity.transform.position)).FirstOrDefault()) ?? throw new InvalidOperationException();
 		}
 	}
 
@@ -166,7 +155,7 @@ public sealed class Ability : ScriptableObject
 	void GlobalCooldown(Entity target)
 	{
 		OnGlobalCooldown?.Invoke();
-		
+
 		ApplyEffects(target);
 	}
 
@@ -174,11 +163,11 @@ public sealed class Ability : ScriptableObject
 	{
 		OnGlobalCooldown?.Invoke();
 
-		castCoroutine = player.StartCoroutine(CastCoroutine());
+		castCoroutine = owner.StartCoroutine(CastCoroutine());
 		var particle = Instantiate(Resources.Load<GameObject>("PREFABS/Casting Particles")).GetComponent<ParticleSystem>();
 		ParticleSystem.MainModule particleMain = particle.main;
 		particleMain.duration = castTime + 0.5f;
-		particle.transform.position = player.transform.position + new Vector3(0, -0.8f);
+		particle.transform.position = owner.transform.position + new Vector3(0, -0.8f);
 		particle.Play();
 		yield return new WaitWhile(Casting);
 
@@ -195,9 +184,9 @@ public sealed class Ability : ScriptableObject
 
 		target.TryGetComponent(out IDamageable enemy);
 
-		if (prefix.Count > 0) prefix.Apply((target, player));
+		if (prefix.Count > 0) prefix.Apply((target, owner));
 		enemy?.TakeDamage(damage);
-		if (postfix.Count > 0) postfix.Apply((target, player));
+		if (postfix.Count > 0) postfix.Apply((target, owner));
 	}
 
 	void DamageOverTime(Entity target)
