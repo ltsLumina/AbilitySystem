@@ -191,7 +191,7 @@ public class StatusEffect : ScriptableObject
 
 	protected static void VisualEffect(Entity target, bool isDoT = false)
 	{
-		var prefab = Resources.Load<GameObject>("PREFABS/Effect");
+		var prefab = Resources.Load<GameObject>("PREFABS/Status Visual Effect");
 		GameObject pooled = GetPooledObject(prefab);
 		pooled.transform.position = target.transform.position;
 		pooled.transform.localScale = isDoT ? new (0.5f, 0.5f) : new (1, 1);

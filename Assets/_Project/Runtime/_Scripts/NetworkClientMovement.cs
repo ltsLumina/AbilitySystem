@@ -40,7 +40,7 @@ public class NetworkClientMovement : NetworkBehaviour
 		rb = GetComponentInChildren<Rigidbody2D>();
 	}
 
-	void Start() { Rebind(mouseMove);
+	void Start() => Rebind(mouseMove);
 
 	void Update()
 	{

@@ -4,6 +4,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using DG.Tweening;
+using Unity.Netcode;
 using UnityEngine;
 using static Job;
 #endregion
@@ -112,16 +114,15 @@ public sealed class Ability : ScriptableObject
 		[return: NotNull]
 		Entity FindNearestTarget()
 		{
-			Entity[] entities = FindObjectsByType<Entity>(FindObjectsInactive.Exclude, FindObjectsSortMode.None).Where(entity => entity is not Player).ToArray();
+			Entity[] entities = FindObjectsByType<Entity>(FindObjectsInactive.Exclude, FindObjectsSortMode.None).Where(entity => entity is not Player && entity != owner).ToArray();
 
 			// Find the closest entity to the player. If anything is null, throw an exception.
 			return (owner == null ? null : entities.Where(entity => entity != owner).OrderBy(entity => Vector2.Distance(owner.transform.position, entity.transform.position)).FirstOrDefault()) ?? throw new InvalidOperationException();
 		}
 	}
 
-	void OnDisable() // Won't be called with "Disable Domain Reload" enabled.
-	{
-	}
+	// ReSharper disable once Unity.RedundantEventFunction
+	void OnDisable() { } // Won't be called with "Disable Domain Reload" enabled.
 
 	#region Casting
 	Coroutine castCoroutine;
@@ -177,7 +178,7 @@ public sealed class Ability : ScriptableObject
 	}
 
 	void Instant(Entity target) => ApplyEffects(target);
-
+	
 	void ApplyEffects(Entity target)
 	{
 		(List<StatusEffect> prefix, List<StatusEffect> postfix) = effects.Load();
@@ -186,8 +187,29 @@ public sealed class Ability : ScriptableObject
 
 		if (prefix.Count > 0) prefix.Apply((target, owner));
 		enemy?.TakeDamage(damage);
+		VisualEffect(target);
 		if (postfix.Count > 0) postfix.Apply((target, owner));
 	}
+
+	#region Visual Effects
+	static GameObject GetPooledObject(GameObject prefab) => ObjectPoolManager.FindObjectPool(prefab, 5).GetPooledObject(true);
+	
+	static void VisualEffect(Entity target, bool isDoT = false)
+	{
+		var prefab = Resources.Load<GameObject>("PREFABS/Effect");
+		GameObject pooled = GetPooledObject(prefab);
+		pooled.transform.position = target.transform.position;
+		pooled.transform.localScale = isDoT ? new (0.5f, 0.5f) : new (1, 1);
+		var sprite = pooled.GetComponent<SpriteRenderer>();
+
+		sprite.DOFade(0, 1).OnComplete
+		(() =>
+		{
+			sprite.DOFade(1, 0);
+			pooled.SetActive(false);
+		});
+	}
+	#endregion
 
 	void DamageOverTime(Entity target)
 	{
