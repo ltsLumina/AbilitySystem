@@ -3,7 +3,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
 using System.Linq;
 using DG.Tweening;
 using JetBrains.Annotations;
@@ -55,7 +54,7 @@ public class StatusEffect : ScriptableObject
 		set => caster = value;
 	}
 
-	protected new string name => base.name = string.IsNullOrEmpty(Path.GetFileNameWithoutExtension(AssetDatabase.GetAssetPath(this))) ? statusName : Path.GetFileNameWithoutExtension(AssetDatabase.GetAssetPath(this));
+	//protected new string name => base.name = string.IsNullOrEmpty(Path.GetFileNameWithoutExtension(AssetDatabase.GetAssetPath(this))) ? statusName : Path.GetFileNameWithoutExtension(AssetDatabase.GetAssetPath(this));
 
 	public override string ToString() => $"{statusName} ({duration} seconds)";
 
@@ -100,7 +99,8 @@ public class StatusEffect : ScriptableObject
 		}
 
 		entity = entityTarget;
-		VisualEffect(entityTarget);
+
+		//VisualEffect(entityTarget); // TODO: uncomment after fixing networking stuff
 		entityTarget.AddStatusEffect(this);
 
 		OnInvoke();
@@ -231,6 +231,7 @@ public abstract class Debuff : StatusEffect // Just a marker class
 }
 #endregion
 
+#if UNITY_EDITOR
 [CustomEditor(typeof(StatusEffect), true)]
 public class StatusEffectEditor : Editor
 {
@@ -298,6 +299,7 @@ public class StatusEffectEditor : Editor
 		serializedObject.ApplyModifiedProperties();
 	}
 }
+#endif
 
 public static class StatusEffectExtensions
 {

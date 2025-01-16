@@ -1,5 +1,6 @@
 ﻿#define USING_CUSTOM_INSPECTOR
 #if USING_CUSTOM_INSPECTOR
+#if UNITY_EDITOR
 #region
 using System.Linq;
 using UnityEditor;
@@ -312,4 +313,5 @@ public class AbilityEditor : Editor
 		}
 	}
 }
+#endif
 #endif

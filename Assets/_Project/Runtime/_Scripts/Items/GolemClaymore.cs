@@ -1,5 +1,4 @@
 #region
-using Lumina.Essentials.Modules;
 using UnityEngine;
 #endregion
 
@@ -10,12 +9,12 @@ public class GolemClaymore : Item
 	{
 		Debug.Log("Golem Claymore invoked.");
 
-		var player = Helpers.Find<Player>();
-		var quickSpell = StatusEffect.CreateCustomStatusEffect("Golem's Might", "Movement speed is reduced.", 5, StatusEffect.Target.Self, StatusEffect.Timing.Prefix);
-		player.AddStatusEffect(quickSpell);
+		//var player = Helpers.Find<Player>();
+		//var quickSpell = StatusEffect.CreateCustomStatusEffect("Golem's Might", "Movement speed is reduced.", 5, StatusEffect.Target.Self, StatusEffect.Timing.Prefix);
+		//player.AddStatusEffect(quickSpell);
 
-		GameObject enemy = GameObject.Find("Enemy");
-		enemy.GetComponent<Dummy>().TakeDamage(damage); // temp
+		GameObject enemy = GameObject.Find("Dummy");
+		enemy.GetComponent<Dummy>().TakeDamageServerRpc(damage); // temp
 	}
 
 	// public void ReducePlayerMovementSpeed()

@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using DG.Tweening;
-using Unity.Netcode;
 using UnityEngine;
 using static Job;
 #endregion
@@ -178,22 +177,24 @@ public sealed class Ability : ScriptableObject
 	}
 
 	void Instant(Entity target) => ApplyEffects(target);
-	
+
 	void ApplyEffects(Entity target)
 	{
 		(List<StatusEffect> prefix, List<StatusEffect> postfix) = effects.Load();
 
-		target.TryGetComponent(out IDamageable enemy);
+		target.TryGetComponent(out Entity enemy);
 
 		if (prefix.Count > 0) prefix.Apply((target, owner));
-		enemy?.TakeDamage(damage);
+
+		//enemy?.TakeDamage(damage); // non-networked
+		enemy.TakeDamageServerRpc(damage); // networked
 		VisualEffect(target);
 		if (postfix.Count > 0) postfix.Apply((target, owner));
 	}
 
 	#region Visual Effects
 	static GameObject GetPooledObject(GameObject prefab) => ObjectPoolManager.FindObjectPool(prefab, 5).GetPooledObject(true);
-	
+
 	static void VisualEffect(Entity target, bool isDoT = false)
 	{
 		var prefab = Resources.Load<GameObject>("PREFABS/Effect");

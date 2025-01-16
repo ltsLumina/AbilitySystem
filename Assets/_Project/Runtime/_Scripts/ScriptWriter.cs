@@ -1,4 +1,5 @@
-﻿#region
+﻿#if UNITY_EDITOR
+#region
 using System;
 using System.IO;
 using UnityEditor;
@@ -136,3 +137,5 @@ public class {name} : {type}
 		}
 	}
 }
+
+#endif

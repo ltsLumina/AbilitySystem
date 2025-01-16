@@ -100,7 +100,7 @@ MonoBehaviour:
   UseHalfFloatPrecision: 0
   InLocalSpace: 0
   SwitchTransformSpaceWhenParented: 0
-  Interpolate: 1
+  Interpolate: 0
   SlerpPosition: 0
 --- !u!114 &9007547560274785684
 MonoBehaviour:
@@ -152,6 +152,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+  currentHealth: 100
+  maxHealth: 100
   statusEffects: []
   data: {fileID: 0}
   job: {fileID: 11400000, guid: b6f539e5710b64641bf28e90f7f12a17, type: 2}

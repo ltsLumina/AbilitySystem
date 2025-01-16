@@ -18,7 +18,17 @@ using Debug = UnityEngine.Debug;
 /// </summary>
 public abstract class Entity : NetworkBehaviour, IEntity, IDamageable
 {
+	[Header("Entity Properties")]
+
+	[SerializeField] protected float currentHealth = 1000;
+	[SerializeField] [Range(0, 1000)] protected float maxHealth = 1000;
+
+	[Header("Status Effects")]
+
 	[SerializeField] List<StatusEffect> statusEffects = new ();
+
+	public float CurrentHealth => currentHealth;
+	public float MaxHealth => maxHealth;
 
 	#region Events
 	public event Action<Entity> OnEntityEnable;
@@ -31,6 +41,9 @@ public abstract class Entity : NetworkBehaviour, IEntity, IDamageable
 	void IEntity.OnDisable() => OnEntityDisable?.Invoke(this);
 
 	void IEntity.OnDestroy() => OnEntityDestroy?.Invoke(this);
+
+	[ServerRpc(RequireOwnership = false)]
+	public void TakeDamageServerRpc(float damage) => TakeDamage(damage);
 
 	public virtual void TakeDamage(float damage) => Debug.Log($"{name} took {damage} damage.");
 
@@ -80,6 +93,8 @@ public abstract class Entity : NetworkBehaviour, IEntity, IDamageable
 
 		void Initialize()
 		{
+			currentHealth = maxHealth;
+
 			// any other initialization code here
 			OnEntityEnable += e => { Logger.Log($"{e.name} has been enabled."); };
 

@@ -43,8 +43,8 @@ public sealed class Job : ScriptableObject
 		abilities = resources.Where(a => a.Job == job).ToList();
 		if (resources.Length == 0) return;
 
-		PlayModePreventer.preventPlayMode = abilities.Count != 4;
-		PlayModePreventer.Reason($"Not enough abilities for {job}. There must be exactly 4 abilities." + "\n" + "The following abilities were found: " + string.Join(", ", abilities.Select(a => a.name) + $"(Count: {abilities.Count})"), this);
+		//PlayModePreventer.preventPlayMode = abilities.Count != 4;
+		//PlayModePreventer.Reason($"Not enough abilities for {job}. There must be exactly 4 abilities." + "\n" + "The following abilities were found: " + string.Join(", ", abilities.Select(a => a.name) + $"(Count: {abilities.Count})"), this);
 
 		switch (abilities.Count)
 		{

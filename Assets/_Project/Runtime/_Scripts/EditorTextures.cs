@@ -1,4 +1,5 @@
-﻿#region
+﻿#if UNITY_EDITOR
+#region
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -55,3 +56,5 @@ public static class EditorTextures
 		public static Texture2D Settings => GetTexture("d_SettingsIcon");
 	}
 }
+
+#endif

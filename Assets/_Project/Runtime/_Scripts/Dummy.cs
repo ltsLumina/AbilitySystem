@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class Dummy : Entity
 {
+	[SerializeField] NetworkSlider networkSlider;
 	[SerializeField] TextMeshProUGUI dpsText;
 
 	float damageTaken;
@@ -23,6 +24,11 @@ public class Dummy : Entity
 
 		damageTaken += damage;
 		timeSinceLastDamage = 0f; // Reset the timer when damage is taken
+
+		currentHealth -= damage;
+		networkSlider.UpdateSlider(currentHealth / maxHealth);
+
+		if (currentHealth <= 0) Debug.LogWarning($"{gameObject.name} has died!");
 
 		dpsCoroutine ??= StartCoroutine(CalculateDPS());
 

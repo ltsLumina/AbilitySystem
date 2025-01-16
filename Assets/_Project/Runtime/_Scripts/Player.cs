@@ -1,5 +1,6 @@
 ﻿#region
 using JetBrains.Annotations;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using VInspector;
@@ -33,6 +34,18 @@ public class Player : Entity
 
 		Logger.Log("Player has spawned.");
 	}
+
+	void Update()
+	{
+		#region Network Temporary
+		if (Input.GetKeyDown(KeyCode.T))
+			if (IsOwner)
+				RequestSpawnPrefabServerRpc(transform.position);
+		#endregion
+	}
+
+	[ServerRpc(RequireOwnership = false)]
+	void RequestSpawnPrefabServerRpc(Vector3 position) => FindFirstObjectByType<NetworkPing>().RequestSpawnPrefab(position);
 
 	public override void TakeDamage(float damage)
 	{
