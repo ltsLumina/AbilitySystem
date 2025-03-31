@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 #endregion
 
+/// <summary>
+///     This class is used to display the item in the scene with the appropriate UI and variables.
+/// </summary>
 [ExecuteInEditMode]
 public class SceneItem : MonoBehaviour
 {
@@ -17,6 +20,7 @@ public class SceneItem : MonoBehaviour
 	{
 		#region Rarity
 		Transform background = transform.GetChild(0);
+		if (background == null) return;
 		background.GetComponent<Outline>().effectColor = item.RarityColor.color;
 		#endregion
 

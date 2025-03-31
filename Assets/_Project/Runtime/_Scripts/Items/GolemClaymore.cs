@@ -17,19 +17,4 @@ public class GolemClaymore : Item
 		GameObject enemy = GameObject.Find("Enemy");
 		enemy.GetComponent<Dummy>().TakeDamage(damage); // temp
 	}
-
-	// public void ReducePlayerMovementSpeed()
-	// {
-	//     var player = Helpers.Find<Player>();
-	//     float originalSpeed = player.MovementSpeed;
-	//     player.MovementSpeed *= 0.75f; // Reduce speed by 25%
-	//
-	//     StartCoroutine(RestoreMovementSpeed(player, originalSpeed, 5f));
-	// }
-	//
-	// IEnumerator RestoreMovementSpeed(Player player, float originalSpeed, float delay)
-	// {
-	//     yield return new WaitForSeconds(delay);
-	//     player.MovementSpeed = originalSpeed;
-	// }
 }

@@ -1,7 +1,8 @@
 #region
-using System;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using UnityEngine;
+using VInspector;
 #endregion
 
 public class Inventory : MonoBehaviour
@@ -10,11 +11,27 @@ public class Inventory : MonoBehaviour
 
 	readonly Dictionary<Item, float> cooldowns = new (); // the current cooldown time of each item
 
-	public Action OnItemAdded;
+	[Button] [UsedImplicitly]
+	public void AddGolemClaymore()
+	{
+		var item = Resources.Load<Item>("Scriptables/Items/Golem's Claymore");
+		AddToInventory(item);
+	}
 
-	void OnEnable() => OnItemAdded += Start;
+	[Button] [UsedImplicitly]
+	public void AddPhoenixCharm()
+	{
+		var item = Resources.Load<Item>("Scriptables/Items/Phoenix Charm");
+		AddToInventory(item);
+	}
 
-	void OnDisable() => OnItemAdded -= Start;
+	void AddToInventory(Item item)
+	{
+		if (item == null) return;
+
+		inventory.Add(item);
+		cooldowns.Add(item, item.Cooldown);
+	}
 
 	void Start()
 	{
@@ -27,6 +44,8 @@ public class Inventory : MonoBehaviour
 	{
 		foreach (Item item in inventory)
 		{
+			if (item == null) continue;
+
 			// if the cooldown is greater than 0, decrement it
 			if (cooldowns[item] > 0)
 			{

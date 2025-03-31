@@ -134,8 +134,7 @@ public sealed class Ability : ScriptableObject
 			Entity[] entities = FindObjectsByType<Entity>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
 
 			// Find the closest entity to the player. If anything is null, throw an exception.
-			return (player == null ? null : entities.Where(entity => entity != player).OrderBy(entity => Vector2.Distance(player.transform.position, entity.transform.position)).FirstOrDefault()) ??
-			       throw new InvalidOperationException();
+			return (player == null ? null : entities.Where(entity => entity != player).OrderBy(entity => Vector2.Distance(player.transform.position, entity.transform.position)).FirstOrDefault()) ?? throw new InvalidOperationException();
 		}
 	}
 
@@ -171,7 +170,7 @@ public sealed class Ability : ScriptableObject
 	void GlobalCooldown(Entity target)
 	{
 		OnGlobalCooldown?.Invoke();
-		
+
 		ApplyEffects(target);
 	}
 
@@ -202,8 +201,14 @@ public sealed class Ability : ScriptableObject
 
 		target.TryGetComponent(out IDamageable enemy);
 
+		if (enemy == null)
+		{
+			Logger.LogError($"{target} is not damageable.");
+			return;
+		}
+
 		if (prefix.Count > 0) prefix.Apply((target, player));
-		enemy?.TakeDamage(damage);
+		enemy.TakeDamage(damage);
 		if (postfix.Count > 0) postfix.Apply((target, player));
 	}
 

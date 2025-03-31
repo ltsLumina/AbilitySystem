@@ -41,8 +41,8 @@ public abstract class Entity : MonoBehaviour, IEntity, IDamageable
 
 		if (existingEffect)
 		{
-			if (existingEffect.Caster != effect.Caster) statusEffects.Add(effect);
-			else existingEffect.Reapply();
+			// If the effect is already in the list, we can reset its remaining time
+			existingEffect.Time = effect.Duration;
 		}
 		else statusEffects.Add(effect);
 	}

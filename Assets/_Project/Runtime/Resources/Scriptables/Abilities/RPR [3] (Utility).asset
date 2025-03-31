@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: RPR [3] (Utility)
   m_EditorClassIdentifier: 
   job: 0
-  abilityName: Lightning Punch
+  abilityName: Utility
   description: 
   icon: {fileID: 21300000, guid: 72d74b3c26cef2d4ea85f6a3a853539d, type: 3}
   type: 2
