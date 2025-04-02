@@ -21,6 +21,58 @@ public class InputManager : MonoBehaviour
 	/// </summary>
 	public void OverrideMoveInput(Vector2 input) => MoveInput = input;
 
+	/// <summary>
+	///     Toggles an input layer on or off.
+	///     This is used to enable or disable input layers for different actions.
+	///     <example>
+	///         Layer 1: Player (regular gameplay)
+	///         <para>Layer 2: UI</para>
+	///     </example>
+	/// </summary>
+	/// <param name="layerName"></param>
+	public void ToggleInputLayer(string layerName)
+	{
+		switch (layerName)
+		{
+			case "Player": {
+				var playerInput = FindAnyObjectByType<PlayerInput>();
+				playerInput.SwitchCurrentActionMap("Player");
+				return;
+			}
+
+			case "UI": {
+				var playerInput = FindAnyObjectByType<PlayerInput>();
+				playerInput.SwitchCurrentActionMap("UI");
+				return;
+			}
+
+			default:
+				Debug.LogWarning($"Input layer {layerName} does not exist.");
+				break;
+		}
+	}
+
+	/// <summary>
+	///     Overload for <see cref="ToggleInputLayer(string)" /> that takes an index instead of a string.
+	/// </summary>
+	/// <param name="layerIndex">The index of the layer to toggle.</param>
+	/// <remarks> 0 = Player,
+	///     <para>1 = UI</para>
+	/// </remarks>
+	public void ToggleInputLayer(int layerIndex)
+	{
+		switch (layerIndex)
+		{
+			case 0:
+				ToggleInputLayer("Player");
+				break;
+
+			case 1:
+				ToggleInputLayer("UI");
+				break;
+		}
+	}
+
 	public void OnMove(InputAction.CallbackContext context)
 	{
 		MoveInput = context.ReadValue<Vector2>();

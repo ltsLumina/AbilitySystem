@@ -8,6 +8,10 @@ using VInspector;
 public class Inventory : MonoBehaviour
 {
 	[SerializeField] List<Item> inventory = new ();
+	[Space(10)]
+	[Header("Debug")]
+
+	[SerializeField] bool showGUI;
 
 	readonly Dictionary<Item, float> cooldowns = new (); // the current cooldown time of each item
 
@@ -29,6 +33,12 @@ public class Inventory : MonoBehaviour
 	{
 		if (item == null) return;
 
+		if (inventory.Contains(item))
+		{
+			Debug.LogWarning($"[Inventory] {item.name} is already in the inventory.");
+			return;
+		}
+
 		inventory.Add(item);
 		cooldowns.Add(item, item.Cooldown);
 	}
@@ -45,6 +55,7 @@ public class Inventory : MonoBehaviour
 		foreach (Item item in inventory)
 		{
 			if (item == null) continue;
+			if (item.Consumed) continue;
 
 			// if the cooldown is greater than 0, decrement it
 			if (cooldowns[item] > 0)
@@ -58,9 +69,37 @@ public class Inventory : MonoBehaviour
 			if (cooldowns[item] <= 0)
 			{
 				item.Action();
-				Debug.Log($"{item.name} has been invoked.");
+				Debug.Log($"[Inventory] {item.name} has been invoked.");
 				cooldowns[item] = item.Cooldown;
 			}
 		}
+	}
+
+#if UNITY_EDITOR
+	void OnGUI()
+	{
+		if (!showGUI) return;
+
+		GUILayout.BeginArea(new (Screen.width - 200, 10, 190, Screen.height - 20));
+
+		foreach (Item item in inventory)
+		{
+			if (item == null) continue;
+
+			if (cooldowns[item] <= 0) GUILayout.Label($"{item.name} - Passive (Consumed: {item.Consumed})");
+			else GUILayout.Label($"{item.name} - {cooldowns[item].RoundTo(2)}");
+		}
+
+		GUILayout.EndArea();
+	}
+#endif
+}
+
+public static class MathExtensions
+{
+	public static float RoundTo(this float value, int digits)
+	{
+		float multiplier = Mathf.Pow(10, digits);
+		return Mathf.Round(value * multiplier) / multiplier;
 	}
 }

@@ -130,9 +130,7 @@ public class AbilityButton : MonoBehaviour
 		const float fadeTo = 0.8f;
 		const float fadeFrom = 0;
 
-		fadeTween = OnCooldown
-				? availabilityLayer.DOFade(fadeTo, fadeDuration).OnStart(() => availabilityLayer.gameObject.SetActive(true))
-				: availabilityLayer.DOFade(fadeFrom, fadeDuration).OnComplete(() => availabilityLayer.gameObject.SetActive(false));
+		fadeTween = OnCooldown ? availabilityLayer.DOFade(fadeTo, fadeDuration).OnStart(() => availabilityLayer.gameObject.SetActive(true)) : availabilityLayer.DOFade(fadeFrom, fadeDuration).OnComplete(() => availabilityLayer.gameObject.SetActive(false));
 
 		StartCoroutine(UpdateCooldownText());
 	}
@@ -157,6 +155,8 @@ public class AbilityButton : MonoBehaviour
 
 	void Cooldown()
 	{
+		ResetCooldown();
+
 		// Only play the cooldown animation if it's not already playing
 		if (TweenIsInvalid(cooldownTween) || TweenIsInvalid(cooldownFadeTween)) return;
 

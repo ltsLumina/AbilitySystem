@@ -1,5 +1,6 @@
 ﻿#region
 using System.Diagnostics.CodeAnalysis;
+using Lumina.Essentials.Attributes;
 using UnityEngine;
 #endregion
 
@@ -37,6 +38,11 @@ public abstract class Item : ScriptableObject
 	[SerializeField] protected float duration;
 	[SerializeField] protected float cooldown;
 	[SerializeField] protected StatusEffect buff;
+	[Space(10)]
+	[Header("Misc")]
+
+	[ReadOnly]
+	[SerializeField] protected bool consumed;
 
 	public string Name => name;
 	public string Description => description;
@@ -48,6 +54,14 @@ public abstract class Item : ScriptableObject
 	[SerializeField] Rarity rarity;
 
 	public float Cooldown => cooldown;
+
+	#region Other
+	public bool Consumed
+	{
+		get => consumed;
+		protected set => consumed = value;
+	}
+	#endregion
 
 	public virtual void Action() { }
 }

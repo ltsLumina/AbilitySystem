@@ -1,5 +1,5 @@
 ﻿#region
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using UnityEngine;
@@ -15,10 +15,10 @@ public class Player : Entity
 
 	[SerializeField] Job job;
 
-	[SerializeField] int health = 10;
+	[SerializeField] int health = 100;
 	[Foldout("Movement")]
 	[SerializeField] List<float> speeds = new (2)
-	{ 75, 35 };
+	{ 50, 75 };
 	[EndFoldout]
 	[SerializeField] float topSpeed = 15;
 	[SerializeField] float moveDamping = 5;
@@ -42,9 +42,57 @@ public class Player : Entity
 		}
 	}
 
+	void Awake() // temp
+		=> OnDeath += () =>
+		{
+			if (canRevive)
+			{
+				// do revive logic
+				health = 100;
+				Debug.Log("Player has revived.");
+			}
+			else
+			{
+				// actually die
+				health = 0;
+				inputs.ToggleInputLayer("UI");
+			}
+		};
+
+	public event Action OnDeath;
+
+	public int Health
+	{
+		get => health;
+		private set
+		{
+			health = value;
+			OnDeath?.Invoke();
+		}
+	}
+
+	bool canRevive => reviveCount > 0;
+	int reviveCount;
+
+	public void AddRevives(int count)
+	{
+		if (count > 1) Debug.LogWarning($"Adding {count} revives to player. Revive count is now {reviveCount + count}.");
+
+		reviveCount += count;
+	}
+
+	[Button] [UsedImplicitly]
+	void KillPlayer() => Health = 0;
+
+	#region References
 	public Job Job => job;
 	public InputManager Inputs => GetComponentInChildren<InputManager>();
 	public PlayerInput PlayerInput => Inputs.GetComponent<PlayerInput>();
+	#endregion
+
+	#region Properties
+	public Modifiers Modifiers { get; private set; }
+	#endregion
 
 	protected override void OnTick() { }
 
@@ -57,6 +105,7 @@ public class Player : Entity
 		inputs = GetComponentInChildren<InputManager>();
 		playerInput = inputs.GetComponent<PlayerInput>();
 		rb = GetComponent<Rigidbody2D>();
+		Modifiers = GetComponent<Modifiers>();
 
 		Rebind(mouseMove);
 	}
@@ -110,25 +159,15 @@ public class Player : Entity
 		base.TakeDamage(damage);
 
 		health -= Mathf.RoundToInt(damage);
-		if (health <= 0) Logger.Log("Player has died.");
 	}
 
-	public void OnHit(Enemy enemy = default)
+	public void OnHit(Enemy enemy = null)
 	{
 		health--;
 
 		var sprite = GetComponentInChildren<SpriteRenderer>();
 		sprite.FlashSprite(Color.red, 0.3f);
 		StartCoroutine(sprite.CreateAfterImages(0.05f, 0.25f, 5));
-
-		StartCoroutine(Foo());
-	}
-
-	IEnumerator Foo()
-	{
-		speed *= 1.5f;
-		yield return new WaitForSeconds(0.5f);
-		speed /= 1.5f;
 	}
 
 	void OnDrawGizmos()
@@ -139,5 +178,22 @@ public class Player : Entity
 		Gizmos.DrawRay(transform.position, dir);
 		Vector3 point = transform.position + (Vector3) dir;
 		Gizmos.DrawWireSphere(point, 0.3f);
+	}
+
+	void OnGUI()
+	{
+		if (statusEffects.Count == 0) return;
+
+		// on the left of the middle of the screen
+		GUILayout.BeginArea(new (Screen.width / 2f - 200, Screen.height / 2f - 200, 400, 400));
+
+		foreach (StatusEffect effect in statusEffects)
+		{
+			if (effect == null) continue;
+
+			GUILayout.Label($"{effect.StatusName} - {effect.Time.RoundTo(1)}");
+		}
+
+		GUILayout.EndArea();
 	}
 }

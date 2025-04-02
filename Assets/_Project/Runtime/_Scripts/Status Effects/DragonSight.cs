@@ -13,9 +13,19 @@ public class DragonSight : Buff
 		timing = Timing.Prefix;
 	}
 
-	protected override void OnInvoke() => Modify();
+	protected override void OnInvoke()
+	{
+		Modify();
 
-	protected override void OnDecay() => Modify(true);
+		player.Modifiers.Add("Damage", 0.1f);
+	}
+
+	protected override void OnDecay()
+	{
+		Modify(true);
+
+		player.Modifiers.Remove("Damage", 0.1f);
+	}
 
 	void Modify(bool remove = false) => Debug.Log($"{entity.name} has {(remove ? "lost" : "gained")} Dragon Sight.");
 }

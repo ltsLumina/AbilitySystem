@@ -20,6 +20,7 @@ MonoBehaviour:
     Also slows your movement speed slightly.'
   damage: 500
   duration: 5
-  cooldown: 20
+  cooldown: 5
   buff: {fileID: 0}
+  consumed: 0
   rarity: 0

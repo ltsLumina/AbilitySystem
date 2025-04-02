@@ -1,4 +1,5 @@
 #region
+using Lumina.Essentials.Modules;
 using UnityEngine;
 #endregion
 
@@ -15,5 +16,51 @@ public class ChaosSpring : Debuff
 		timing = Timing.Postfix;
 	}
 
-	protected override void OnInvoke() => DamageOverTime(entity, damage);
+	protected override void OnInvoke()
+	{
+		if (entity.gameObject.TryGetComponent(out DamageOverTime _)) Debug.LogWarning("[ChaosSpring] Damage over time already exists.");
+		else
+		{
+			var damageOverTime = entity.gameObject.AddComponent<DamageOverTime>();
+			damageOverTime.Apply(entity, duration, damage);
+		}
+	}
+}
+
+public class DamageOverTime : MonoBehaviour
+{
+	public void Apply(Entity entityTarget, int duration, float damage)
+	{
+		entityTarget.TryGetComponent(out IDamageable damageable);
+
+		int cycle = 0;
+		int dotTick = 0;
+		int dotTicks = duration / AbilitySettings.DoT_Rate - 1;
+
+		// Reset the cycle count if the DoT is already running
+		TickManager.OnCycle -= OnCycle;
+		TickManager.OnCycle += OnCycle;
+
+		return;
+
+		void OnCycle()
+		{
+			if (dotTick == dotTicks)
+			{
+				// DoT has expired
+				TickManager.OnCycle -= OnCycle;
+
+				Destroy(this);
+				return;
+			}
+
+			cycle++;
+
+			if (cycle % AbilitySettings.DoT_Rate == 0) // If DoT_Rate is 3, this will tick on cycle 3, 6, 9, etc.
+			{
+				damageable?.TakeDamage(damage * Helpers.Find<Player>().Modifiers.Damage);
+				dotTick++;
+			}
+		}
+	}
 }

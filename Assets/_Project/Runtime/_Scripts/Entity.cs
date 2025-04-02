@@ -17,7 +17,7 @@ using Debug = UnityEngine.Debug;
 /// </summary>
 public abstract class Entity : MonoBehaviour, IEntity, IDamageable
 {
-	[SerializeField] List<StatusEffect> statusEffects = new ();
+	[SerializeField] protected List<StatusEffect> statusEffects = new ();
 
 	#region Events
 	public event Action<Entity> OnEntityEnable;
@@ -45,6 +45,12 @@ public abstract class Entity : MonoBehaviour, IEntity, IDamageable
 			existingEffect.Time = effect.Duration;
 		}
 		else statusEffects.Add(effect);
+	}
+
+	public bool HasStatusEffect(StatusEffect effect, out StatusEffect existingEffect)
+	{
+		existingEffect = statusEffects.FirstOrDefault(e => e.StatusName == effect.StatusName);
+		return existingEffect != null;
 	}
 
 	public override string ToString() => $"{name} ({GetType().Name}) \n";
@@ -97,8 +103,7 @@ public abstract class Entity : MonoBehaviour, IEntity, IDamageable
 
 	int tickCycles;
 
-	void OnCollisionEnter2D(Collision2D other)
-	{
-		if (!other.gameObject.CompareTag("Player")) Debug.Log($"{name} collided with {other.gameObject.name}.");
-	}
+	protected virtual void OnTriggerEnter2D(Collider2D other) => Debug.Log($"{name} collided with TRIGGER: {other.gameObject.name}.");
+
+	protected virtual void OnCollisionEnter2D(Collision2D other) => Debug.Log($"{name} collided with {other.gameObject.name}.");
 }

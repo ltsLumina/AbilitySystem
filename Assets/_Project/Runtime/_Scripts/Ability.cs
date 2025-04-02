@@ -108,23 +108,7 @@ public sealed class Ability : ScriptableObject
 		bool isCast = cooldownType == CooldownType.Cast;
 		bool isInstant = cooldownType == CooldownType.Instant;
 
-		switch (true)
-		{
-			case true when isGCD:
-				Logger.Log("On global cooldown.");
-				GlobalCooldown(nearestTarget);
-				break;
-
-			case true when isCast:
-				Logger.Log("Casting...");
-				player.StartCoroutine(Cast(nearestTarget));
-				break;
-
-			case true when isInstant:
-				Logger.Log("Instant cast...");
-				Instant(nearestTarget);
-				break;
-		}
+		Attack();
 
 		return;
 
@@ -135,6 +119,27 @@ public sealed class Ability : ScriptableObject
 
 			// Find the closest entity to the player. If anything is null, throw an exception.
 			return (player == null ? null : entities.Where(entity => entity != player).OrderBy(entity => Vector2.Distance(player.transform.position, entity.transform.position)).FirstOrDefault()) ?? throw new InvalidOperationException();
+		}
+
+		void Attack()
+		{
+			switch (true)
+			{
+				case true when isGCD:
+					Logger.Log("On global cooldown.");
+					GlobalCooldown(nearestTarget);
+					break;
+
+				case true when isCast:
+					Logger.Log("Casting...");
+					player.StartCoroutine(Cast(nearestTarget));
+					break;
+
+				case true when isInstant:
+					Logger.Log("Instant cast...");
+					Instant(nearestTarget);
+					break;
+			}
 		}
 	}
 
@@ -208,7 +213,7 @@ public sealed class Ability : ScriptableObject
 		}
 
 		if (prefix.Count > 0) prefix.Apply((target, player));
-		enemy.TakeDamage(damage);
+		enemy.TakeDamage(damage * player.Modifiers.Damage);
 		if (postfix.Count > 0) postfix.Apply((target, player));
 	}
 

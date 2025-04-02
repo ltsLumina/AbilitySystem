@@ -97,10 +97,19 @@ public class StatusEffect : ScriptableObject
 
 			// find nearest entity to the player
 			entityTarget = entities.OrderBy(e => Vector2.Distance(player.transform.position, e.transform.position)).FirstOrDefault();
+			if (entityTarget == null) throw new ("No entities found.");
 		}
 
 		entity = entityTarget;
-		VisualEffect(entityTarget);
+
+		if (entity.HasStatusEffect(this, out StatusEffect existingEffect))
+		{
+			// If the effect is already in the list, we can reset its remaining time
+			existingEffect.Time = Duration;
+			return;
+		}
+
+		//VisualEffect(entityTarget);
 		entityTarget.AddStatusEffect(this);
 
 		OnInvoke();
@@ -150,39 +159,6 @@ public class StatusEffect : ScriptableObject
 		duration = 24;
 		target = Target.Self;
 		timing = Timing.Postfix;
-	}
-
-	protected void DamageOverTime(Entity entityTarget, float damage)
-	{
-		entityTarget.TryGetComponent(out IDamageable damageable);
-		damageable?.TakeDamage(damage);
-
-		int cycle = 0;
-		int dotTick = 0;
-		int dotTicks = duration / AbilitySettings.DoT_Rate - 1;
-
-		// TODO: if the DoT is already running when it is re-applied, reset the cycle count.
-		//  Probably will check if they have a debuff applied.
-		TickManager.OnCycle += OnCycle;
-
-		return;
-
-		void OnCycle()
-		{
-			if (dotTick == dotTicks)
-			{
-				TickManager.OnCycle -= OnCycle;
-				return;
-			}
-
-			cycle++;
-
-			if (cycle % AbilitySettings.DoT_Rate == 0) // If DoT_Rate is 3, this will tick on cycle 3, 6, 9, etc.
-			{
-				damageable?.TakeDamage(damage);
-				dotTick++;
-			}
-		}
 	}
 	#endregion
 
