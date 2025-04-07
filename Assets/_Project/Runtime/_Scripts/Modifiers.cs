@@ -10,15 +10,15 @@ public class Modifiers : MonoBehaviour
 	public float Speed => speed;
 	public float Damage => damage;
 
-	public void SetModifiers(string modifier, float value)
+	public void SetModifier(string modifier, float value)
 	{
-		switch (modifier)
+		switch (modifier.ToLowerInvariant())
 		{
-			case "Speed":
+			case "speed":
 				speed = value;
 				break;
 
-			case "Damage":
+			case "damage":
 				damage = value;
 				break;
 
@@ -30,13 +30,13 @@ public class Modifiers : MonoBehaviour
 
 	public void Add(string modifier, float value)
 	{
-		switch (modifier)
+		switch (modifier.ToLowerInvariant())
 		{
-			case "Speed":
+			case "speed":
 				speed += value;
 				break;
 
-			case "Damage":
+			case "damage":
 				damage += value;
 				break;
 
@@ -48,13 +48,13 @@ public class Modifiers : MonoBehaviour
 
 	public void Remove(string modifier, float value)
 	{
-		switch (modifier)
+		switch (modifier.ToLowerInvariant())
 		{
-			case "Speed":
+			case "speed":
 				speed -= value;
 				break;
 
-			case "Damage":
+			case "damage":
 				damage -= value;
 				break;
 

@@ -2,7 +2,7 @@
 using UnityEngine;
 #endregion
 
-public class Enemy : Entity, IDamageable
+public abstract class Enemy : Entity
 {
 	protected override void OnTick() { }
 

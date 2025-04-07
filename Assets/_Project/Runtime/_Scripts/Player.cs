@@ -1,6 +1,8 @@
 ﻿#region
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -14,8 +16,13 @@ public class Player : Entity
 	public VInspectorData data;
 
 	[SerializeField] Job job;
+	[Space(10)]
+	[Header("Health")]
 
-	[SerializeField] int health = 100;
+	[SerializeField] int health = 3;
+	[SerializeField] int maxHealth = 3;
+	[SerializeField] float takeDamageCooldown = 1f;
+	[Space(5)]
 	[Foldout("Movement")]
 	[SerializeField] List<float> speeds = new (2)
 	{ 50, 75 };
@@ -23,7 +30,7 @@ public class Player : Entity
 	[SerializeField] float topSpeed = 15;
 	[SerializeField] float moveDamping = 5;
 	[SerializeField] float stopDamping = 15;
-
+	[Space(10)]
 	[Header("Other")]
 
 	[SerializeField] bool mouseMove;
@@ -34,7 +41,7 @@ public class Player : Entity
 
 	float speed
 	{
-		get => mouseMove ? speeds[1] : speeds[0];
+		get => mouseMove ? speeds[1] * Modifiers.Speed : speeds[0] * Modifiers.Speed;
 		set
 		{
 			if (mouseMove) speeds[1] = value;
@@ -45,10 +52,10 @@ public class Player : Entity
 	void Awake() // temp
 		=> OnDeath += () =>
 		{
-			if (canRevive)
+			if (CanRevive)
 			{
 				// do revive logic
-				health = 100;
+				health = maxHealth;
 				Debug.Log("Player has revived.");
 			}
 			else
@@ -71,7 +78,7 @@ public class Player : Entity
 		}
 	}
 
-	bool canRevive => reviveCount > 0;
+	public bool CanRevive => reviveCount > 0;
 	int reviveCount;
 
 	public void AddRevives(int count)
@@ -121,11 +128,11 @@ public class Player : Entity
 				playerInput.actions[InputManager.AbilityKeys[3]].ApplyBindingOverride("<Keyboard>/r");
 				break;
 
-			case false: // Using Keyboard bindings (1, 2, 3, 4)
-				playerInput.actions[InputManager.AbilityKeys[0]].ApplyBindingOverride("<Keyboard>/1");
-				playerInput.actions[InputManager.AbilityKeys[1]].ApplyBindingOverride("<Keyboard>/2");
-				playerInput.actions[InputManager.AbilityKeys[2]].ApplyBindingOverride("<Keyboard>/3");
-				playerInput.actions[InputManager.AbilityKeys[3]].ApplyBindingOverride("<Keyboard>/4");
+			case false: // Using Keyboard bindings (h, j, k, l)
+				playerInput.actions[InputManager.AbilityKeys[0]].ApplyBindingOverride("<Keyboard>/h");
+				playerInput.actions[InputManager.AbilityKeys[1]].ApplyBindingOverride("<Keyboard>/j");
+				playerInput.actions[InputManager.AbilityKeys[2]].ApplyBindingOverride("<Keyboard>/k");
+				playerInput.actions[InputManager.AbilityKeys[3]].ApplyBindingOverride("<Keyboard>/l");
 				break;
 		}
 	}
@@ -154,11 +161,40 @@ public class Player : Entity
 		rb.AddForce(dir * speed);
 	}
 
+	protected override void OnTriggerEnter2D(Collider2D other)
+	{
+		base.OnTriggerEnter2D(other);
+
+		if (other.CompareTag("Projectile"))
+		{
+			TakeDamage(1);
+
+			// flash the sprite
+			var sprite = GetComponentInChildren<SpriteRenderer>();
+			sprite.FlashSprite(Color.red, 0.3f);
+
+			// shake camera
+			CameraMain.DOShakePosition(0.3f, 1f);
+		}
+	}
+
 	public override void TakeDamage(float damage)
 	{
+		if (isOnCooldown) return;
+
 		base.TakeDamage(damage);
 
 		health -= Mathf.RoundToInt(damage);
+		StartCoroutine(DamageCooldown());
+	}
+
+	bool isOnCooldown;
+
+	IEnumerator DamageCooldown()
+	{
+		isOnCooldown = true;
+		yield return new WaitForSeconds(takeDamageCooldown); // Cooldown duration
+		isOnCooldown = false;
 	}
 
 	public void OnHit(Enemy enemy = null)

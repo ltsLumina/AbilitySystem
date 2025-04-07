@@ -12,9 +12,11 @@ public class GolemClaymore : Item
 
 		var player = Helpers.Find<Player>();
 		var quickSpell = StatusEffect.CreateCustomStatusEffect("Golem's Might", "Movement speed is reduced.", 5, StatusEffect.Target.Self, StatusEffect.Timing.Prefix);
+		player.Modifiers.Remove("speed", 0.15f);
+		quickSpell.OnDecayed += _ => player.Modifiers.Add("speed", 0.15f);
 		player.AddStatusEffect(quickSpell);
 
-		GameObject enemy = GameObject.Find("Enemy");
-		enemy.GetComponent<Dummy>().TakeDamage(damage); // temp
+		var enemy = FindFirstObjectByType<Boss>();
+		enemy.TakeDamage(damage);
 	}
 }

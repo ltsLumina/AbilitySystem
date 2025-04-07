@@ -20,4 +20,5 @@ MonoBehaviour:
   duration: 0
   cooldown: 0
   buff: {fileID: 0}
+  consumed: 1
   rarity: 4

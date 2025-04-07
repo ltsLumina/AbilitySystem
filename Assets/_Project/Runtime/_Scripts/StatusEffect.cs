@@ -102,10 +102,13 @@ public class StatusEffect : ScriptableObject
 
 		entity = entityTarget;
 
-		if (entity.HasStatusEffect(this, out StatusEffect existingEffect))
+		if (entityTarget.HasStatusEffect(this, out StatusEffect existingEffect))
 		{
 			// If the effect is already in the list, we can reset its remaining time
 			existingEffect.Time = Duration;
+			existingEffect.Caster = Caster;
+
+			Logger.Log($"Reapplied {this} to {entityTarget}");
 			return;
 		}
 
@@ -113,17 +116,21 @@ public class StatusEffect : ScriptableObject
 		entityTarget.AddStatusEffect(this);
 
 		OnInvoke();
+		OnInvoked?.Invoke(this);
+
+		Time = Duration;
+		decayCoroutine ??= CoroutineHelper.StartCoroutine(Decay());
 
 		Logger.Log($"Applied {this} to {entityTarget}");
 	}
 
 	Coroutine decayCoroutine;
 
-	void Awake() => OnInstantiated += effect =>
-	{
-		effect.Time = effect.Duration;
-		effect.decayCoroutine ??= CoroutineHelper.StartCoroutine(effect.Decay());
-	};
+	// void Awake() => OnInstantiated += effect =>
+	// {
+	// 	effect.Time = effect.Duration;
+	// 	effect.decayCoroutine ??= CoroutineHelper.StartCoroutine(effect.Decay());
+	// };
 
 	/// <summary>
 	///     Coroutine for the status effect to decay over time.
@@ -151,6 +158,8 @@ public class StatusEffect : ScriptableObject
 	public event Action<StatusEffect> OnDecayed;
 
 	protected virtual void OnInvoke() { }
+
+	public event Action<StatusEffect> OnInvoked;
 
 	public virtual void Reset()
 	{

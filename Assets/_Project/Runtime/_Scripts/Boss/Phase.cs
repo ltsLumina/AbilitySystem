@@ -2,33 +2,40 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using JetBrains.Annotations;
 using UnityEngine;
 #endregion
 
 [Serializable]
 public class Phase
 {
-	[UsedImplicitly]
-	[HideInInspector] public string name;
+	[SerializeField] string name;
 	[SerializeField] List<Behaviour> behaviours = new ();
 
-	Entity context;
+	Entity self;
+
+	public event Action<Phase> OnPhaseEnded;
 
 	// ReSharper disable once ParameterHidesMember
-	public void Start(Entity context)
+	public void Start(Entity self)
 	{
-		this.context = context;
-		this.context.StartCoroutine(Wait());
+		this.self = self;
+		this.self.StartCoroutine(Wait());
 	}
 
 	IEnumerator Wait()
 	{
-		behaviours[0].Start(context);
-		yield return new WaitForSeconds(3f);
-		behaviours[1].Start(context);
-		yield return new WaitForSeconds(3f);
-		behaviours[2].Start(context);
-		yield return new WaitForSeconds(3f);
+		foreach (Behaviour behaviour in behaviours)
+		{
+			behaviour.Start(self);
+			yield return new WaitForSeconds(behaviour.Duration);
+		}
+
+		End();
+	}
+
+	void End()
+	{
+		Debug.Log($"Phase \"{name}\" ended.");
+		OnPhaseEnded?.Invoke(this);
 	}
 }

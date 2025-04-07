@@ -220,20 +220,10 @@ public sealed class Ability : ScriptableObject
 	static void VisualEffect(Entity target, bool isDoT = false)
 	{
 		var prefab = Resources.Load<GameObject>("PREFABS/Effect");
-		GameObject pooled = GetPooledObject();
-		pooled.transform.position = target.transform.position;
-		pooled.transform.localScale = isDoT ? new (0.5f, 0.5f) : new (1, 1);
-		var sprite = pooled.GetComponent<SpriteRenderer>();
+		GameObject instantiate = Instantiate(prefab, target.transform.position, Quaternion.identity);
+		instantiate.transform.localScale = isDoT ? new (0.5f, 0.5f) : new (1, 1);
+		var sprite = instantiate.GetComponent<SpriteRenderer>();
 
-		sprite.DOFade(0, 1).OnComplete
-		(() =>
-		{
-			sprite.DOFade(1, 0);
-			pooled.SetActive(false);
-		});
-
-		return;
-
-		GameObject GetPooledObject() => ObjectPoolManager.FindObjectPool(prefab, 5).GetPooledObject(true);
+		sprite.DOFade(0, 1).OnComplete(() => { sprite.DOFade(1, 0).OnComplete(() => { Destroy(instantiate); }); });
 	}
 }

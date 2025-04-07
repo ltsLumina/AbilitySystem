@@ -1,6 +1,9 @@
 #region
 using System;
+using System.Collections;
+using DG.Tweening;
 using JetBrains.Annotations;
+using TMPro;
 using UnityEngine;
 using VInspector;
 #endregion
@@ -25,12 +28,21 @@ public class Behaviour
 	[SerializeField] public string description;
 	[SerializeField] public Type type;
 	[ShowIf(nameof(type), Type.Move)]
-	[SerializeField] protected Vector3 position;
+	[SerializeField] protected Vector2 position;
 	[ShowIf(nameof(type), Type.Attack)]
-	[SerializeField] protected string attack;
+	[SerializeField] protected string attackKey;
 	[ShowIf(nameof(type), Type.Dialogue)]
 	[SerializeField] protected string dialogue;
 	[EndIf]
+	[Space(5)]
+	[Tooltip("The duration of the behaviour, i.e., how long before the next behaviour starts")]
+	[SerializeField] protected float duration;
+
+	public float Duration
+	{
+		get => duration;
+		private set => duration = value;
+	}
 
 	// ReSharper disable once ParameterHidesMember
 	public void Start(Entity context)
@@ -38,15 +50,15 @@ public class Behaviour
 		switch (type)
 		{
 			case Type.Move:
-				new Move().Invoke(context);
+				new Move(position, duration).Invoke(context);
 				break;
 
 			case Type.Attack:
-				new Attack().Invoke(context);
+				new Attack(attackKey, duration).Invoke(context);
 				break;
 
 			case Type.Dialogue:
-				new Dialogue().Invoke(context);
+				new Dialogue(dialogue, duration).Invoke(context);
 				break;
 
 			default:
@@ -54,27 +66,63 @@ public class Behaviour
 		}
 	}
 
-	protected virtual void Invoke(Entity context) { }
+	protected virtual void Invoke(Entity self) { }
 }
 
-[Serializable]
 public class Move : Behaviour
 {
-	protected override void Invoke(Entity context)
+	public Move(Vector2 position, float duration)
 	{
-		context.transform.position = position;
-		Debug.Log($"Moved to position {position}!");
+		this.position = position;
+		this.duration = duration;
 	}
+
+	protected override void Invoke(Entity self) => self.transform.DOMove(position, duration).SetEase(Ease.OutCubic).OnComplete(() => Debug.Log($"Moved to position {position}!"));
 }
 
 public class Attack : Behaviour
 {
-	protected override void Invoke(Entity context) => Debug.Log("Attacked.");
+	public Attack(string attackKey, float duration)
+	{
+		this.attackKey = attackKey;
+		this.duration = duration;
+	}
+
+	protected override void Invoke(Entity self)
+	{
+		string key = attackKey;
+		var attacks = self.gameObject.GetComponent<Attacks>();
+		attacks.GetType().GetMethod(key)?.Invoke(attacks, null);
+	}
 }
 
 public class Dialogue : Behaviour
 {
-	protected override void Invoke(Entity context) => Debug.Log("Pretend I'm speaking");
+	public Dialogue(string dialogue, float duration)
+	{
+		this.dialogue = dialogue;
+		this.duration = duration;
+	}
+
+	protected override void Invoke(Entity self) => self.StartCoroutine(ShowText(self));
+
+	IEnumerator ShowText(Entity self)
+	{
+		var dialogueText = GameObject.Find("Dialogue Text").GetComponent<TextMeshProUGUI>();
+
+		Vector3 offset = Vector3.up * 1.5f;
+
+		dialogueText.text = dialogue;
+		dialogueText.enabled = true;
+
+		dialogueText.transform.position = self.transform.position + offset;
+		Tween moveTween = dialogueText.transform.DOMove(self.transform.position + offset, duration).SetEase(Ease.Linear).OnUpdate(() => dialogueText.transform.position = self.transform.position + offset);
+
+		yield return new WaitForSeconds(duration);
+
+		moveTween.Kill();
+		dialogueText.enabled = false;
+	}
 }
 
-// propertydrawer for Behaviour
+// separator

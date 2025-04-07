@@ -37,14 +37,7 @@ public abstract class Entity : MonoBehaviour, IEntity, IDamageable
 	{
 		effect.OnDecayed += e => statusEffects.Remove(e);
 
-		StatusEffect existingEffect = statusEffects.FirstOrDefault(e => e.StatusName == effect.StatusName);
-
-		if (existingEffect)
-		{
-			// If the effect is already in the list, we can reset its remaining time
-			existingEffect.Time = effect.Duration;
-		}
-		else statusEffects.Add(effect);
+		statusEffects.Add(effect);
 	}
 
 	public bool HasStatusEffect(StatusEffect effect, out StatusEffect existingEffect)

@@ -15,17 +15,17 @@ public class DragonSight : Buff
 
 	protected override void OnInvoke()
 	{
-		Modify();
+		Log();
 
 		player.Modifiers.Add("Damage", 0.1f);
 	}
 
 	protected override void OnDecay()
 	{
-		Modify(true);
+		Log(true);
 
 		player.Modifiers.Remove("Damage", 0.1f);
 	}
 
-	void Modify(bool remove = false) => Debug.Log($"{entity.name} has {(remove ? "lost" : "gained")} Dragon Sight.");
+	void Log(bool remove = false) => Debug.Log($"{entity.name} has {(remove ? "lost" : "gained")} Dragon Sight.");
 }

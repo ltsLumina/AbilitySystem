@@ -18,7 +18,7 @@ public class ChaosSpring : Debuff
 
 	protected override void OnInvoke()
 	{
-		if (entity.gameObject.TryGetComponent(out DamageOverTime _)) Debug.LogWarning("[ChaosSpring] Damage over time already exists.");
+		if (entity.gameObject.TryGetComponent(out DamageOverTime existingDoT)) { Debug.LogWarning("[ChaosSpring] Damage over time already exists."); }
 		else
 		{
 			var damageOverTime = entity.gameObject.AddComponent<DamageOverTime>();
