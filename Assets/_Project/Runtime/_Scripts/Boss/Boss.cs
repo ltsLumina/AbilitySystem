@@ -74,7 +74,7 @@ public class Boss : Entity
 
 	IEnumerator CorEnrage()
 	{
-		while (Helpers.Find<Player>().Health > 0 || Helpers.Find<Player>().CanRevive)
+		while (Helpers.Find<Player>().Health > 0)
 		{
 			attacks.Enrage();
 			yield return new WaitForSeconds(10f);

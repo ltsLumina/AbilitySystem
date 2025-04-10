@@ -17,14 +17,14 @@ public class DragonSight : Buff
 	{
 		Log();
 
-		player.Modifiers.Add("Damage", 0.1f);
+		player.Stats.Add("Damage", 0.1f);
 	}
 
 	protected override void OnDecay()
 	{
 		Log(true);
 
-		player.Modifiers.Remove("Damage", 0.1f);
+		player.Stats.Remove("Damage", 0.1f);
 	}
 
 	void Log(bool remove = false) => Debug.Log($"{entity.name} has {(remove ? "lost" : "gained")} Dragon Sight.");

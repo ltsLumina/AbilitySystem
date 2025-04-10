@@ -1,6 +1,7 @@
 #region
 using System;
 using System.Collections;
+using System.Reflection;
 using DG.Tweening;
 using JetBrains.Annotations;
 using TMPro;
@@ -37,6 +38,8 @@ public class Behaviour
 	[Space(5)]
 	[Tooltip("The duration of the behaviour, i.e., how long before the next behaviour starts")]
 	[SerializeField] protected float duration;
+	[Tooltip("The delay before the attack completes. A Donut AoE will wait for this time before spawning orbs")]
+	[SerializeField] protected float delay;
 
 	public float Duration
 	{
@@ -54,7 +57,7 @@ public class Behaviour
 				break;
 
 			case Type.Attack:
-				new Attack(attackKey, duration).Invoke(context);
+				new Attack(attackKey, duration, delay, position).Invoke(context);
 				break;
 
 			case Type.Dialogue:
@@ -77,22 +80,37 @@ public class Move : Behaviour
 		this.duration = duration;
 	}
 
-	protected override void Invoke(Entity self) => self.transform.DOMove(position, duration).SetEase(Ease.OutCubic).OnComplete(() => Debug.Log($"Moved to position {position}!"));
+	protected override void Invoke(Entity self) => self.transform.DOMove(position, duration).SetEase(Ease.OutCubic);
 }
 
 public class Attack : Behaviour
 {
-	public Attack(string attackKey, float duration)
+	public Attack(string attackKey, float duration, float delay, Vector2 position)
 	{
+		this.position = position;
 		this.attackKey = attackKey;
+		this.delay = delay;
 		this.duration = duration;
 	}
 
 	protected override void Invoke(Entity self)
 	{
 		string key = attackKey;
+
 		var attacks = self.gameObject.GetComponent<Attacks>();
-		attacks.GetType().GetMethod(key)?.Invoke(attacks, null);
+		MethodInfo method = typeof(Attacks).GetMethod(key);
+
+		if (method != null)
+		{
+			ParameterInfo[] parameters = method.GetParameters();
+
+			object[] args = parameters.Length > 0
+					? new object[]
+					{ position, delay }
+					: null;
+
+			method.Invoke(attacks, args);
+		}
 	}
 }
 

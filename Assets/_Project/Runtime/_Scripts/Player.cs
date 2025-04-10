@@ -41,30 +41,13 @@ public class Player : Entity
 
 	float speed
 	{
-		get => mouseMove ? speeds[1] * Modifiers.Speed : speeds[0] * Modifiers.Speed;
+		get => mouseMove ? speeds[1] * Stats.Speed : speeds[0] * Stats.Speed;
 		set
 		{
 			if (mouseMove) speeds[1] = value;
 			else speeds[0] = value;
 		}
 	}
-
-	void Awake() // temp
-		=> OnDeath += () =>
-		{
-			if (CanRevive)
-			{
-				// do revive logic
-				health = maxHealth;
-				Debug.Log("Player has revived.");
-			}
-			else
-			{
-				// actually die
-				health = 0;
-				inputs.ToggleInputLayer("UI");
-			}
-		};
 
 	public event Action OnDeath;
 
@@ -74,18 +57,10 @@ public class Player : Entity
 		private set
 		{
 			health = value;
-			OnDeath?.Invoke();
+
+			if (health <= 0) OnDeath?.Invoke();
+			else if (health > maxHealth) health = maxHealth;
 		}
-	}
-
-	public bool CanRevive => reviveCount > 0;
-	int reviveCount;
-
-	public void AddRevives(int count)
-	{
-		if (count > 1) Debug.LogWarning($"Adding {count} revives to player. Revive count is now {reviveCount + count}.");
-
-		reviveCount += count;
 	}
 
 	[Button] [UsedImplicitly]
@@ -98,23 +73,38 @@ public class Player : Entity
 	#endregion
 
 	#region Properties
-	public Modifiers Modifiers { get; private set; }
+	public Stats Stats { get; private set; }
 	#endregion
 
 	protected override void OnTick() { }
 
 	protected override void OnCycle() { }
 
-	void Reset() => gameObject.tag = "Player";
+	void Reset()
+	{
+		if (!Application.isPlaying) return;
+		gameObject.tag = $"Player {playerInput.playerIndex + 1}";
+	}
+
+	void Awake() // temp
+		=> OnDeath += () =>
+		{
+			Debug.Log("Player is dead.");
+			inputs.ToggleInputLayer("UI");
+		};
 
 	protected override void OnStart()
 	{
 		inputs = GetComponentInChildren<InputManager>();
 		playerInput = inputs.GetComponent<PlayerInput>();
 		rb = GetComponent<Rigidbody2D>();
-		Modifiers = GetComponent<Modifiers>();
+		Stats = GetComponent<Stats>();
 
 		Rebind(mouseMove);
+
+		#region Init Player
+		Health = maxHealth;
+		#endregion
 	}
 
 	void Rebind(bool useMouseBindings)
@@ -163,18 +153,18 @@ public class Player : Entity
 
 	protected override void OnTriggerEnter2D(Collider2D other)
 	{
-		base.OnTriggerEnter2D(other);
+		//base.OnTriggerEnter2D(other);
 
 		if (other.CompareTag("Projectile"))
 		{
+			if (Stats.Shields > 0)
+			{
+				Stats.Remove("shields", 1);
+				Destroy(other.gameObject);
+				return;
+			}
+
 			TakeDamage(1);
-
-			// flash the sprite
-			var sprite = GetComponentInChildren<SpriteRenderer>();
-			sprite.FlashSprite(Color.red, 0.3f);
-
-			// shake camera
-			CameraMain.DOShakePosition(0.3f, 1f);
 		}
 	}
 
@@ -186,6 +176,13 @@ public class Player : Entity
 
 		health -= Mathf.RoundToInt(damage);
 		StartCoroutine(DamageCooldown());
+
+		// flash the sprite
+		var sprite = GetComponentInChildren<SpriteRenderer>();
+		sprite.FlashSprite(Color.red, 0.3f);
+
+		// shake camera
+		CameraMain.DOShakePosition(0.3f, 1f);
 	}
 
 	bool isOnCooldown;

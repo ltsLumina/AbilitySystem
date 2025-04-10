@@ -213,7 +213,7 @@ public sealed class Ability : ScriptableObject
 		}
 
 		if (prefix.Count > 0) prefix.Apply((target, player));
-		enemy.TakeDamage(damage * player.Modifiers.Damage);
+		enemy.TakeDamage(damage * player.Stats.Damage);
 		if (postfix.Count > 0) postfix.Apply((target, player));
 	}
 

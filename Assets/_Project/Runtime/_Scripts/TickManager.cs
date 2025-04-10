@@ -15,174 +15,175 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public class TickManager : Singleton<TickManager>
 {
-    [SerializeField] Tick tick;
+	[SerializeField] Tick tick;
 
-    [Tooltip("The number of ticks per second.")]
-    [SerializeField] int tickRate = 20;
+	[Tooltip("The number of ticks per second.")]
+	[SerializeField] int tickRate = 20;
 
-    [Tooltip("The duration of a tick cycle in seconds.")]
-    [SerializeField] float tickCycleDuration = 1f;
+	[Tooltip("The duration of a tick cycle in seconds.")]
+	[SerializeField] float tickCycleDuration = 1f;
 
-    [Header("Other")]
-    [SerializeField] List<int> laps = new (10);
+	[Header("Other")]
 
-    public static event Action OnTick;
-    public static event Action OnCycle;
+	[SerializeField] List<int> laps = new (10);
 
-    static bool showTickLogs;
+	public static event Action OnTick;
+	public static event Action OnCycle;
 
-    void OnGUI()
-    {
-        GUI.Label(new Rect(10, 10, 100, 20), "Tick: " + tick.Current);
-        GUI.HorizontalSlider(new Rect(10, 30, 100, 20), tick.Current, 1, tick.Rate);
-        float slider = GUI.HorizontalSlider(new Rect(10, 50, 100, 20), Time.timeScale, 0, 1);
-        showTickLogs = GUI.Toggle(new Rect(10, 70, 100, 20), showTickLogs, "Show Tick Logs");
+	static bool showTickLogs;
 
-        // snap to 0.1 increments
-        Time.timeScale = Mathf.Round(slider * 10) / 10;
-    }
+	void OnGUI()
+	{
+		GUI.Label(new (10, 10, 100, 20), "Tick: " + tick.Current);
+		GUI.HorizontalSlider(new (10, 30, 100, 20), tick.Current, 1, tick.Rate);
+		float slider = GUI.HorizontalSlider(new (10, 50, 100, 20), Time.timeScale, 0, 2);
+		showTickLogs = GUI.Toggle(new (10, 70, 100, 20), showTickLogs, "Show Tick Logs");
 
-    #region Stopwatch
-    Stopwatch stopwatch;
-    int tickCounter;
-    #endregion
+		// snap to 0.1 increments
+		Time.timeScale = Mathf.Round(slider * 10) / 10;
+	}
 
-    bool cycleCompleted;
+	#region Stopwatch
+	Stopwatch stopwatch;
+	int tickCounter;
+	#endregion
 
-    /// <summary>
-    ///     <para> The number of ticks per second. </para>
-    /// </summary>
-    public int TickRate => tickRate;
+	bool cycleCompleted;
 
-    /// <summary>
-    ///     <para> The duration of a tick cycle in seconds. </para>
-    /// </summary>
-    public float TickCycleDuration => tickCycleDuration;
+	/// <summary>
+	///     <para> The number of ticks per second. </para>
+	/// </summary>
+	public int TickRate => tickRate;
 
-    /// <summary>
-    ///     <para> The duration of a single tick in seconds. </para>
-    /// </summary>
-    public float TickDuration => 1f / tickRate;
+	/// <summary>
+	///     <para> The duration of a tick cycle in seconds. </para>
+	/// </summary>
+	public float TickCycleDuration => tickCycleDuration;
 
-    void Start()
-    {
-        Application.targetFrameRate = 60;
+	/// <summary>
+	///     <para> The duration of a single tick in seconds. </para>
+	/// </summary>
+	public float TickDuration => 1f / tickRate;
 
-        tick = new Tick(tickRate);
+	void Start()
+	{
+		Application.targetFrameRate = 60;
 
-        stopwatch = new ();
-        tickCounter = 0;
-        cycleCompleted = false;
+		tick = new (tickRate);
 
-        OnTick += () =>
-        {
-            if (showTickLogs) Logger.Log("Tick! \n[no. " + tick.Current + "]");
-            tickCounter++;
+		stopwatch = new ();
+		tickCounter = 0;
+		cycleCompleted = false;
 
-            switch (tickCounter)
-            {
-                case 1:
-                    stopwatch.Start();
-                    break;
+		OnTick += () =>
+		{
+			if (showTickLogs) Logger.Log("Tick! \n[no. " + tick.Current + "]");
+			tickCounter++;
 
-                case var _ when tickCounter == tick.Rate:
-                    stopwatch.Stop();
-                    laps.Add(Mathf.RoundToInt(stopwatch.ElapsedMilliseconds));
-                    stopwatch.Reset();
-                    tickCounter = 0;
+			switch (tickCounter)
+			{
+				case 1:
+					stopwatch.Start();
+					break;
 
-                    if (!cycleCompleted)
-                    {
-                        OnCycle?.Invoke();
-                        cycleCompleted = true;
-                    }
+				case var _ when tickCounter == tick.Rate:
+					stopwatch.Stop();
+					laps.Add(Mathf.RoundToInt(stopwatch.ElapsedMilliseconds));
+					stopwatch.Reset();
+					tickCounter = 0;
 
-                    break;
-            }
-        };
-    }
+					if (!cycleCompleted)
+					{
+						OnCycle?.Invoke();
+						cycleCompleted = true;
+					}
 
-    void Update()
-    {
-        if (tick.Cycle(Time.deltaTime * Time.timeScale, tickCycleDuration))
-        {
-            OnTick?.Invoke();
-            cycleCompleted = false;
-        }
-    }
+					break;
+			}
+		};
+	}
 
-    void OnDestroy()
-    {
-        OnTick = null;
-        OnCycle = null;
-    }
+	void Update()
+	{
+		if (tick.Cycle(Time.deltaTime * Time.timeScale, tickCycleDuration))
+		{
+			OnTick?.Invoke();
+			cycleCompleted = false;
+		}
+	}
 
-    public static Task WaitForNextCycle()
-    {
-        var tcs = new TaskCompletionSource<bool>();
+	void OnDestroy()
+	{
+		OnTick = null;
+		OnCycle = null;
+	}
 
-        OnCycle += Cycle; // Add the listener to the event and wait for a cycle to complete.
-        return tcs.Task;
+	public static Task WaitForNextCycle()
+	{
+		var tcs = new TaskCompletionSource<bool>();
 
-        void Cycle() // Once the cycle has completed, remove the listener and set the task as completed.
-        {
-            OnCycle -= Cycle;
-            tcs.SetResult(true);
-        }
-    }
+		OnCycle += Cycle; // Add the listener to the event and wait for a cycle to complete.
+		return tcs.Task;
+
+		void Cycle() // Once the cycle has completed, remove the listener and set the task as completed.
+		{
+			OnCycle -= Cycle;
+			tcs.SetResult(true);
+		}
+	}
 }
 
 [Serializable]
 public class Tick
 {
-    [SerializeField, ReadOnly] int tick;
-    [SerializeField] bool pause;
+	[SerializeField] [ReadOnly] int tick;
+	[SerializeField] bool pause;
 
-    float accumulatedTime;
+	float accumulatedTime;
 
-    public bool Pause
-    {
-        get => pause;
-        set => pause = value;
-    }
+	public bool Pause
+	{
+		get => pause;
+		set => pause = value;
+	}
 
-    public int Current
-    {
-        get => tick;
-        private set => tick = value;
-    }
+	public int Current
+	{
+		get => tick;
+		private set => tick = value;
+	}
 
-    public int Rate { get; }
+	public int Rate { get; }
 
-    public Tick(int rate)
-    {
-        Pause = false;
-        Current = 0;
-        Rate = rate;
-        accumulatedTime = 0f;
-    }
+	public Tick(int rate)
+	{
+		Pause = false;
+		Current = 0;
+		Rate = rate;
+		accumulatedTime = 0f;
+	}
 
-    /// <summary>
-    ///     <para> Updates the tick based on the current time and timescale. </para>
-    /// </summary>
-    /// <param name="deltaTime"> The delta time adjusted by the timescale. </param>
-    /// <param name="tickCycleDuration"> The duration of a tick cycle in seconds. </param>
-    /// <returns> Returns true if the tick has been updated. </returns>
-    public bool Cycle(float deltaTime, float tickCycleDuration)
-    {
-        if (Pause) return false;
+	/// <summary>
+	///     <para> Updates the tick based on the current time and timescale. </para>
+	/// </summary>
+	/// <param name="deltaTime"> The delta time adjusted by the timescale. </param>
+	/// <param name="tickCycleDuration"> The duration of a tick cycle in seconds. </param>
+	/// <returns> Returns true if the tick has been updated. </returns>
+	public bool Cycle(float deltaTime, float tickCycleDuration)
+	{
+		if (Pause) return false;
 
-        accumulatedTime += deltaTime;
-        float tickDuration = tickCycleDuration / Rate;
+		accumulatedTime += deltaTime;
+		float tickDuration = tickCycleDuration / Rate;
 
-        if (accumulatedTime >= tickDuration)
-        {
-            Current++;
-            accumulatedTime -= tickDuration;
-            if (Current > Rate) { Current = 1; }
-            return true;
-        }
+		if (accumulatedTime >= tickDuration)
+		{
+			Current++;
+			accumulatedTime -= tickDuration;
+			if (Current > Rate) Current = 1;
+			return true;
+		}
 
-        return false;
-    }
+		return false;
+	}
 }

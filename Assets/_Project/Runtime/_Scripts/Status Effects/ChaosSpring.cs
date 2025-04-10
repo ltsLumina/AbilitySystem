@@ -58,7 +58,7 @@ public class DamageOverTime : MonoBehaviour
 
 			if (cycle % AbilitySettings.DoT_Rate == 0) // If DoT_Rate is 3, this will tick on cycle 3, 6, 9, etc.
 			{
-				damageable?.TakeDamage(damage * Helpers.Find<Player>().Modifiers.Damage);
+				damageable?.TakeDamage(damage * Helpers.Find<Player>().Stats.Damage);
 				dotTick++;
 			}
 		}

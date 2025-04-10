@@ -41,6 +41,8 @@ public class Inventory : MonoBehaviour
 
 		inventory.Add(item);
 		cooldowns.Add(item, item.Cooldown);
+
+		if (item.InvokeWhenAdded) item.Action();
 	}
 
 	void Start()
@@ -86,7 +88,7 @@ public class Inventory : MonoBehaviour
 		{
 			if (item == null) continue;
 
-			if (cooldowns[item] <= 0) GUILayout.Label($"{item.name} - Passive (Consumed: {item.Consumed})");
+			if (cooldowns[item] <= 0) GUILayout.Label($"{item.name} - Passive");
 			else GUILayout.Label($"{item.name} - {cooldowns[item].RoundTo(2)}");
 		}
 

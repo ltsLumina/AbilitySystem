@@ -6,6 +6,7 @@ TagManager:
   tags:
   - WorldspaceCanvas
   - Projectile
+  - Line
   layers:
   - Default
   - TransparentFX

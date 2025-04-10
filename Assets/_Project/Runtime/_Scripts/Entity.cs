@@ -96,7 +96,7 @@ public abstract class Entity : MonoBehaviour, IEntity, IDamageable
 
 	int tickCycles;
 
-	protected virtual void OnTriggerEnter2D(Collider2D other) => Debug.Log($"{name} collided with TRIGGER: {other.gameObject.name}.");
+	protected virtual void OnTriggerEnter2D(Collider2D other) => Debug.Log($"{name} caused a trigger collision with: {other.gameObject.name}.");
 
 	protected virtual void OnCollisionEnter2D(Collision2D other) => Debug.Log($"{name} collided with {other.gameObject.name}.");
 }

@@ -23,4 +23,5 @@ MonoBehaviour:
   cooldown: 8
   buff: {fileID: 0}
   consumed: 0
+  invokeWhenAdded: 0
   rarity: 0
