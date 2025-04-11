@@ -1,7 +1,10 @@
 ﻿#region
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using JetBrains.Annotations;
 using Lumina.Essentials.Modules;
+using UnityEditor;
 using UnityEngine;
 using VInspector;
 #endregion
@@ -9,15 +12,39 @@ using VInspector;
 [RequireComponent(typeof(Attacks))]
 public class Boss : Entity
 {
-	[HideInInspector]
+	[HideInInspector] [UsedImplicitly]
 	public VInspectorData data;
 
 	[Foldout("Sequence")]
 	[SerializeField] List<Phase> phases = new ();
+	[EndFoldout]
+	[Header("Enrage Settings")]
+
+	[SerializeField] float enrageDialogueDelay = 3f;
+	[SerializeField] float enrageDelay = 5f;
 
 	int currentPhaseIndex;
 
 	Attacks attacks;
+
+	[Button] [UsedImplicitly]
+	public void SaveList()
+	{
+		// Save the list of phases to a file
+		string path = $"{Application.persistentDataPath}/{name} Phases.json";
+		string json = JsonUtility.ToJson(this, true);
+		File.WriteAllText(path, json);
+		Debug.Log($"Phases saved to {path}");
+	}
+
+	[Button] [UsedImplicitly]
+	public void LoadList()
+	{
+		string path = EditorUtility.OpenFilePanel("Load Phases", Application.persistentDataPath, "json");
+		if (string.IsNullOrEmpty(path)) return;
+		string json = File.ReadAllText(path);
+		JsonUtility.FromJsonOverwrite(json, this);
+	}
 
 	void Awake() => attacks = GetComponent<Attacks>();
 
@@ -68,16 +95,28 @@ public class Boss : Entity
 
 	void Enrage()
 	{
-		Debug.LogWarning("Enrage!");
-		StartCoroutine(CorEnrage());
+		Logger.LogWarning("Enrage!");
+		StartCoroutine(EnrageCoroutine());
 	}
 
-	IEnumerator CorEnrage()
+	IEnumerator EnrageCoroutine()
 	{
+		var dialogue = new Dialogue("I've had it with you!", enrageDialogueDelay + 2f);
+		dialogue.type = Behaviour.Type.Dialogue;
+		dialogue.Start(this);
+
+		yield return new WaitForSeconds(enrageDialogueDelay);
+
+		var move = new Move(Vector2.zero, 2f);
+		move.type = Behaviour.Type.Move;
+		move.Start(this);
+
+		yield return new WaitForSeconds(enrageDelay);
+
 		while (Helpers.Find<Player>().Health > 0)
 		{
 			attacks.Enrage();
-			yield return new WaitForSeconds(10f);
+			yield return new WaitForSeconds(enrageDelay);
 		}
 
 		Debug.LogWarning("Player has died. Ending enrage.");

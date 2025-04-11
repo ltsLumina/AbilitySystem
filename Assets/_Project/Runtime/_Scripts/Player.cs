@@ -86,13 +86,6 @@ public class Player : Entity
 		gameObject.tag = $"Player {playerInput.playerIndex + 1}";
 	}
 
-	void Awake() // temp
-		=> OnDeath += () =>
-		{
-			Debug.Log("Player is dead.");
-			inputs.ToggleInputLayer("UI");
-		};
-
 	protected override void OnStart()
 	{
 		inputs = GetComponentInChildren<InputManager>();
@@ -104,6 +97,18 @@ public class Player : Entity
 
 		#region Init Player
 		Health = maxHealth;
+
+		OnDeath += () =>
+		{
+			Logger.LogWarning("Player has died!");
+
+			//playerInput.DeactivateInput();
+			//playerInput.SwitchCurrentActionMap("UI");
+
+			//StopAllCoroutines();
+
+			SceneManagerExtended.ReloadScene();
+		};
 		#endregion
 	}
 
@@ -174,7 +179,7 @@ public class Player : Entity
 
 		base.TakeDamage(damage);
 
-		health -= Mathf.RoundToInt(damage);
+		Health -= Mathf.RoundToInt(damage);
 		StartCoroutine(DamageCooldown());
 
 		// flash the sprite

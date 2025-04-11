@@ -7,6 +7,7 @@ using JetBrains.Annotations;
 using TMPro;
 using UnityEngine;
 using VInspector;
+using Object = UnityEngine.Object;
 #endregion
 
 /// <summary>
@@ -111,6 +112,7 @@ public class Attack : Behaviour
 
 			method.Invoke(attacks, args);
 		}
+		else { Debug.LogError($"Attack method \"{key}\" not found in {attacks}. \nPlease check the key in the Behaviour Inspector."); }
 	}
 }
 
@@ -126,7 +128,8 @@ public class Dialogue : Behaviour
 
 	IEnumerator ShowText(Entity self)
 	{
-		var dialogueText = GameObject.Find("Dialogue Text").GetComponent<TextMeshProUGUI>();
+		var dialogueTextPrefab = GameObject.Find("Dialogue Text").GetComponent<TextMeshProUGUI>();
+		TextMeshProUGUI dialogueText = Object.Instantiate(dialogueTextPrefab, self.transform.position, Quaternion.identity, GameObject.FindWithTag("WorldspaceCanvas").transform);
 
 		Vector3 offset = Vector3.up * 1.5f;
 
@@ -139,7 +142,7 @@ public class Dialogue : Behaviour
 		yield return new WaitForSeconds(duration);
 
 		moveTween.Kill();
-		dialogueText.enabled = false;
+		Object.Destroy(dialogueText.gameObject);
 	}
 }
 
