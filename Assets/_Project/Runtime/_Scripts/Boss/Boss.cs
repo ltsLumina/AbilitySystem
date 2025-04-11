@@ -27,11 +27,12 @@ public class Boss : Entity
 
 	Attacks attacks;
 
+#if UNITY_EDITOR
 	[Button] [UsedImplicitly]
 	public void SaveList()
 	{
 		// Save the list of phases to a file
-		string path = $"{Application.persistentDataPath}/{name} Phases.json";
+		string path = $"{Application.persistentDataPath}/{name}.json";
 		string json = JsonUtility.ToJson(this, true);
 		File.WriteAllText(path, json);
 		Debug.Log($"Phases saved to {path}");
@@ -45,6 +46,7 @@ public class Boss : Entity
 		string json = File.ReadAllText(path);
 		JsonUtility.FromJsonOverwrite(json, this);
 	}
+#endif
 
 	void Awake() => attacks = GetComponent<Attacks>();
 

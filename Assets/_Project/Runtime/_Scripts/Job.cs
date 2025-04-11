@@ -35,6 +35,7 @@ public sealed class Job : ScriptableObject
 		}
 	}
 
+#if UNITY_EDITOR
 	void OnValidate()
 	{
 		Ability[] resources = Resources.LoadAll<Ability>(AbilitySettings.ResourcePaths.ABILITIES);
@@ -55,4 +56,5 @@ public sealed class Job : ScriptableObject
 				break;
 		}
 	}
+#endif
 }

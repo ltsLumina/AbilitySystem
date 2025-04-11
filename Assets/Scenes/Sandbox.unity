@@ -3294,7 +3294,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7515439847528555595, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
       propertyPath: m_Name
-      value: 'Ability [" J "]'
+      value: 'Ability [" 2 "]'
       objectReference: {fileID: 0}
     - target: {fileID: 7515439847528555595, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
       propertyPath: m_IsActive
@@ -5082,7 +5082,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7515439847528555595, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
       propertyPath: m_Name
-      value: 'Ability [" K "]'
+      value: 'Ability [" 3 "]'
       objectReference: {fileID: 0}
     - target: {fileID: 7515439847528555595, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
       propertyPath: m_IsActive
@@ -6026,7 +6026,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7515439847528555595, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
       propertyPath: m_Name
-      value: 'Ability [" L "]'
+      value: 'Ability [" 4 "]'
       objectReference: {fileID: 0}
     - target: {fileID: 7515439847528555595, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
       propertyPath: m_IsActive
@@ -6156,7 +6156,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7515439847528555595, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
       propertyPath: m_Name
-      value: 'Ability [" H "]'
+      value: 'Ability [" 1 "]'
       objectReference: {fileID: 0}
     - target: {fileID: 7916833178086342432, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
       propertyPath: ability
