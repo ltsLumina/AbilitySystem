@@ -99,7 +99,7 @@ GameObject:
   - component: {fileID: -264016005449782560}
   m_Layer: 0
   m_Name: Line AoE
-  m_TagString: Line
+  m_TagString: Marker
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

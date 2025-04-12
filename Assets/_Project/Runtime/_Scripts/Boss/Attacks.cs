@@ -5,6 +5,7 @@ using DG.Tweening;
 using Lumina.Essentials.Modules;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 // ReSharper disable UnusedMember.Global
 #endregion
@@ -161,7 +162,7 @@ public class Attacks : MonoBehaviour
 		float radius = 5f;
 
 		StartCoroutine(Yield());
-		StartCoroutine(Countdown());
+		Countdown("get in the circle!", origin, delay);
 
 		var markerPrefab = Resources.Load<GameObject>("PREFABS/Boss VFX/Donut AoE");
 		GameObject marker = Instantiate(markerPrefab, origin, Quaternion.identity);
@@ -182,24 +183,83 @@ public class Attacks : MonoBehaviour
 				rb.linearVelocity = position.normalized * orbSpeed;
 			}
 		}
+	}
 
-		IEnumerator Countdown()
+	readonly Queue<Sequence> countdowns = new ();
+
+	/// <summary>
+	///     Spawns a 'dynamic' countdown that follows the player for a given delay while displaying the countdown message.
+	/// </summary>
+	void Countdown(string message, float delay)
+	{
+		var player = Helpers.Find<Player>();
+		var countdownPrefab = Resources.Load<GameObject>("PREFABS/Boss VFX/AoE Countdown");
+		Transform parent = GameObject.FindWithTag("Worldspace Canvas").transform;
+		var offset = new Vector3(0, Mathf.Max(countdowns.Count + 1f, 2f));
+
+		GameObject countdown = Instantiate(countdownPrefab, player.transform.position + offset, Quaternion.identity, parent);
+		countdown.name = $"Countdown: \"{message}\" (dynamic) | (#{countdowns.Count})";
+		Tween moveTween = countdown.transform.DOMove(player.transform.position + offset, delay).SetEase(Ease.Linear).OnUpdate(() => countdown.transform.position = player.transform.position + offset);
+
+		var tmp = countdown.GetComponent<TextMeshProUGUI>();
+		tmp.text = message;
+
+		// set the progress of the image over delay time
+		Transform backgroundImage = countdown.transform.GetChild(0);
+		Transform progressImage = backgroundImage.GetChild(0);
+		var background = backgroundImage.GetComponent<Image>();
+		var progress = progressImage.GetComponent<Image>();
+
+		Sequence sequence = DOTween.Sequence();
+		countdowns.Enqueue(sequence);
+
+		sequence.OnStart(() => progress.fillAmount = 0f);
+		sequence.Append(progress.DOFillAmount(1f, delay).SetEase(Ease.Linear));
+		sequence.AppendInterval(0.8f);
+		sequence.Join(tmp.DOFade(0, 0.2f).SetEase(Ease.Linear));
+		sequence.Join(progress.DOFade(0, 0.2f).SetEase(Ease.Linear));
+		sequence.Join(background.DOFade(0, 0.2f).SetEase(Ease.Linear));
+
+		sequence.OnComplete
+		(() =>
 		{
-			var player = Helpers.Find<Player>();
-			var component = GameObject.Find("Attack Countdown").GetComponent<TextMeshProUGUI>();
-			Tween moveTween = component.transform.DOMove(player.transform.position + Vector3.up * 1.5f, delay).SetEase(Ease.Linear).OnUpdate(() => component.transform.position = player.transform.position + Vector3.up * 1.5f);
-
-			for (int i = 0; i < delay; i++)
-			{
-				string countdown = (delay - i).ToString();
-				string formattedText = $"get in the circle! (<color=red>{countdown}</color>)";
-				component.text = formattedText;
-				yield return new WaitForSeconds(1f);
-			}
-
-			component.text = string.Empty;
+			countdowns.Dequeue();
 			moveTween?.Kill();
-		}
+			Destroy(countdown, 0.1f);
+		});
+	}
+
+	/// <summary>
+	///     Spawns the countdown prefab at a given position and displays the countdown message.
+	///     <para>Used for AoEs that have a static position, or for AoEs that don't follow the player.</para>
+	///     <example> Donut, Line, Cleave, etc.</example>
+	/// </summary>
+	void Countdown(string message, Vector2 origin, float delay) // note for self: this will be for countdowns that use a static position
+	{
+		var countdownPrefab = Resources.Load<GameObject>("PREFABS/Boss VFX/AoE Countdown");
+		Transform parent = GameObject.FindWithTag("Worldspace Canvas").transform;
+		Vector2 offset = Vector2.up * 3f;
+
+		GameObject countdown = Instantiate(countdownPrefab, origin + offset, Quaternion.identity, parent);
+		countdown.name = $"Countdown: \"{message}\" @ {origin} | (#{countdowns.Count})";
+
+		var tmp = countdown.GetComponent<TextMeshProUGUI>();
+		tmp.text = message;
+
+		// set the progress of the image over delay time
+		Transform backgroundImage = countdown.transform.GetChild(0);
+		Transform progressImage = backgroundImage.GetChild(0);
+		var background = backgroundImage.GetComponent<Image>();
+		var progress = progressImage.GetComponent<Image>();
+
+		Sequence sequence = DOTween.Sequence();
+		sequence.OnStart(() => progress.fillAmount = 0f);
+		sequence.Append(progress.DOFillAmount(1f, delay).SetEase(Ease.Linear));
+		sequence.AppendInterval(0.8f);
+		sequence.Join(tmp.DOFade(0, 0.2f).SetEase(Ease.Linear));
+		sequence.Join(progress.DOFade(0, 0.2f).SetEase(Ease.Linear));
+		sequence.Join(background.DOFade(0, 0.2f).SetEase(Ease.Linear));
+		sequence.OnComplete(() => Destroy(countdown));
 	}
 
 	public void Line(Vector2 origin, float delay)
@@ -207,10 +267,12 @@ public class Attacks : MonoBehaviour
 		var linePrefab = Resources.Load<GameObject>("PREFABS/Boss VFX/Line AoE");
 		GameObject line = Instantiate(linePrefab, origin, Quaternion.identity);
 		line.transform.localScale = new (Screen.width / 100f, line.transform.localScale.y, line.transform.localScale.z);
+		Destroy(line, delay + 0.1f);
 
 		StartCoroutine(Anim());
 		StartCoroutine(Yield());
-		StartCoroutine(Countdown());
+
+		//Countdown("get away from the line!", origin, delay);
 
 		return;
 
@@ -249,23 +311,55 @@ public class Attacks : MonoBehaviour
 				else line.SetActive(false);
 			}
 		}
+	}
 
-		IEnumerator Countdown()
+	public void LineBig(Vector2 origin, float delay)
+	{
+		var linePrefab = Resources.Load<GameObject>("PREFABS/Boss VFX/Line AoE");
+		GameObject line = Instantiate(linePrefab, origin, Quaternion.identity);
+		line.transform.localScale = new (Screen.width / 100f, line.transform.localScale.y * 2, line.transform.localScale.z);
+
+		StartCoroutine(Anim());
+		StartCoroutine(Yield());
+
+		//Countdown("get away from the line!", origin, delay);
+
+		return;
+
+		IEnumerator Anim()
 		{
-			var player = Helpers.Find<Player>();
-			var component = GameObject.Find("Attack Countdown").GetComponent<TextMeshProUGUI>();
-			Tween moveTween = component.transform.DOMove(player.transform.position + Vector3.up * 1.5f, delay).SetEase(Ease.Linear).OnUpdate(() => component.transform.position = player.transform.position + Vector3.up * 1.5f);
+			var spriteRenderer = line.GetComponentInChildren<SpriteRenderer>();
+			yield return new WaitForSeconds(delay - 0.2f);
 
-			for (int i = 0; i < delay; i++)
+			Sequence sequence = DOTween.Sequence();
+			sequence.Append(spriteRenderer.DOFade(1, 0.2f).SetEase(Ease.Linear));
+			sequence.Join(spriteRenderer.transform.DOScaleY(0, 0.2f).SetEase(Ease.InOutCubic));
+			sequence.AppendInterval(0.1f);
+			sequence.OnComplete(() => Destroy(line));
+		}
+
+		IEnumerator Yield()
+		{
+			yield return new WaitForSeconds(delay);
+
+			if (line == null) yield break;
+
+			var collider = line.GetComponent<BoxCollider2D>();
+
+			var results = new List<Collider2D>();
+			var contactFilter = new ContactFilter2D();
+			contactFilter.SetLayerMask(LayerMask.GetMask("Player"));
+			collider.Overlap(contactFilter, results);
+
+			foreach (Collider2D col in results)
 			{
-				string countdown = (delay - i).ToString();
-				string formattedText = $"get away from the line! (<color=red>{countdown}</color>)";
-				component.text = formattedText;
-				yield return new WaitForSeconds(1f);
+				if (col.TryGetComponent(out Player player))
+				{
+					player.TakeDamage(1);
+					line.SetActive(false);
+				}
+				else line.SetActive(false);
 			}
-
-			component.text = string.Empty;
-			moveTween?.Kill();
 		}
 	}
 
@@ -278,7 +372,8 @@ public class Attacks : MonoBehaviour
 
 		StartCoroutine(Anim());
 		StartCoroutine(Yield());
-		StartCoroutine(Countdown());
+
+		//Countdown("get away from the line!", origin, delay);
 
 		return;
 
@@ -317,24 +412,6 @@ public class Attacks : MonoBehaviour
 				else line.SetActive(false);
 			}
 		}
-
-		IEnumerator Countdown()
-		{
-			var player = Helpers.Find<Player>();
-			var component = GameObject.Find("Attack Countdown").GetComponent<TextMeshProUGUI>();
-			Tween moveTween = component.transform.DOMove(player.transform.position + Vector3.up * 1.5f, delay).SetEase(Ease.Linear).OnUpdate(() => component.transform.position = player.transform.position + Vector3.up * 1.5f);
-
-			for (int i = 0; i < delay; i++)
-			{
-				string countdown = (delay - i).ToString();
-				string formattedText = $"get away from the line! (<color=red>{countdown}</color>)";
-				component.text = formattedText;
-				yield return new WaitForSeconds(1f);
-			}
-
-			component.text = string.Empty;
-			moveTween?.Kill();
-		}
 	}
 
 	public void Line45(Vector2 origin, float delay)
@@ -346,7 +423,8 @@ public class Attacks : MonoBehaviour
 
 		StartCoroutine(Anim());
 		StartCoroutine(Yield());
-		StartCoroutine(Countdown());
+
+		//Countdown("get away from the line!", origin, delay);
 
 		return;
 
@@ -381,24 +459,6 @@ public class Attacks : MonoBehaviour
 				}
 				else line.SetActive(false);
 			}
-		}
-
-		IEnumerator Countdown()
-		{
-			var player = Helpers.Find<Player>();
-			var component = GameObject.Find("Attack Countdown").GetComponent<TextMeshProUGUI>();
-			Tween moveTween = component.transform.DOMove(player.transform.position + Vector3.up * 1.5f, delay).SetEase(Ease.Linear).OnUpdate(() => component.transform.position = player.transform.position + Vector3.up * 1.5f);
-
-			for (int i = 0; i < delay; i++)
-			{
-				string countdown = (delay - i).ToString();
-				string formattedText = $"get away from the line! (<color=red>{countdown}</color>)";
-				component.text = formattedText;
-				yield return new WaitForSeconds(1f);
-			}
-
-			component.text = string.Empty;
-			moveTween?.Kill();
 		}
 	}
 
@@ -411,7 +471,8 @@ public class Attacks : MonoBehaviour
 
 		StartCoroutine(Anim());
 		StartCoroutine(Yield());
-		StartCoroutine(Countdown());
+
+		//Countdown("get away from the line!", origin, delay);
 
 		return;
 
@@ -446,24 +507,6 @@ public class Attacks : MonoBehaviour
 				}
 				else line.SetActive(false);
 			}
-		}
-
-		IEnumerator Countdown()
-		{
-			var player = Helpers.Find<Player>();
-			var component = GameObject.Find("Attack Countdown").GetComponent<TextMeshProUGUI>();
-			Tween moveTween = component.transform.DOMove(player.transform.position + Vector3.up * 1.5f, delay).SetEase(Ease.Linear).OnUpdate(() => component.transform.position = player.transform.position + Vector3.up * 1.5f);
-
-			for (int i = 0; i < delay; i++)
-			{
-				string countdown = (delay - i).ToString();
-				string formattedText = $"get away from the line! (<color=red>{countdown}</color>)";
-				component.text = formattedText;
-				yield return new WaitForSeconds(1f);
-			}
-
-			component.text = string.Empty;
-			moveTween?.Kill();
 		}
 	}
 
@@ -495,7 +538,7 @@ public class Attacks : MonoBehaviour
 		graphic.transform.localScale = new (Screen.width / 100f, graphic.transform.localScale.y, graphic.transform.localScale.z);
 
 		StartCoroutine(CleaveHitRoutine(cleave, delay));
-		StartCoroutine(CleaveCountdownRoutine(origin, delay, angle));
+		Countdown("cleaving one side!", delay);
 	}
 
 	IEnumerator CleaveHitRoutine(GameObject cleave, float delay)
@@ -517,23 +560,25 @@ public class Attacks : MonoBehaviour
 		}
 	}
 
-	IEnumerator CleaveCountdownRoutine(Vector2 origin, float delay, float angle)
-	{
-		float mult = 2f;
-		Vector2 offset = new Vector2(Mathf.Cos(angle * Mathf.Deg2Rad), Mathf.Sin(angle * Mathf.Deg2Rad)) * mult;
+	#region Alternative Cleave
+	//public void CleaveLeftAlt(Vector2 origin, float delay) => PerformCleaveAlt(origin, delay, 90f);
 
-		var component = GameObject.Find("Attack Countdown").GetComponent<TextMeshProUGUI>();
-		TextMeshProUGUI tmp = Instantiate(component, origin + offset, Quaternion.identity, GameObject.FindWithTag("WorldspaceCanvas").transform);
-
-		for (int i = 0; i < delay; i++)
-		{
-			string countdown = (delay - i).ToString();
-			tmp.text = $"cleaving one side! (<color=red>{countdown}</color>)";
-			yield return new WaitForSeconds(1f);
-		}
-
-		tmp.text = string.Empty;
-	}
+	// void PerformCleaveAlt(Vector2 origin, float delay, float angle)
+	// {
+	//     int orbCount = 20; // Number of orbs in the wall
+	//     float spacing = 1f; // Spacing between orbs
+	//
+	//     var cleavePrefab = Resources.Load<GameObject>("PREFABS/Boss VFX/Cleave AoE");
+	//     GameObject cleave = Instantiate(cleavePrefab, origin, Quaternion.identity);
+	//     cleave.transform.rotation = Quaternion.Euler(0, 0, angle);
+	//
+	//     var graphic = cleave.GetComponentInChildren<SpriteRenderer>();
+	//     graphic.sortingOrder = 1;
+	//     graphic.transform.localScale = new (Screen.width / 100f, graphic.transform.localScale.y, graphic.transform.localScale.z);
+	//     
+	//     //StartCoroutine(CleaveWallRoutine());
+	// }
+	#endregion
 	#endregion
 
 	public void HSphere(Vector2 origin, float delay)
@@ -587,6 +632,36 @@ public class Attacks : MonoBehaviour
 
 			// Move the orb to the LEFT over time, then fade it out, and finally destroy it
 			orb.transform.DOMoveY(-origin.y, duration).SetEase(Ease.Linear).OnComplete(() => orb.GetComponent<SpriteRenderer>().DOFade(0, 1f).OnComplete(() => Destroy(orb)));
+		}
+	}
+
+	public void SpawnerUp(Vector2 origin, float delay) => Spawner(origin, Vector2.up, delay);
+
+	public void SpawnerDown(Vector2 origin, float delay) => Spawner(origin, Vector2.down, delay);
+
+	public void SpawnerLeft(Vector2 origin, float delay) => Spawner(origin, Vector2.left, delay);
+
+	public void SpawnerRight(Vector2 origin, float delay) => Spawner(origin, Vector2.right, delay);
+
+	void Spawner(Vector2 origin, Vector2 direction, float delay)
+	{
+		StartCoroutine(SpawnRoutine());
+
+		return;
+
+		IEnumerator SpawnRoutine()
+		{
+			int orbCount = 10;
+			float interval = delay / orbCount;
+
+			for (int i = 0; i < orbCount; i++)
+			{
+				GameObject orb = Instantiate(orbPrefab, origin, Quaternion.identity);
+				var rb = orb.GetComponent<Rigidbody2D>();
+				rb.linearVelocity = direction.normalized * orbSpeed;
+
+				yield return new WaitForSeconds(interval);
+			}
 		}
 	}
 

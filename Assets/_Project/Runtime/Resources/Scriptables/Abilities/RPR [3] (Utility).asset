@@ -21,7 +21,7 @@ MonoBehaviour:
   radius: 0
   cooldownType: 1
   castTime: 0
-  cooldown: 2
+  cooldown: 12
   damage: 65
   effects:
   - {fileID: 11400000, guid: ac855e64ab924de4da2c686619f9b3c2, type: 2}

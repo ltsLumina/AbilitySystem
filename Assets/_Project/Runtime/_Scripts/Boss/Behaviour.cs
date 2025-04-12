@@ -129,7 +129,7 @@ public class Dialogue : Behaviour
 	IEnumerator ShowText(Entity self)
 	{
 		var dialogueTextPrefab = GameObject.Find("Dialogue Text").GetComponent<TextMeshProUGUI>();
-		TextMeshProUGUI dialogueText = Object.Instantiate(dialogueTextPrefab, self.transform.position, Quaternion.identity, GameObject.FindWithTag("WorldspaceCanvas").transform);
+		TextMeshProUGUI dialogueText = Object.Instantiate(dialogueTextPrefab, self.transform.position, Quaternion.identity, GameObject.FindWithTag("Worldspace Canvas").transform);
 
 		Vector3 offset = Vector3.up * 1.5f;
 

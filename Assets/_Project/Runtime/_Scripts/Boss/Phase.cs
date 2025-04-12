@@ -9,6 +9,7 @@ using UnityEngine;
 public class Phase
 {
 	[SerializeField] string name;
+	[SerializeField] int startIndex;
 	[SerializeField] List<Behaviour> behaviours = new ();
 
 	Entity self;
@@ -22,12 +23,14 @@ public class Phase
 		this.self.StartCoroutine(Wait());
 	}
 
+	public void Stop() => self.StopAllCoroutines();
+
 	IEnumerator Wait()
 	{
-		foreach (Behaviour behaviour in behaviours)
+		for (int i = startIndex; i < behaviours.Count; i++)
 		{
-			behaviour.Start(self);
-			yield return new WaitForSeconds(behaviour.Duration);
+			behaviours[i].Start(self);
+			yield return new WaitForSeconds(behaviours[i].Duration);
 		}
 
 		End();

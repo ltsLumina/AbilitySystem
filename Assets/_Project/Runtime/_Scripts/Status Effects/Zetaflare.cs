@@ -23,7 +23,7 @@ public class Zetaflare : Debuff
 		IEnumerator Wait()
 		{
 			yield return new WaitForSeconds(duration);
-			entity.TakeDamage(99999);
+			entity.TakeDamage(9999);
 		}
 	}
 }

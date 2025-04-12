@@ -107,7 +107,7 @@ public class Player : Entity
 
 			//StopAllCoroutines();
 
-			SceneManagerExtended.ReloadScene();
+			//SceneManagerExtended.ReloadScene();
 		};
 		#endregion
 	}
@@ -158,36 +158,46 @@ public class Player : Entity
 
 	protected override void OnTriggerEnter2D(Collider2D other)
 	{
-		//base.OnTriggerEnter2D(other);
-
-		if (other.CompareTag("Projectile"))
-		{
-			if (Stats.Shields > 0)
-			{
-				Stats.Remove("shields", 1);
-				Destroy(other.gameObject);
-				return;
-			}
-
-			TakeDamage(1);
-		}
+		if (other.CompareTag("Projectile")) TakeDamage(1);
 	}
+
+	SpriteRenderer sprite => GetComponentInChildren<SpriteRenderer>();
 
 	public override void TakeDamage(float damage)
 	{
 		if (isOnCooldown) return;
 
-		base.TakeDamage(damage);
+		// Check if the player has shields, and if so, remove one shield and destroy the projectiles surrounding the player
+		if (Stats.Shields > 0)
+		{
+			Stats.Remove("shields", 1);
+
+			DestroyNearbyOrbs();
+
+			sprite.FlashSprite(Color.cyan, 0.3f);
+			CameraMain.DOShakePosition(0.15f, 0.5f);
+			return;
+		}
+
+		// Destroy all projectiles within a radius of 5 units
+		DestroyNearbyOrbs();
 
 		Health -= Mathf.RoundToInt(damage);
 		StartCoroutine(DamageCooldown());
 
-		// flash the sprite
-		var sprite = GetComponentInChildren<SpriteRenderer>();
-		sprite.FlashSprite(Color.red, 0.3f);
+		base.TakeDamage(damage);
 
-		// shake camera
+		sprite.FlashSprite(Color.red, 0.3f);
 		CameraMain.DOShakePosition(0.3f, 1f);
+
+		return;
+
+		void DestroyNearbyOrbs()
+		{
+			foreach (Collider2D col in Physics2D.OverlapCircleAll(transform.position, 5))
+				if (col.CompareTag("Projectile"))
+					Destroy(col.gameObject);
+		}
 	}
 
 	bool isOnCooldown;
@@ -216,6 +226,10 @@ public class Player : Entity
 		Gizmos.DrawRay(transform.position, dir);
 		Vector3 point = transform.position + (Vector3) dir;
 		Gizmos.DrawWireSphere(point, 0.3f);
+
+		// draw a circle in the scene view
+		Gizmos.color = Color.red;
+		Gizmos.DrawWireSphere(transform.position, 5);
 	}
 
 	void OnGUI()

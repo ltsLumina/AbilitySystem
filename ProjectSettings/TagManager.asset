@@ -4,9 +4,11 @@
 TagManager:
   serializedVersion: 3
   tags:
-  - WorldspaceCanvas
+  - Worldspace Canvas
+  - Boss Canvas
+  - Marker
   - Projectile
-  - Line
+  - Accentable
   layers:
   - Default
   - TransparentFX
