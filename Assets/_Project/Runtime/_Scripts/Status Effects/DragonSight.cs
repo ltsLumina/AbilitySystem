@@ -1,5 +1,4 @@
 #region
-using UnityEngine;
 #endregion
 
 public class DragonSight : Buff
@@ -15,17 +14,13 @@ public class DragonSight : Buff
 
 	protected override void OnInvoke()
 	{
-		Log();
-
+		caster.TryGetComponent(out Player player);
 		player.Stats.Add("Damage", 0.1f);
 	}
 
 	protected override void OnDecay()
 	{
-		Log(true);
-
+		caster.TryGetComponent(out Player player);
 		player.Stats.Remove("Damage", 0.1f);
 	}
-
-	void Log(bool remove = false) => Debug.Log($"{entity.name} has {(remove ? "lost" : "gained")} Dragon Sight.");
 }

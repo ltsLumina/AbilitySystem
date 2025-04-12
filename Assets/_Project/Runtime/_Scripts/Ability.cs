@@ -52,7 +52,7 @@ public sealed class Ability : ScriptableObject
 	[Tooltip("The status effects that this ability applies.")]
 	[SerializeField] List<StatusEffect> effects;
 
-	public static event Action OnGlobalCooldown;
+	public static event Action<Player> OnGlobalCooldown;
 
 	public Class Job => job;
 	public string Name
@@ -69,16 +69,8 @@ public sealed class Ability : ScriptableObject
 	public float Cooldown => cooldown;
 	public float Damage => damage;
 
-	static Player _player;
-
-	static Player player
-	{
-		get
-		{
-			if (!_player) _player = FindFirstObjectByType<Player>();
-			return _player;
-		}
-	}
+	Player localPlayer;
+	
 
 	/// <returns> Returns true if the ability is actively being cast, otherwise false. </returns>
 	public bool casting => castCoroutine != null;
@@ -90,7 +82,7 @@ public sealed class Ability : ScriptableObject
 	{
 		get
 		{
-			InputManager inputManager = player.Inputs;
+			InputManager inputManager = localPlayer.Inputs;
 			return inputManager.MoveInput != Vector2.zero;
 		}
 	}
@@ -101,9 +93,11 @@ public sealed class Ability : ScriptableObject
 	{ /* not called when Disable Domain Reload is active. */
 	}
 
-	public void Invoke()
+	public void Invoke(Player owner)
 	{
-		Entity nearestTarget = FindClosestTarget();
+		localPlayer = owner;
+
+		Entity nearestTarget = FindBoss();
 		bool isGCD = cooldownType == CooldownType.GCD;
 		bool isCast = cooldownType == CooldownType.Cast;
 		bool isInstant = cooldownType == CooldownType.Instant;
@@ -112,13 +106,29 @@ public sealed class Ability : ScriptableObject
 
 		return;
 
-		[return: NotNull]
-		static Entity FindClosestTarget()
-		{
-			Entity[] entities = FindObjectsByType<Entity>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+		// [Obsolete("This method is obsolete. Use FindBoss() instead.", true)]
+		// [return: NotNull]
+		// static Entity FindClosestTarget()
+		// {
+		// 	// Entity[] entities = FindObjectsByType<Entity>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+		// 	//
+		// 	// // Find the closest entity to the player. If anything is null, throw an exception.
+		// 	// return (localPlayer == null ? null : entities.Where(entity => entity != localPlayer).OrderBy(entity => Vector2.Distance(localPlayer.transform.position, entity.transform.position)).FirstOrDefault()) ?? throw new InvalidOperationException();
+		// }
 
-			// Find the closest entity to the player. If anything is null, throw an exception.
-			return (player == null ? null : entities.Where(entity => entity != player).OrderBy(entity => Vector2.Distance(player.transform.position, entity.transform.position)).FirstOrDefault()) ?? throw new InvalidOperationException();
+		static Boss FindBoss()
+		{
+			var first = FindFirstObjectByType<Boss>();
+
+			if (first == null)
+			{
+				// TODO: change to find dummy class.
+				Boss dummy = FindObjectsByType<Boss>(FindObjectsInactive.Include, FindObjectsSortMode.InstanceID).FirstOrDefault(b => b.name == "Scarecrow");
+				dummy!.gameObject.SetActive(true);
+				return dummy;
+			}
+
+			return first;
 		}
 
 		void Attack()
@@ -126,17 +136,14 @@ public sealed class Ability : ScriptableObject
 			switch (true)
 			{
 				case true when isGCD:
-					Logger.Log("On global cooldown.");
 					GlobalCooldown(nearestTarget);
 					break;
 
 				case true when isCast:
-					Logger.Log("Casting...");
-					player.StartCoroutine(Cast(nearestTarget));
+					localPlayer.StartCoroutine(Cast(nearestTarget));
 					break;
 
 				case true when isInstant:
-					Logger.Log("Instant cast...");
 					Instant(nearestTarget);
 					break;
 			}
@@ -174,20 +181,20 @@ public sealed class Ability : ScriptableObject
 
 	void GlobalCooldown(Entity target)
 	{
-		OnGlobalCooldown?.Invoke();
+		OnGlobalCooldown?.Invoke(localPlayer);
 
 		ApplyEffects(target);
 	}
 
 	IEnumerator Cast(Entity target)
 	{
-		OnGlobalCooldown?.Invoke();
+		OnGlobalCooldown?.Invoke(localPlayer);
 
-		castCoroutine = player.StartCoroutine(CastCoroutine());
+		castCoroutine = localPlayer.StartCoroutine(CastCoroutine());
 		var particle = Instantiate(Resources.Load<GameObject>("PREFABS/Casting Particles")).GetComponent<ParticleSystem>();
 		ParticleSystem.MainModule particleMain = particle.main;
 		particleMain.duration = castTime + 0.5f;
-		particle.transform.position = player.transform.position + new Vector3(0, -0.8f);
+		particle.transform.position = localPlayer.transform.position + new Vector3(0, -0.8f);
 		particle.Play();
 		yield return new WaitWhile(Casting);
 
@@ -196,7 +203,12 @@ public sealed class Ability : ScriptableObject
 		ApplyEffects(target);
 	}
 
-	void Instant(Entity target) => ApplyEffects(target);
+	void Instant(Entity target)
+	{
+		OnGlobalCooldown?.Invoke(localPlayer);
+
+		ApplyEffects(target);
+	}
 
 	void ApplyEffects(Entity target)
 	{
@@ -212,9 +224,9 @@ public sealed class Ability : ScriptableObject
 			return;
 		}
 
-		if (prefix.Count > 0) prefix.Apply((target, player));
-		enemy.TakeDamage(damage * player.Stats.Damage);
-		if (postfix.Count > 0) postfix.Apply((target, player));
+		if (prefix.Count > 0) prefix.Apply((target, localPlayer));
+		enemy.TakeDamage(damage * localPlayer.Stats.Damage);
+		if (postfix.Count > 0) postfix.Apply((target, localPlayer));
 	}
 
 	static void VisualEffect(Entity target, bool isDoT = false)
@@ -224,6 +236,6 @@ public sealed class Ability : ScriptableObject
 		instantiate.transform.localScale = isDoT ? new (0.5f, 0.5f) : new (1, 1);
 		var sprite = instantiate.GetComponent<SpriteRenderer>();
 
-		sprite.DOFade(0, 1).OnComplete(() => { sprite.DOFade(1, 0).OnComplete(() => { Destroy(instantiate); }); });
+		sprite.DOFade(0, 1).OnComplete(() => { sprite.DOFade(1, 0).SetLink(instantiate).OnComplete(() => { Destroy(instantiate); }); });
 	}
 }

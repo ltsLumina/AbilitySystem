@@ -1,4 +1,5 @@
 #region
+using Lumina.Essentials.Attributes;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,14 +7,23 @@ using UnityEngine.UI;
 
 public class Accentize : MonoBehaviour
 {
+	[ReadOnly]
+	[SerializeField] Boss associatedBoss;
 	[SerializeField] Component target;
 
-	void Awake()
+	void Start()
 	{
-		if (target.TryGetComponent(out Outline outline)) outline.effectColor = GameManager.Instance.CurrentBoss.AccentColour;
-		else if (target.TryGetComponent(out Image image)) image.color = GameManager.Instance.CurrentBoss.AccentColour;
-		else if (target.TryGetComponent(out TextMeshProUGUI textMeshPro)) textMeshPro.color = GameManager.Instance.CurrentBoss.AccentColour;
-		else if (target.TryGetComponent(out SpriteRenderer spriteRenderer)) spriteRenderer.color = GameManager.Instance.CurrentBoss.AccentColour;
-		else Debug.LogWarning($"No accentizable component found on {gameObject.name}");
+		associatedBoss = GameManager.Instance.CurrentBoss;
+		if (!associatedBoss) return; // Note: this is only for duo bosses, which aren't supported anyways.
+		Recolour(associatedBoss.AccentColour);
+	}
+
+	public void Recolour(Color accentColor)
+	{
+		if (target.TryGetComponent(out Outline outline)) outline.effectColor = accentColor;
+		else if (target.TryGetComponent(out Image image)) image.color = accentColor;
+		else if (target.TryGetComponent(out TextMeshProUGUI textMeshPro)) textMeshPro.color = accentColor;
+		else if (target.TryGetComponent(out SpriteRenderer spriteRenderer)) spriteRenderer.color = accentColor;
+		else Debug.LogWarning($"No Accentize component found on {gameObject.name}");
 	}
 }

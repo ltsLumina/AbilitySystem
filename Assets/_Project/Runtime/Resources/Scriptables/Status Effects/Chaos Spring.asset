@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   statusName: Chaos Spring
   description: Deals unaspected damage over time.
-  duration: 30
+  duration: 24
   target: 2
   timing: 1
   time: 0

@@ -31,7 +31,7 @@ public abstract class Entity : MonoBehaviour, IEntity, IDamageable
 
 	void IEntity.OnDestroy() => OnEntityDestroy?.Invoke(this);
 
-	public virtual void TakeDamage(float damage) => Debug.Log($"{name} took {damage} damage.");
+	public virtual void TakeDamage(float damage) => Logger.Log($"{name} took {damage} damage.", this);
 
 	public void AddStatusEffect(StatusEffect effect)
 	{

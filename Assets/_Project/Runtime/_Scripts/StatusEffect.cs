@@ -4,7 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Linq;
 using DG.Tweening;
 using JetBrains.Annotations;
 using Lumina.Essentials.Attributes;
@@ -61,8 +60,6 @@ public class StatusEffect : ScriptableObject
 
 	public override string ToString() => $"{statusName} ({duration} seconds)";
 
-	protected Player player => FindAnyObjectByType<Player>();
-
 	/// <summary>
 	///     The entity that the status effect is applied to.
 	/// </summary>
@@ -90,16 +87,19 @@ public class StatusEffect : ScriptableObject
 	public void Invoke(Entity entityTarget)
 	{
 		// set the target to the player if the target is self
-		if (target == Target.Self) entityTarget = player;
+		if (target == Target.Self) entityTarget = caster;
 
 		if (entityTarget == null)
 		{
-			Entity[] entities = FindObjectsByType<Entity>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
-			if (entities.Length < 2) throw new ("No entities found.");
+			// Entity[] entities = FindObjectsByType<Entity>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+			// if (entities.Length < 2) throw new ("No entities found.");
+			//
+			// // find nearest entity to the player
+			// entityTarget = entities.OrderBy(e => Vector2.Distance(caster.transform.position, e.transform.position)).FirstOrDefault();
+			// if (entityTarget == null) throw new ("No entities found.");
 
-			// find nearest entity to the player
-			entityTarget = entities.OrderBy(e => Vector2.Distance(player.transform.position, e.transform.position)).FirstOrDefault();
-			if (entityTarget == null) throw new ("No entities found.");
+			var boss = FindFirstObjectByType<Boss>();
+			entityTarget = boss;
 		}
 
 		entity = entityTarget;

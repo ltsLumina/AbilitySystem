@@ -81,7 +81,7 @@ public class Move : Behaviour
 		this.duration = duration;
 	}
 
-	protected override void Invoke(Entity self) => self.transform.DOMove(position, duration).SetEase(Ease.OutCubic);
+	protected override void Invoke(Entity self) => self.transform.DOMove(position, duration).SetEase(Ease.OutCubic).SetLink(self.gameObject).SetId("Move");
 }
 
 public class Attack : Behaviour

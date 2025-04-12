@@ -5,7 +5,6 @@ using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using VInspector;
-using static Lumina.Essentials.Modules.Helpers;
 #endregion
 
 public class InputManager : MonoBehaviour
@@ -85,9 +84,10 @@ public class InputManager : MonoBehaviour
 	{
 		if (!context.performed) return;
 
+		SetDictionaryKeys();
 		if (abilityButtons.TryGetValue(context.action.name, out GameObject button)) button.GetComponent<AbilityButton>().Invoke();
 	}
-
+	
 	#region Utility
 	public static List<string> AbilityKeys => (from action in FindAnyObjectByType<PlayerInput>().actions where action.name.StartsWith("Ability") select action.name).ToList();
 
@@ -96,7 +96,10 @@ public class InputManager : MonoBehaviour
 	[Button] [UsedImplicitly]
 	public void SetDictionaryKeys()
 	{
-		for (int index = 0; index < AbilityKeys.Count; index++) abilityButtons[AbilityKeys[index]] = FindMultiple<AbilityButton>().FirstOrDefault(b => abilityIndex(b) == index)?.gameObject;
+		int playerIndex = GetComponent<PlayerInput>().playerIndex;
+		GameObject[] objs = GameObject.FindGameObjectsWithTag($"Player {playerIndex + 1}");
+		List<AbilityButton> buttons = objs.SelectMany(obj => obj.GetComponentsInChildren<AbilityButton>()).ToList();
+		for (int index = 0; index < AbilityKeys.Count; index++) abilityButtons[AbilityKeys[index]] = buttons.FirstOrDefault(b => abilityIndex(b) == index)?.gameObject;
 	}
 	#endregion
 }

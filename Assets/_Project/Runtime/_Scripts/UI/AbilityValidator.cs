@@ -37,7 +37,7 @@ public class AbilityValidator : MonoBehaviour
     {
         ValidateButtonName();
 
-        ValidateAbilityAssetFields();
+        //ValidateAbilityAssetFields();
     }
 
     void OnValidate() => ValidateButtonName();

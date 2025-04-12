@@ -1,10 +1,12 @@
-﻿using System.Collections;
+﻿#region
+using System.Collections;
 using DG.Tweening;
 using UnityEngine;
+#endregion
 
 public static class SpriteRendererExtensions
 {
-    public static void FlashSprite(this SpriteRenderer spriteRenderer, Color color, float duration) { spriteRenderer.DOColor(color, duration).SetLoops(2, LoopType.Yoyo).SetEase(ease: Ease.InOutSine); }
+    public static void FlashSprite(this SpriteRenderer spriteRenderer, Color color, float duration) => spriteRenderer.DOColor(color, duration).SetLoops(2, LoopType.Yoyo).SetEase(ease: Ease.InOutSine).SetLink(spriteRenderer.gameObject);
 
     public static IEnumerator CreateAfterImages(this SpriteRenderer spriteRenderer, float interval, float duration, int count)
     {

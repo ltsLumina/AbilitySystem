@@ -93,7 +93,7 @@ public class Player : Entity
 		rb = GetComponent<Rigidbody2D>();
 		Stats = GetComponent<Stats>();
 
-		Rebind(mouseMove);
+		//Rebind(mouseMove);
 
 		#region Init Player
 		Health = maxHealth;
@@ -226,10 +226,6 @@ public class Player : Entity
 		Gizmos.DrawRay(transform.position, dir);
 		Vector3 point = transform.position + (Vector3) dir;
 		Gizmos.DrawWireSphere(point, 0.3f);
-
-		// draw a circle in the scene view
-		Gizmos.color = Color.red;
-		Gizmos.DrawWireSphere(transform.position, 5);
 	}
 
 	void OnGUI()

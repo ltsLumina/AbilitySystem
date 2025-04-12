@@ -17,17 +17,16 @@ public class AbilityButton : MonoBehaviour
 {
 	[Tab("Ability")]
 	[SerializeField] [ReadOnly] Ability ability;
+	[SerializeField] Player owner;
 
 	[Tab("UI")]
 	[Header("References")]
-
 	[SerializeField] Image circle;
 	[Tooltip("The layer that covers the button when it's on cooldown. \nActive = on cooldown.")]
 	[SerializeField] Image availabilityLayer;
 	[SerializeField] TextMeshProUGUI duration;
 
 	[Header("Settings")]
-
 	[UsedImplicitly] [Tooltip("Whether the ability is currently on cooldown.")]
 	[SerializeField] [ReadOnly] bool onCooldown;
 	[UsedImplicitly] [Tooltip("The amount of time remaining on the cooldown. \nThis variable is only used for debugging.")]
@@ -38,7 +37,6 @@ public class AbilityButton : MonoBehaviour
 	//[SerializeField, ReadOnly] bool queued;
 
 	[Header("Animation")]
-
 	[Tooltip("The duration of all fades applied to the cooldown animation. (e.g. fill amount, text)")]
 	[SerializeField] float fadeDuration = 0.35f;
 
@@ -68,16 +66,28 @@ public class AbilityButton : MonoBehaviour
 
 	Button button => GetComponent<Button>();
 
-	void TriggerGCD()
+	void TriggerGCD(Player performer)
 	{
-		if (ability.CDType != Ability.CooldownType.Instant) Cooldown(); // Instant abilities are not affected by the global cooldown.
+		if (performer != owner) return; // Only trigger the GCD for the player that owns this ability button.
+
+		if (ability.CDType is Ability.CooldownType.Instant or Ability.CooldownType.Cast) return; // Instant and Cast abilities are not affected by the global cooldown.
+
+		Cooldown();
 	}
 
-	protected void Start()
+	IEnumerator Start()
 	{
+		PlayerManager.Instance.OnPlayerJoined += player =>
+		{
+			// if the player and the ability button have the same tag, then we can set the owner
+			if (gameObject.CompareTag(player.tag)) owner = player;
+		};
+
+		yield return new WaitUntil(() => owner != null);
+		
 		Ability.OnGlobalCooldown += TriggerGCD;
 
-		Job job = FindAnyObjectByType<Player>().Job;
+		Job job = owner.Job;
 		ability = job.Abilities[abilityIndex];
 
 		button.onClick.AddListener(Invoke);
@@ -205,7 +215,7 @@ public class AbilityButton : MonoBehaviour
 	{
 		if (OnCooldown) return;
 
-		ability?.Invoke();
+		ability?.Invoke(owner);
 		Cooldown();
 	}
 

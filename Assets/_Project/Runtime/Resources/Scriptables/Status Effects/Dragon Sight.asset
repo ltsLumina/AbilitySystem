@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   statusName: Dragon Sight
   description: Grants Dragon Sight to self, increasing damage dealt by 10%
-  duration: 8
+  duration: 16
   target: 1
   timing: 0
   time: 0

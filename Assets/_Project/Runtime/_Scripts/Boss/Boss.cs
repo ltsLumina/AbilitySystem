@@ -6,7 +6,6 @@ using System.IO;
 using DG.Tweening;
 using JetBrains.Annotations;
 using Lumina.Essentials.Modules;
-using TMPro;
 using UnityEditor;
 using UnityEngine;
 using VInspector;
@@ -14,35 +13,51 @@ using Random = UnityEngine.Random;
 #endregion
 
 [RequireComponent(typeof(Attacks))]
-public class Boss : Entity
+public partial class Boss : Entity
 {
 	[HideInInspector] [UsedImplicitly]
 	public VInspectorData data;
 
 	[Header("Health")]
-
 	[SerializeField] int health = 10000;
 	[SerializeField] int maxHealth = 10000;
 
 	[Header("Visual")]
-
 	[ColorUsage(false)]
 	[SerializeField] Color accentColour = Color.black;
+	[SerializeField] AnimationCurve deathCurve;
 
 	[Foldout("Sequence")]
 	[SerializeField] List<Phase> phases = new ();
 	[EndFoldout]
+	
 	[Header("Enrage Settings")]
-
 	[SerializeField] float enrageDialogueDelay = 3f;
 	[SerializeField] float enrageDelay = 5f;
 
 	int currentPhaseIndex;
 	Attacks attacks;
 
-	public int Health => health;
-	public int MaxHealth => maxHealth;
+	public int Health
+	{
+		get => health;
+		private set
+		{
+			health = Mathf.Clamp(value, 0, maxHealth);
 
+			if (health <= 0)
+			{
+				if (isDead) return;
+
+				OnDeath?.Invoke();
+				health = 0;
+				isDead = true;
+			}
+		}
+	}
+	public int MaxHealth => maxHealth;
+	bool isDead;
+	
 	public event Action<Color> OnBossStarted;
 	public event Action OnDeath;
 
@@ -57,8 +72,13 @@ public class Boss : Entity
 
 #if UNITY_EDITOR
 	[Button] [UsedImplicitly]
+	public void Kill() => Health = 0;
+
+	[Button] [UsedImplicitly]
 	public void SaveList()
 	{
+		if (Application.isPlaying) return;
+		
 		// Save the list of phases to a file
 		string path = $"{Application.persistentDataPath}/{name}.json";
 		string json = JsonUtility.ToJson(this, true);
@@ -72,6 +92,8 @@ public class Boss : Entity
 	[Button] [UsedImplicitly]
 	public void LoadList()
 	{
+		if (Application.isPlaying) return;
+		
 		string path = EditorUtility.OpenFilePanel("Load Phases", Application.persistentDataPath, "json");
 		if (string.IsNullOrEmpty(path)) return;
 		string json = File.ReadAllText(path);
@@ -96,42 +118,6 @@ public class Boss : Entity
 		GUILayout.EndArea();
 	}
 
-	public override void TakeDamage(float damage)
-	{
-		health -= Mathf.Clamp((int) damage, 0, health);
-		if (health <= 0) OnDeath?.Invoke();
-	}
-
-	void Death()
-	{
-		Logger.LogWarning("Boss has died.");
-
-		StopAllCoroutines();
-		DOTween.Kill(this);
-
-		attacks.StopAllCoroutines();
-		DOTween.Kill(attacks);
-
-		foreach (GameObject marker in GameObject.FindGameObjectsWithTag("Marker"))
-		{
-			if (marker == null) continue;
-			DOTween.Kill(marker);
-			Destroy(marker);
-		}
-
-		Sequence sequence = DOTween.Sequence();
-
-		sequence.Append(transform.DOMoveY(2f, 0.5f).SetEase(Ease.OutQuad))      // Move the boss upward slightly
-		        .Join(transform.DOMoveY(-10f, 1f).SetEase(Ease.InBack))         // Move the boss downward off-screen
-		        .Join(transform.DOScale(Vector3.zero, 1f).SetEase(Ease.InBack)) // Shrink the boss as it falls
-		        .OnComplete
-		         (() =>
-		         {
-			         TerminateBossUI();
-			         Destroy(gameObject, 1f);
-		         });
-	}
-
 	void Awake()
 	{
 		attacks = GetComponent<Attacks>();
@@ -141,15 +127,12 @@ public class Boss : Entity
 		if (accentColour == Color.black || accentColour == Color.clear)
 		{
 			Debug.LogError("Accent colour is not set. Temporarily setting it to a random colour.", this);
-			accentColour = Random.ColorHSV(0, 1, 1, 1, 0, 1, 1, 1);
+			accentColour = Random.ColorHSV(0, 1, 1, 1, 1, 1, 1, 1);
 		}
-
-		GameManager.Instance.Initialize(this);
 	}
-
 	protected override void OnStart()
 	{
-		Debug.Log("Boss started.");
+		GameManager.Instance.Initialize(this);
 
 		if (phases.Count > 0)
 		{
@@ -162,38 +145,52 @@ public class Boss : Entity
 		InitBossUI();
 	}
 
-	#region Boss UI
-	void InitBossUI()
+	#region Health / Take Damage
+	public override void TakeDamage(float damage)
 	{
-		Transform canvas = GameObject.FindWithTag("Boss Canvas").transform;
-		var fader = canvas.GetComponent<CanvasGroup>();
+		int dmg = Mathf.Clamp((int) damage, 0, health);
+		Health -= dmg;
 
-		Sequence sequence = DOTween.Sequence();
-		sequence.OnStart(() => fader.alpha = 0);
-		sequence.Append(fader.DOFade(1f, 0.5f).SetEase(Ease.OutCubic));
-
-		var bossUIPrefab = Resources.Load<GameObject>("PREFABS/UI/Boss UI");
-		GameObject bossUI = Instantiate(bossUIPrefab, canvas);
-		bossUI.name = $"{name} UI";
-		bossUI.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = name;
+		base.TakeDamage(dmg);
 	}
 
-	void TerminateBossUI()
+	void Death()
 	{
-		Transform canvas = GameObject.FindWithTag("Boss Canvas").transform;
-		var fader = canvas.GetComponent<CanvasGroup>();
+		Logger.LogWarning("Boss has died.");
+		Destroy(gameObject, 5f);
 
-		Sequence sequence = DOTween.Sequence();
-		sequence.Append(fader.DOFade(0f, 0.5f).SetEase(Ease.OutCubic));
+		StopAllCoroutines();
+		DOTween.Kill(this);
+
+		attacks.StopAllCoroutines();
+		DOTween.Kill(attacks);
+
+		foreach (GameObject marker in GameObject.FindGameObjectsWithTag("Marker"))
+		{
+			if (marker == null) continue;
+			DOTween.Kill(marker);
+			marker.GetComponentInChildren<SpriteRenderer>()?.DOFade(0, 0.5f);
+			Destroy(marker, 1f);
+		}
+
+		TerminateBossUI();
+
+		var rb = gameObject.AddComponent<Rigidbody2D>();
+		rb.bodyType = RigidbodyType2D.Dynamic;
+		DOTween.Kill("Move");
+		const float FORCE = 1.5f;
+		rb.AddForce(new Vector2(2, 10f) * FORCE, ForceMode2D.Impulse);
+		rb.AddTorque(-120f, ForceMode2D.Impulse);
 	}
 	#endregion
 
+	#region Phase Management
 	void StartPhase(Phase phase)
 	{
 		phase.OnPhaseEnded += HandlePhaseEnded;
 		phase.Start(this);
 
-		Debug.Log($"Starting phase \"{currentPhaseIndex + 1}\"");
+		Logger.Log($"Starting phase: \"{phase.Name}\"");
 	}
 
 	void HandlePhaseEnded(Phase phase)
@@ -237,4 +234,5 @@ public class Boss : Entity
 
 		Debug.LogWarning("Player has died. Ending enrage.");
 	}
+	#endregion
 }

@@ -2,16 +2,19 @@
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
-using static Lumina.Essentials.Modules.Helpers;
 #endregion
 
 public class BossHealthbar : MonoBehaviour
 {
 	[SerializeField] Image progress;
 
-	Boss boss;
+	Boss associatedBoss;
 
-	void Start() => boss = Find<Boss>();
+	public void Init(Boss boss) => associatedBoss = boss;
 
-	void Update() => progress.DOFillAmount(boss.Health / (float) boss.MaxHealth, 0.1f);
+	void Update()
+	{
+		if (associatedBoss == null) return;
+		progress.DOFillAmount(associatedBoss.Health / (float) associatedBoss.MaxHealth, 0.1f).SetLink(associatedBoss.gameObject);
+	}
 }

@@ -14,6 +14,8 @@ public class Phase
 
 	Entity self;
 
+	public string Name => name;
+
 	public event Action<Phase> OnPhaseEnded;
 
 	// ReSharper disable once ParameterHidesMember

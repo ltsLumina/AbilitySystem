@@ -2,9 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
-using Lumina.Essentials.Modules;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem.Utilities;
 using UnityEngine.UI;
 
 // ReSharper disable UnusedMember.Global
@@ -184,7 +184,7 @@ public class Attacks : MonoBehaviour
 			}
 		}
 	}
-
+	
 	readonly Queue<Sequence> countdowns = new ();
 
 	/// <summary>
@@ -192,41 +192,44 @@ public class Attacks : MonoBehaviour
 	/// </summary>
 	void Countdown(string message, float delay)
 	{
-		var player = Helpers.Find<Player>();
+		ReadOnlyArray<Player> players = PlayerManager.Instance.Players;
 		var countdownPrefab = Resources.Load<GameObject>("PREFABS/Boss VFX/AoE Countdown");
 		Transform parent = GameObject.FindWithTag("Worldspace Canvas").transform;
 		var offset = new Vector3(0, Mathf.Max(countdowns.Count + 1f, 2f));
 
-		GameObject countdown = Instantiate(countdownPrefab, player.transform.position + offset, Quaternion.identity, parent);
-		countdown.name = $"Countdown: \"{message}\" (dynamic) | (#{countdowns.Count})";
-		Tween moveTween = countdown.transform.DOMove(player.transform.position + offset, delay).SetEase(Ease.Linear).OnUpdate(() => countdown.transform.position = player.transform.position + offset);
-
-		var tmp = countdown.GetComponent<TextMeshProUGUI>();
-		tmp.text = message;
-
-		// set the progress of the image over delay time
-		Transform backgroundImage = countdown.transform.GetChild(0);
-		Transform progressImage = backgroundImage.GetChild(0);
-		var background = backgroundImage.GetComponent<Image>();
-		var progress = progressImage.GetComponent<Image>();
-
-		Sequence sequence = DOTween.Sequence();
-		countdowns.Enqueue(sequence);
-
-		sequence.OnStart(() => progress.fillAmount = 0f);
-		sequence.Append(progress.DOFillAmount(1f, delay).SetEase(Ease.Linear));
-		sequence.AppendInterval(0.8f);
-		sequence.Join(tmp.DOFade(0, 0.2f).SetEase(Ease.Linear));
-		sequence.Join(progress.DOFade(0, 0.2f).SetEase(Ease.Linear));
-		sequence.Join(background.DOFade(0, 0.2f).SetEase(Ease.Linear));
-
-		sequence.OnComplete
-		(() =>
+		foreach (Player player in players)
 		{
-			countdowns.Dequeue();
-			moveTween?.Kill();
-			Destroy(countdown, 0.1f);
-		});
+			GameObject countdown = Instantiate(countdownPrefab, player.transform.position + offset, Quaternion.identity, parent);
+			countdown.name = $"Countdown: \"{message}\" (dynamic) | (#{countdowns.Count})";
+			Tween moveTween = countdown.transform.DOMove(player.transform.position + offset, delay).SetEase(Ease.Linear).OnUpdate(() => countdown.transform.position = player.transform.position + offset).SetLink(gameObject);
+
+			var tmp = countdown.GetComponent<TextMeshProUGUI>();
+			tmp.text = message;
+
+			// set the progress of the image over delay time
+			Transform backgroundImage = countdown.transform.GetChild(0);
+			Transform progressImage = backgroundImage.GetChild(0);
+			var background = backgroundImage.GetComponent<Image>();
+			var progress = progressImage.GetComponent<Image>();
+
+			Sequence sequence = DOTween.Sequence();
+			countdowns.Enqueue(sequence);
+			sequence.SetLink(gameObject);
+			sequence.OnStart(() => progress.fillAmount = 0f);
+			sequence.Append(progress.DOFillAmount(1f, delay).SetEase(Ease.Linear));
+			sequence.AppendInterval(0.8f);
+			sequence.Join(tmp.DOFade(0, 0.2f).SetEase(Ease.Linear));
+			sequence.Join(progress.DOFade(0, 0.2f).SetEase(Ease.Linear));
+			sequence.Join(background.DOFade(0, 0.2f).SetEase(Ease.Linear));
+
+			sequence.OnComplete
+			(() =>
+			{
+				countdowns.Dequeue();
+				moveTween?.Kill();
+				Destroy(countdown, 0.1f);
+			});
+		}
 	}
 
 	/// <summary>
@@ -253,6 +256,7 @@ public class Attacks : MonoBehaviour
 		var progress = progressImage.GetComponent<Image>();
 
 		Sequence sequence = DOTween.Sequence();
+		sequence.SetLink(gameObject);
 		sequence.OnStart(() => progress.fillAmount = 0f);
 		sequence.Append(progress.DOFillAmount(1f, delay).SetEase(Ease.Linear));
 		sequence.AppendInterval(0.8f);
@@ -282,10 +286,11 @@ public class Attacks : MonoBehaviour
 			yield return new WaitForSeconds(delay - 0.2f);
 
 			Sequence sequence = DOTween.Sequence();
+			sequence.SetLink(gameObject);
 			sequence.Append(spriteRenderer.DOFade(1, 0.2f).SetEase(Ease.Linear));
 			sequence.Join(spriteRenderer.transform.DOScaleY(0, 0.2f).SetEase(Ease.InOutCubic));
 			sequence.AppendInterval(0.1f);
-			sequence.OnComplete(() => Destroy(line));
+			sequence.OnComplete(() => Destroy(line, 0.1f));
 		}
 
 		IEnumerator Yield()
@@ -332,10 +337,11 @@ public class Attacks : MonoBehaviour
 			yield return new WaitForSeconds(delay - 0.2f);
 
 			Sequence sequence = DOTween.Sequence();
+			sequence.SetLink(gameObject);
 			sequence.Append(spriteRenderer.DOFade(1, 0.2f).SetEase(Ease.Linear));
 			sequence.Join(spriteRenderer.transform.DOScaleY(0, 0.2f).SetEase(Ease.InOutCubic));
 			sequence.AppendInterval(0.1f);
-			sequence.OnComplete(() => Destroy(line));
+			sequence.OnComplete(() => Destroy(line, 0.1f));
 		}
 
 		IEnumerator Yield()
@@ -383,10 +389,11 @@ public class Attacks : MonoBehaviour
 			yield return new WaitForSeconds(delay - 0.2f);
 
 			Sequence sequence = DOTween.Sequence();
+			sequence.SetLink(gameObject);
 			sequence.Append(spriteRenderer.DOFade(1, 0.2f).SetEase(Ease.Linear));
 			sequence.Join(spriteRenderer.transform.DOScaleY(0, 0.2f).SetEase(Ease.InOutCubic));
 			sequence.AppendInterval(0.1f);
-			sequence.OnComplete(() => Destroy(line));
+			sequence.OnComplete(() => Destroy(line, 0.1f));
 		}
 
 		IEnumerator Yield()
@@ -434,9 +441,10 @@ public class Attacks : MonoBehaviour
 			yield return new WaitForSeconds(delay - 0.2f);
 
 			Sequence sequence = DOTween.Sequence();
+			sequence.SetLink(gameObject);
 			sequence.Append(spriteRenderer.DOFade(1, 0.2f).SetEase(Ease.Linear));
 			sequence.Join(spriteRenderer.transform.DOScaleY(0, 0.2f).SetEase(Ease.InOutCubic));
-			sequence.OnComplete(() => Destroy(line));
+			sequence.OnComplete(() => Destroy(line, 0.1f));
 		}
 
 		IEnumerator Yield()
@@ -482,9 +490,10 @@ public class Attacks : MonoBehaviour
 			yield return new WaitForSeconds(delay - 0.2f);
 
 			Sequence sequence = DOTween.Sequence();
+			sequence.SetLink(gameObject);
 			sequence.Append(spriteRenderer.DOFade(1, 0.2f).SetEase(Ease.Linear));
 			sequence.Join(spriteRenderer.transform.DOScaleY(0, 0.2f).SetEase(Ease.InOutCubic));
-			sequence.OnComplete(() => Destroy(line));
+			sequence.OnComplete(() => Destroy(line, 0.1f));
 		}
 
 		IEnumerator Yield()
@@ -512,19 +521,12 @@ public class Attacks : MonoBehaviour
 
 	#region Cleave
 	public void CleaveUp(Vector2 origin, float delay) => PerformCleave(origin, delay, 0f);
-
 	public void CleaveDown(Vector2 origin, float delay) => PerformCleave(origin, delay, 180f);
-
 	public void CleaveLeft(Vector2 origin, float delay) => PerformCleave(origin, delay, 90f);
-
 	public void CleaveRight(Vector2 origin, float delay) => PerformCleave(origin, delay, 270f);
-
 	public void CleaveTopLeft(Vector2 origin, float delay) => PerformCleave(origin, delay, 45f);
-
 	public void CleaveBottomLeft(Vector2 origin, float delay) => PerformCleave(origin, delay, 135f);
-
 	public void CleaveBottomRight(Vector2 origin, float delay) => PerformCleave(origin, delay, 225f);
-
 	public void CleaveTopRight(Vector2 origin, float delay) => PerformCleave(origin, delay, 315f);
 
 	void PerformCleave(Vector2 origin, float delay, float angle)
