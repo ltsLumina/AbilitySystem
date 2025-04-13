@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Linq;
 using DG.Tweening;
 using JetBrains.Annotations;
 using Lumina.Essentials.Attributes;
@@ -54,6 +55,8 @@ public class StatusEffect : ScriptableObject
 		set => caster = value;
 	}
 
+	protected Player casterAsPlayer => caster.TryGetComponent(out Player player) ? player : null;
+
 #if UNITY_EDITOR
 	protected new string name => base.name = string.IsNullOrEmpty(Path.GetFileNameWithoutExtension(AssetDatabase.GetAssetPath(this))) ? statusName : Path.GetFileNameWithoutExtension(AssetDatabase.GetAssetPath(this));
 #endif
@@ -65,7 +68,7 @@ public class StatusEffect : ScriptableObject
 	/// </summary>
 	protected Entity entity { get; private set; }
 
-	public static StatusEffect CreateCustomStatusEffect(string name, string description, int duration, Target target, Timing timing)
+	public static StatusEffect CreateCustomStatusEffect(string name, string description, int duration, Target target, Timing timing, Entity caster = null)
 	{
 		var customEffect = CreateInstance<StatusEffect>();
 		customEffect.statusName = name;
@@ -73,9 +76,9 @@ public class StatusEffect : ScriptableObject
 		customEffect.duration = duration;
 		customEffect.target = target;
 		customEffect.timing = timing;
+		customEffect.caster = caster;
 
 		customEffect = Instantiate(customEffect);
-		customEffect.Invoke(null);
 		return customEffect;
 	}
 
@@ -83,47 +86,49 @@ public class StatusEffect : ScriptableObject
 	/// <summary>
 	/// </summary>
 	/// <remarks>The base method for invoking a status effect must always be called in the derived class.</remarks>
-	/// <param name="entityTarget"></param>
-	public void Invoke(Entity entityTarget)
+	public void Invoke(Entity _)
 	{
-		// set the target to the player if the target is self
-		if (target == Target.Self) entityTarget = caster;
+		List<Entity> targets = new ();
 
-		if (entityTarget == null)
+		// If target includes Self
+		if ((target & Target.Self) != 0) targets.Add(caster);
+
+		// If target includes Ally
+		if ((target & Target.Ally) != 0)
 		{
-			// Entity[] entities = FindObjectsByType<Entity>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
-			// if (entities.Length < 2) throw new ("No entities found.");
-			//
-			// // find nearest entity to the player
-			// entityTarget = entities.OrderBy(e => Vector2.Distance(caster.transform.position, e.transform.position)).FirstOrDefault();
-			// if (entityTarget == null) throw new ("No entities found.");
+			// Example of finding allies (adjust as needed)
+			List<Entity> allies = FindObjectsByType<Player>(FindObjectsInactive.Exclude, FindObjectsSortMode.None).Where(p => p != casterAsPlayer).Cast<Entity>().ToList();
 
-			var boss = FindFirstObjectByType<Boss>();
-			entityTarget = boss;
+			targets.AddRange(allies);
 		}
 
-		entity = entityTarget;
-
-		if (entityTarget.HasStatusEffect(this, out StatusEffect existingEffect))
+		if (target == Target.Enemy)
 		{
-			// If the effect is already in the list, we can reset its remaining time
-			existingEffect.Time = Duration;
-			existingEffect.Caster = Caster;
-
-			Logger.Log($"Reapplied {this} to {entityTarget}");
-			return;
+			Boss boss = GameManager.Instance.CurrentBoss;
+			if (boss) targets.Add(boss);
 		}
 
-		//VisualEffect(entityTarget);
-		entityTarget.AddStatusEffect(this);
-
-		OnInvoke();
-		OnInvoked?.Invoke(this);
-
-		Time = Duration;
-		decayCoroutine ??= CoroutineHelper.StartCoroutine(Decay());
-
-		Logger.Log($"Applied {this} to {entityTarget}");
+		// Now apply the status effect to each target
+		foreach (Entity t in targets)
+		{
+			if (t.HasStatusEffect(this, out StatusEffect existingEffect))
+			{
+				// Reset the existing effect's remaining time
+				existingEffect.Time = Duration;
+				existingEffect.Caster = Caster;
+				Logger.Log($"Reapplied {this} to {t}");
+			}
+			else
+			{
+				entity = t;
+				t.AddStatusEffect(this);
+				OnInvoke();
+				OnInvoked?.Invoke(this);
+				Time = Duration;
+				decayCoroutine ??= CoroutineHelper.StartCoroutine(Decay());
+				Logger.Log($"Applied {this} to {t}");
+			}
+		}
 	}
 
 	Coroutine decayCoroutine;
@@ -160,7 +165,6 @@ public class StatusEffect : ScriptableObject
 	public event Action<StatusEffect> OnDecayed;
 
 	protected virtual void OnInvoke() { }
-
 	public event Action<StatusEffect> OnInvoked;
 
 	public virtual void Reset()

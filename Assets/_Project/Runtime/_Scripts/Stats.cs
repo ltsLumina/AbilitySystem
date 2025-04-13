@@ -18,15 +18,15 @@ public class Stats : MonoBehaviour
 		switch (modifier.ToLowerInvariant())
 		{
 			case "speed":
-				speed = value;
+				speed = Mathf.Clamp(value, -byte.MaxValue, byte.MaxValue);
 				break;
 
 			case "damage":
-				damage = value;
+				damage = Mathf.Clamp(value, -byte.MaxValue, byte.MaxValue);
 				break;
 
 			case "shields":
-				shields = (int) value;
+				shields = Mathf.Clamp((int) value, 0, byte.MaxValue);
 				break;
 
 			default:
@@ -40,15 +40,15 @@ public class Stats : MonoBehaviour
 		switch (modifier.ToLowerInvariant())
 		{
 			case "speed":
-				speed += value;
+				speed += Mathf.Clamp(value, -byte.MaxValue, byte.MaxValue);
 				break;
 
 			case "damage":
-				damage += value;
+				damage += Mathf.Clamp(value, -byte.MaxValue, byte.MaxValue);
 				break;
 
 			case "shields":
-				shields += (int) value;
+				shields += Mathf.Clamp((int) value, 0, byte.MaxValue);
 				break;
 
 			default:
@@ -62,15 +62,15 @@ public class Stats : MonoBehaviour
 		switch (modifier.ToLowerInvariant())
 		{
 			case "speed":
-				speed -= value;
+				speed -= Mathf.Clamp(value, -byte.MaxValue, byte.MaxValue);
 				break;
 
 			case "damage":
-				damage -= value;
+				damage -= Mathf.Clamp(value, -byte.MaxValue, byte.MaxValue);
 				break;
 
 			case "shields":
-				shields -= (int) value;
+				shields -= Mathf.Clamp((int) value, 0, byte.MaxValue);
 				break;
 
 			default:

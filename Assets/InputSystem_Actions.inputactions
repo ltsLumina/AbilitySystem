@@ -226,6 +226,17 @@
                 },
                 {
                     "name": "",
+                    "id": "f02d0261-9f99-4c9d-b9c8-f80b62b32c68",
+                    "path": "<Gamepad>/leftShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "Ability_1",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "8640a844-996d-4c66-b17b-0ec7e5e1ae0b",
                     "path": "<Keyboard>/j",
                     "interactions": "",
@@ -239,6 +250,17 @@
                     "name": "",
                     "id": "7017d66b-26f5-4bd3-b37a-8fe4b7e31269",
                     "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Gamepad",
+                    "action": "Ability_2",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7e85112a-5336-4681-9105-01a9bb076117",
+                    "path": "<Gamepad>/rightShoulder",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Gamepad",

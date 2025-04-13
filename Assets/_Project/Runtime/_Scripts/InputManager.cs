@@ -1,7 +1,6 @@
 #region
 using System.Collections.Generic;
 using System.Linq;
-using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using VInspector;
@@ -15,6 +14,24 @@ public class InputManager : MonoBehaviour
 
 	public bool IsMoving { get; private set; }
 
+#if false
+	void Update()
+	{
+		// This will fire all abilities each frame
+		SimulateAllAbilities();
+	}
+
+	void SimulateAllAbilities()
+	{
+		SetDictionaryKeys();
+
+		foreach (string abilityName in AbilityKeys)
+		{
+			if (abilityButtons.TryGetValue(abilityName, out GameObject abilityButton)) { abilityButton.GetComponent<AbilityButton>().Invoke(); }
+		}
+	}
+#endif
+	
 	/// <summary>
 	///     Overrides the move input with the given input. (Used for Mouse movement)
 	/// </summary>
@@ -93,8 +110,8 @@ public class InputManager : MonoBehaviour
 
 	int abilityIndex(AbilityButton button) => button.transform.GetSiblingIndex();
 
-	[Button] [UsedImplicitly]
-	public void SetDictionaryKeys()
+	[Button]
+	void SetDictionaryKeys()
 	{
 		int playerIndex = GetComponent<PlayerInput>().playerIndex;
 		GameObject[] objs = GameObject.FindGameObjectsWithTag($"Player {playerIndex + 1}");

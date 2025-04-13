@@ -70,7 +70,6 @@ public sealed class Ability : ScriptableObject
 	public float Damage => damage;
 
 	Player localPlayer;
-	
 
 	/// <returns> Returns true if the ability is actively being cast, otherwise false. </returns>
 	public bool casting => castCoroutine != null;
@@ -205,8 +204,6 @@ public sealed class Ability : ScriptableObject
 
 	void Instant(Entity target)
 	{
-		OnGlobalCooldown?.Invoke(localPlayer);
-
 		ApplyEffects(target);
 	}
 

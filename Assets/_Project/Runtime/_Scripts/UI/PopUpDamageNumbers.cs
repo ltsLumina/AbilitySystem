@@ -8,20 +8,25 @@ public static class PopUpDamageNumbers
 {
 	public static void ShowDamage(float damage, Vector3 position)
 	{
-		var canvas = GameObject.FindGameObjectWithTag("Finish");
+		GameObject canvas = GameObject.FindWithTag("Worldspace Canvas");
 
 		var damageNumberPrefab = Resources.Load<TextMeshProUGUI>("PREFABS/UI/Damage Number");
-		Vector2 randomPosition = Random.insideUnitCircle * 2f;
-		int randomRotation = Random.Range(-25, 25);
-		TextMeshProUGUI damageNumber = Object.Instantiate(damageNumberPrefab, position + new Vector3(randomPosition.x, randomPosition.y), Quaternion.identity);
+		TextMeshProUGUI instantiate = Object.Instantiate(damageNumberPrefab, position, Quaternion.identity, canvas.transform);
+
+		float scaleFactor = damage switch
+		{ >= 1000 => 1.5f,
+		  >= 500  => 1.25f,
+		  < 100   => 0.85f,
+		  _       => 1f };
+
+		instantiate.transform.localScale = Vector3.one * scaleFactor;
+		
 		Sequence sequence = DOTween.Sequence();
-		float distanceY = Mathf.Clamp(damage / 100, 0.5f, 5f);
-		sequence.Append(damageNumber.transform.DOMove(position + new Vector3(3, distanceY), 2f).SetEase(Ease.OutQuad));
-		sequence.Join(damageNumber.transform.DORotate(new (0, 0, randomRotation), 2f).SetEase(Ease.OutQuad));
-		sequence.AppendInterval(1f);
-		sequence.Append(damageNumber.DOFade(0, 1f).SetEase(Ease.OutQuad));
-		sequence.OnComplete(() => Object.Destroy(damageNumber.gameObject));
-		damageNumber.text = damage.ToString("F0");
-		damageNumber.transform.SetParent(canvas.transform);
+		sequence.Append(instantiate.transform.DOMoveY(position.y + 3f, 2f).SetEase(Ease.OutQuad));
+		sequence.Append(instantiate.DOFade(0, 1f).SetEase(Ease.OutQuad));
+		sequence.OnComplete(() => Object.Destroy(instantiate.gameObject));
+
+		string msg = damage > 0 ? damage.ToString("F0") : "MISSED";
+		instantiate.text = msg;
 	}
 }

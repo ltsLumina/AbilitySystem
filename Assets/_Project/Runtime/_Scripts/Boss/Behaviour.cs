@@ -112,7 +112,7 @@ public class Attack : Behaviour
 
 			method.Invoke(attacks, args);
 		}
-		else { Debug.LogError($"Attack method \"{key}\" not found in {attacks}. \nPlease check the key in the Behaviour Inspector."); }
+		else Debug.LogError($"Attack method \"{key}\" not found in {attacks}. \nPlease check the key in the Behaviour Inspector.");
 	}
 }
 
@@ -137,7 +137,7 @@ public class Dialogue : Behaviour
 		dialogueText.enabled = true;
 
 		dialogueText.transform.position = self.transform.position + offset;
-		Tween moveTween = dialogueText.transform.DOMove(self.transform.position + offset, duration).SetEase(Ease.Linear).OnUpdate(() => dialogueText.transform.position = self.transform.position + offset);
+		Tween moveTween = dialogueText.transform.DOMove(self.transform.position + offset, duration).SetEase(Ease.Linear).SetLink(self.gameObject).OnUpdate(() => dialogueText.transform.position = self.transform.position + offset);
 
 		yield return new WaitForSeconds(duration);
 

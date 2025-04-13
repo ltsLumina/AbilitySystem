@@ -61,5 +61,5 @@ public abstract class Item : ScriptableObject
 	}
 	public bool InvokeWhenAdded => invokeWhenAdded;
 
-	public virtual void Action() { }
+	public virtual void Action(Player owner) { }
 }

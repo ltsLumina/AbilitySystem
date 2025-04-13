@@ -151,7 +151,10 @@ public partial class Boss : Entity
 		int dmg = Mathf.Clamp((int) damage, 0, health);
 		Health -= dmg;
 
-		base.TakeDamage(dmg);
+		TryGetComponent(out Scarecrow dummy);
+		dummy?.RegisterDamage(dmg);
+
+		PopUpDamageNumbers.ShowDamage(damage, transform.position);
 	}
 
 	void Death()

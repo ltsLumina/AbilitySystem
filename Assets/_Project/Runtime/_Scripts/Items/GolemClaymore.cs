@@ -1,20 +1,19 @@
 #region
-using Lumina.Essentials.Modules;
 using UnityEngine;
 #endregion
 
 [CreateAssetMenu(fileName = "New Golem's Claymore", menuName = "Items/Golem's Claymore")]
 public class GolemClaymore : Item
 {
-	public override void Action()
+	public override void Action(Player owner)
 	{
-		var player = Helpers.Find<Player>();
-		var quickSpell = StatusEffect.CreateCustomStatusEffect("Golem's Might", "Movement speed is reduced.", 5, StatusEffect.Target.Self, StatusEffect.Timing.Prefix);
+		var quickSpell = StatusEffect.CreateCustomStatusEffect("Golem's Might", "Movement speed is reduced.", 5, StatusEffect.Target.Self, StatusEffect.Timing.Prefix, owner);
 
-		quickSpell.OnInvoked += _ => player.Stats.Add("speed", -0.15f);
-		quickSpell.OnDecayed += _ => player.Stats.Add("speed", 0.15f);
+		quickSpell.OnInvoked += _ => owner.Stats.Remove("speed", 0.15f);
+		quickSpell.OnDecayed += _ => owner.Stats.Add("speed", 0.15f);
+		quickSpell.Invoke(owner);
 
-		var enemy = FindFirstObjectByType<Boss>();
+		Boss enemy = GameManager.Instance.CurrentBoss;
 		enemy.TakeDamage(damage);
 	}
 }

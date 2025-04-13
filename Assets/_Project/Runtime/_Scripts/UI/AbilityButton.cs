@@ -70,7 +70,7 @@ public class AbilityButton : MonoBehaviour
 	{
 		if (performer != owner) return; // Only trigger the GCD for the player that owns this ability button.
 
-		if (ability.CDType is Ability.CooldownType.Instant or Ability.CooldownType.Cast) return; // Instant and Cast abilities are not affected by the global cooldown.
+		if (ability.CDType is Ability.CooldownType.Instant || ability.Cooldown > AbilitySettings.GlobalCooldown) return; // Instant abilities are not affected by the global cooldown.
 
 		Cooldown();
 	}

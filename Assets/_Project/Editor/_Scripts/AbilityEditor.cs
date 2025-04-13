@@ -4,7 +4,6 @@
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.InputSystem;
 #endregion
 
 [CustomEditor(typeof(Ability), true)] [CanEditMultipleObjects]
@@ -65,7 +64,17 @@ public class AbilityEditor : Editor
 	///     Get the short version of the ability type.
 	///     <example> Q, W, E, R </example>
 	/// </summary>
-	string abilityTypeKey => $"{player.PlayerInput.actions[InputManager.AbilityKeys[type.enumValueIndex]].GetBindingDisplayString()}";
+	string abilityTypeKey
+	{
+		get
+		{
+#if false
+			return $"{player.PlayerInput.actions[InputManager.AbilityKeys[type.enumValueIndex]].GetBindingDisplayString()}";
+#else
+			return "Unknown Key";
+#endif
+		}
+	}
 	#endregion
 
 	void OnEnable()

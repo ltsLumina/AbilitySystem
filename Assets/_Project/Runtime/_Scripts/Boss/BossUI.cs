@@ -21,6 +21,8 @@ public partial class Boss
 
 		var bossUIPrefab = Resources.Load<GameObject>("PREFABS/UI/Boss UI");
 		GameObject bossUI = Instantiate(bossUIPrefab, canvas);
+		OnDeath += () => Destroy(bossUI);
+		
 		bossUI.name = $"{name} UI";
 		bossUI.GetComponentInChildren<BossHealthbar>().Init(this);
 		bossUI.GetComponentInChildren<Accentize>().Recolour(accentColour);

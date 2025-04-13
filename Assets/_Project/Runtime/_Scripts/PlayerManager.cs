@@ -1,5 +1,6 @@
 ﻿#region
 using System;
+using DG.Tweening;
 using Lumina.Essentials.Attributes;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -92,28 +93,16 @@ public class PlayerManager : Singleton<PlayerManager>
 		player.tag = $"Player {input.playerIndex + 1}";
 		player.transform.SetParent(GameObject.Find("Important").transform);
 
-		//InitializeUI();
-
 		var hotbar = GameObject.Find($"Player {input.playerIndex + 1} Hotbar").GetComponent<Canvas>();
-		if (hotbar != null) hotbar.enabled = true;
+
+		if (hotbar)
+		{
+			hotbar.GetComponent<CanvasGroup>().alpha = 0f;
+			hotbar.GetComponent<CanvasGroup>().DOFade(1f, 0.5f);
+			hotbar.enabled = true;
+		}
 
 		OnPlayerJoined?.Invoke(player);
-
-		// return;
-		// void InitializeUI()
-		// {
-		// 	var hotbarCanvas = Resources.Load<GameObject>("PREFABS/UI/Hotbar Canvas");
-		// 	GameObject canvas = Instantiate(hotbarCanvas, GameObject.Find("UI").transform);
-		// 	canvas.name = $"Player {input.playerIndex + 1} Hotbar Canvas";
-		//
-		// 	var hotbar = canvas.transform.GetChild(0).transform as RectTransform;
-		// 	
-		// 	AbilityButton[] abilityButtons = hotbar.GetComponentsInChildren<AbilityButton>();
-		// 	foreach (AbilityButton button in abilityButtons)
-		// 	{
-		// 		button.tag = $"Player {input.playerIndex + 1}";
-		// 	}
-		// }
 	}
 
 	void HandlePlayerLeft(PlayerInput input)

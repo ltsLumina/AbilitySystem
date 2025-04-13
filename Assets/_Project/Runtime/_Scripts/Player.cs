@@ -140,6 +140,8 @@ public class Player : Entity
 
 	void Move()
 	{
+		if (Vector2.Dot(rb.linearVelocity, inputs.MoveInput) < 0) rb.linearVelocity = Vector2.zero;
+		
 		rb.AddForce(inputs.MoveInput * speed);
 		rb.linearVelocity = Vector2.ClampMagnitude(rb.linearVelocity, topSpeed);
 		bool changingDir = Vector2.Dot(rb.linearVelocity, inputs.MoveInput) < 0;
@@ -176,6 +178,8 @@ public class Player : Entity
 
 			sprite.FlashSprite(Color.cyan, 0.3f);
 			CameraMain.DOShakePosition(0.15f, 0.5f);
+
+			StartCoroutine(DamageCooldown());
 			return;
 		}
 
@@ -191,12 +195,13 @@ public class Player : Entity
 		CameraMain.DOShakePosition(0.3f, 1f);
 
 		return;
-
 		void DestroyNearbyOrbs()
 		{
 			foreach (Collider2D col in Physics2D.OverlapCircleAll(transform.position, 5))
+			{
 				if (col.CompareTag("Projectile"))
 					Destroy(col.gameObject);
+			}
 		}
 	}
 

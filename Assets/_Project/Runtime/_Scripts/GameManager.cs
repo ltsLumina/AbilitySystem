@@ -44,6 +44,7 @@ public class GameManager : Singleton<GameManager>
 	{
 		if (isTimerRunning) timer += Time.deltaTime;
 
+#if UNITY_EDITOR
 		if (Input.GetKeyDown(KeyCode.F1)) SpawnBoss(0);
 		if (Input.GetKeyDown(KeyCode.F2)) SpawnBoss(1);
 		if (Input.GetKeyDown(KeyCode.F3)) SpawnBoss(2);
@@ -54,11 +55,11 @@ public class GameManager : Singleton<GameManager>
 		if (Input.GetKeyDown(KeyCode.F8)) SpawnBoss(7);
 		if (Input.GetKeyDown(KeyCode.F9)) SpawnBoss(8);
 		if (Input.GetKeyDown(KeyCode.F10)) SpawnBoss(9);
+#endif
 	}
 
-	void OnGUI() =>
-
-			// Display the timer in the top right corner
+#if UNITY_EDITOR
+	void OnGUI() => // Display the timer in the top right corner
 			GUI.Label(new (Screen.width - 200, 75, 200, 20), $"Time: {timer:F2}");
 
 	void SpawnBoss(int index)
@@ -91,4 +92,5 @@ public class GameManager : Singleton<GameManager>
 		boss.gameObject.SetActive(true);
 		currentBoss = boss;
 	}
+#endif
 }

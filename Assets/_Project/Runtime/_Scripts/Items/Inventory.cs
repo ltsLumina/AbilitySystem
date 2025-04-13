@@ -42,7 +42,11 @@ public class Inventory : MonoBehaviour
 		inventory.Add(item);
 		cooldowns.Add(item, item.Cooldown);
 
-		if (item.InvokeWhenAdded) item.Action();
+		if (item.InvokeWhenAdded)
+		{
+			var owner = GetComponent<Player>();
+			item.Action(owner);
+		}
 	}
 
 	void Start()
@@ -70,8 +74,9 @@ public class Inventory : MonoBehaviour
 			// if the cooldown is zero, invoke the item's action and reset the cooldown
 			if (cooldowns[item] <= 0)
 			{
-				item.Action();
-				Debug.Log($"[Inventory] {item.name} has been invoked.");
+				item.Action(GetComponent<Player>());
+
+				//Debug.Log($"[Inventory] {item.name} has been invoked.");
 				cooldowns[item] = item.Cooldown;
 			}
 		}

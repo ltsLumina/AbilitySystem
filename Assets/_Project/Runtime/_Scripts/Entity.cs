@@ -33,6 +33,7 @@ public abstract class Entity : MonoBehaviour, IEntity, IDamageable
 
 	public virtual void TakeDamage(float damage) => Logger.Log($"{name} took {damage} damage.", this);
 
+	#region Status Effects
 	public void AddStatusEffect(StatusEffect effect)
 	{
 		effect.OnDecayed += e => statusEffects.Remove(e);
@@ -40,11 +41,38 @@ public abstract class Entity : MonoBehaviour, IEntity, IDamageable
 		statusEffects.Add(effect);
 	}
 
+	public void RemoveStatusEffect(StatusEffect effect) // Note: I have no clue if this actually works.
+	{
+		if (statusEffects.Contains(effect))
+		{
+			statusEffects.Remove(effect);
+			effect.OnDecayed -= e => statusEffects.Remove(e);
+		}
+		else Debug.LogWarning($"{name} does not have the status effect {effect.StatusName}.");
+	}
+
+	/// <summary>
+	///     Cleanses all status effects from the entity.
+	///     <remarks> Does not call OnDecayed on the status effects.</remarks>
+	/// </summary>
+	public void Cleanse()
+	{
+		foreach (StatusEffect effect in statusEffects)
+		{
+			if (effect == null) continue;
+
+			effect.OnDecayed -= e => statusEffects.Remove(e);
+		}
+
+		statusEffects.Clear();
+	}
+
 	public bool HasStatusEffect(StatusEffect effect, out StatusEffect existingEffect)
 	{
 		existingEffect = statusEffects.FirstOrDefault(e => e.StatusName == effect.StatusName);
 		return existingEffect != null;
 	}
+	#endregion
 
 	public override string ToString() => $"{name} ({GetType().Name}) \n";
 
