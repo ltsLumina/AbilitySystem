@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8fb88ad88530994d99ab8985aa6bf88, type: 3}
+  m_Name: MusicCollection
+  m_EditorClassIdentifier: 
+  musicTracks:
+  - tag: LobbyMusic
+    clips:
+    - {fileID: 8300000, guid: 6c9a36e4d299010488a08d8575a5aeed, type: 3}
+    compressionPreset: 0
+    forceToMono: 0
+  - tag: Footfalls
+    clips:
+    - {fileID: 8300000, guid: 2a0a23de49ead35429a1e11a33132b05, type: 3}
+    compressionPreset: 0
+    forceToMono: 0
+  - tag: BattleMusic
+    clips:
+    - {fileID: 8300000, guid: 64c6cab1e9086ef438b6079d9e390726, type: 3}
+    compressionPreset: 0
+    forceToMono: 0

@@ -1,6 +1,7 @@
 ﻿#region
 using Lumina.Essentials.Attributes;
 using Lumina.Essentials.Modules;
+using MelenitasDev.SoundsGood;
 using UnityEngine;
 #endregion
 
@@ -27,6 +28,14 @@ public class GameManager : Singleton<GameManager>
 		currentBoss = boss;
 		currentBoss.OnBossStarted += StartTimer;
 		currentBoss.OnDeath += StopTimer;
+
+		AudioManager.StopMusic("LobbyMusic", 1f);
+
+		var music = new Music(Track.BattleMusic);
+		music.SetVolume(0.5f);
+		music.SetFadeOut(1f);
+		music.SetOutput(Output.Music);
+		music.Play();
 	}
 
 	void StartTimer(Color color)
@@ -39,6 +48,14 @@ public class GameManager : Singleton<GameManager>
 
 	float timer;
 	bool isTimerRunning;
+
+	void Start()
+	{
+		var lobbyMusic = new Music(Track.LobbyMusic);
+		lobbyMusic.SetOutput(Output.Music);
+		lobbyMusic.SetId("LobbyMusic");
+		lobbyMusic.Play();
+	}
 
 	void Update()
 	{

@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 3ef26ce5ffca57346b1f41a51ddf015e
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 266130
+  packageName: Sounds Good - Easy & Optimized Audio Manager
+  packageVersion: 1.0.0
+  assetPath: Assets/Plugins/Melenitas Dev/Sounds Good/Scripts/Editor/AudioCollectionEditorWindow.cs
+  uploadId: 629609
