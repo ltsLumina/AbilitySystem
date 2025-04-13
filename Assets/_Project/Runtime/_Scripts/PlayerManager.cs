@@ -10,7 +10,7 @@ using UnityEngine.InputSystem.Utilities;
 public class PlayerManager : Singleton<PlayerManager>
 {
 	[ReadOnly]
-	[SerializeField] Player[] players = new Player[4];
+	[SerializeField] Player[] players = new Player[3];
 
 	public ReadOnlyArray<Player> Players
 	{

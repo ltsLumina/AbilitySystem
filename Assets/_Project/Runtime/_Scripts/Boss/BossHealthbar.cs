@@ -15,6 +15,8 @@ public class BossHealthbar : MonoBehaviour
 	void Update()
 	{
 		if (associatedBoss == null) return;
-		progress.DOFillAmount(associatedBoss.Health / (float) associatedBoss.MaxHealth, 0.1f).SetLink(associatedBoss.gameObject);
+		Sequence sequence = DOTween.Sequence();
+		sequence.Append(progress.DOFillAmount(associatedBoss.Health / (float) associatedBoss.MaxHealth, 0.1f));
+		sequence.SetLink(associatedBoss.gameObject);
 	}
 }
