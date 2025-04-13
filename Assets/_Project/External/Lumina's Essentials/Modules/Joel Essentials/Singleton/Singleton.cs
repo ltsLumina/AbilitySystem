@@ -30,13 +30,13 @@ public class Singleton<T> : MonoBehaviour
 		}
 	}
 
-	void Awake()
+	protected virtual void Awake()
 	{
 		if (instance == null) instance = this as T;
 		else Destroy(gameObject);
 	}
 
-	void OnDestroy()
+	protected virtual void OnDestroy()
 	{
 		if (instance == this) instance = null;
 	}

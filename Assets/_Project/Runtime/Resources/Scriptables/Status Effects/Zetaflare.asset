@@ -15,7 +15,7 @@ MonoBehaviour:
   statusName: Zetaflare
   description: Bahamut gathers all the ambient aether over the course of 10 seconds.
     Upon fully charging up, he strikes the target, killing them instantly.
-  duration: 10
+  duration: 1
   target: 2
   timing: 0
   time: 0

@@ -1,5 +1,4 @@
 #region
-using Lumina.Essentials.Modules;
 using UnityEngine;
 #endregion
 
@@ -22,17 +21,16 @@ public class ChaosSpring : Debuff
 		else
 		{
 			var damageOverTime = entity.gameObject.AddComponent<DamageOverTime>();
-			damageOverTime.Apply(entity, duration, damage);
+			caster.TryGetComponent(out Player player);
+			damageOverTime.Apply(entity, duration, damage, player);
 		}
 	}
 }
 
 public class DamageOverTime : MonoBehaviour
 {
-	public void Apply(Entity entityTarget, int duration, float damage)
+	public void Apply(Entity entityTarget, int duration, float damage, Player player)
 	{
-		entityTarget.TryGetComponent(out IDamageable damageable);
-
 		int cycle = 0;
 		int dotTick = 0;
 		int dotTicks = duration / AbilitySettings.DoT_Rate - 1;
@@ -58,7 +56,11 @@ public class DamageOverTime : MonoBehaviour
 
 			if (cycle % AbilitySettings.DoT_Rate == 0) // If DoT_Rate is 3, this will tick on cycle 3, 6, 9, etc.
 			{
-				damageable?.TakeDamage(damage * Helpers.Find<Player>().Stats.Damage);
+				if (entityTarget != null)
+				{
+					if (entityTarget.TryGetComponent(out IDamageable damageable)) damageable?.TakeDamage(damage * player.Stats.Damage);
+				}
+				
 				dotTick++;
 			}
 		}

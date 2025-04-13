@@ -1,4 +1,5 @@
 ﻿#region
+using DG.Tweening;
 using Lumina.Essentials.Attributes;
 using Lumina.Essentials.Modules;
 using MelenitasDev.SoundsGood;
@@ -26,8 +27,18 @@ public class GameManager : Singleton<GameManager>
 	public void Initialize(Boss boss)
 	{
 		currentBoss = boss;
-		currentBoss.OnBossStarted += StartTimer;
-		currentBoss.OnDeath += StopTimer;
+
+		currentBoss.OnBossStarted += () =>
+		{
+			DarkenBackground();
+			StartTimer(currentBoss.AccentColour);
+		};
+
+		currentBoss.OnDeath += () =>
+		{
+			DarkenBackground(true);
+			StopTimer();
+		};
 
 		AudioManager.StopMusic("LobbyMusic", 1f);
 
@@ -36,6 +47,15 @@ public class GameManager : Singleton<GameManager>
 		music.SetFadeOut(1f);
 		music.SetOutput(Output.Music);
 		music.Play();
+	}
+
+	static void DarkenBackground(bool lighten = false)
+	{
+		GameObject background = GameObject.Find("Parallax");
+
+		const float darkenValue = 20f / 255f;
+
+		foreach (Transform child in background.transform) child.GetComponent<SpriteRenderer>().DOFade(lighten ? 1f : darkenValue, 1f).SetEase(Ease.OutCubic);
 	}
 
 	void StartTimer(Color color)
@@ -49,6 +69,13 @@ public class GameManager : Singleton<GameManager>
 	float timer;
 	bool isTimerRunning;
 
+	protected override void OnDestroy()
+	{
+		base.OnDestroy();
+
+		StageManager.Reset();
+	}
+	
 	void Start()
 	{
 		var lobbyMusic = new Music(Track.LobbyMusic);

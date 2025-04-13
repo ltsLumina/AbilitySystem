@@ -9,7 +9,6 @@ using Lumina.Essentials.Modules;
 using UnityEditor;
 using UnityEngine;
 using VInspector;
-using Random = UnityEngine.Random;
 #endregion
 
 [RequireComponent(typeof(Attacks))]
@@ -57,8 +56,9 @@ public partial class Boss : Entity
 	}
 	public int MaxHealth => maxHealth;
 	bool isDead;
-	
-	public event Action<Color> OnBossStarted;
+
+	public event Action OnBossStarted;
+	public event Action<int> OnTookDamage;
 	public event Action OnDeath;
 
 	public Color AccentColour
@@ -101,35 +101,13 @@ public partial class Boss : Entity
 	}
 #endif
 
-	void OnGUI()
-	{
-		if (statusEffects.Count == 0) return;
-
-		// on the right of the middle of the screen
-		GUILayout.BeginArea(new (Screen.width - 200, Screen.height / 2f - 100, 200, 200));
-
-		foreach (StatusEffect effect in statusEffects)
-		{
-			if (effect == null) continue;
-
-			GUILayout.Label($"{effect.StatusName} - {effect.Time.RoundTo(1)}");
-		}
-
-		GUILayout.EndArea();
-	}
-
 	void Awake()
 	{
 		attacks = GetComponent<Attacks>();
-
+		
 		OnDeath += Death;
-
-		if (accentColour == Color.black || accentColour == Color.clear)
-		{
-			Debug.LogError("Accent colour is not set. Temporarily setting it to a random colour.", this);
-			accentColour = Random.ColorHSV(0, 1, 1, 1, 1, 1, 1, 1);
-		}
 	}
+	
 	protected override void OnStart()
 	{
 		GameManager.Instance.Initialize(this);
@@ -137,7 +115,7 @@ public partial class Boss : Entity
 		if (phases.Count > 0)
 		{
 			StartPhase(phases[currentPhaseIndex]);
-			OnBossStarted?.Invoke(AccentColour);
+			OnBossStarted?.Invoke();
 		}
 
 		health = maxHealth;
@@ -150,9 +128,9 @@ public partial class Boss : Entity
 	{
 		int dmg = Mathf.Clamp((int) damage, 0, health);
 		Health -= dmg;
+		OnTookDamage?.Invoke(dmg);
 
-		TryGetComponent(out Scarecrow dummy);
-		dummy?.RegisterDamage(dmg);
+		if (TryGetComponent(out Scarecrow dummy)) dummy?.RegisterDamage(dmg);
 
 		PopUpDamageNumbers.ShowDamage(damage, transform.position);
 	}
@@ -175,6 +153,8 @@ public partial class Boss : Entity
 			marker.GetComponentInChildren<SpriteRenderer>()?.DOFade(0, 0.5f);
 			Destroy(marker, 1f);
 		}
+
+		foreach (Orb orb in FindObjectsByType<Orb>(FindObjectsSortMode.None)) Destroy(orb.gameObject);
 
 		TerminateBossUI();
 

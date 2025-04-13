@@ -93,13 +93,13 @@ public class PlayerManager : Singleton<PlayerManager>
 		player.tag = $"Player {input.playerIndex + 1}";
 		player.transform.SetParent(GameObject.Find("Important").transform);
 
-		var hotbar = GameObject.Find($"Player {input.playerIndex + 1} Hotbar").GetComponent<Canvas>();
+		var canvas = GameObject.Find($"Player {input.playerIndex + 1} Hotbar").GetComponent<Canvas>();
 
-		if (hotbar)
+		if (canvas)
 		{
-			hotbar.GetComponent<CanvasGroup>().alpha = 0f;
-			hotbar.GetComponent<CanvasGroup>().DOFade(1f, 0.5f);
-			hotbar.enabled = true;
+			canvas.GetComponent<CanvasGroup>().alpha = 0f;
+			canvas.GetComponent<CanvasGroup>().DOFade(1f, 0.5f);
+			canvas.enabled = true;
 		}
 
 		OnPlayerJoined?.Invoke(player);

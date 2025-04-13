@@ -9,14 +9,9 @@ public class BossHealthbar : MonoBehaviour
 	[SerializeField] Image progress;
 
 	Boss associatedBoss;
+	Sequence sequence;
 
 	public void Init(Boss boss) => associatedBoss = boss;
 
-	void Update()
-	{
-		if (associatedBoss == null) return;
-		Sequence sequence = DOTween.Sequence();
-		sequence.Append(progress.DOFillAmount(associatedBoss.Health / (float) associatedBoss.MaxHealth, 0.1f));
-		sequence.SetLink(associatedBoss.gameObject);
-	}
+	public void TookDamage() => progress.DOFillAmount(associatedBoss.Health / (float) associatedBoss.MaxHealth, 0.1f).SetLink(associatedBoss.gameObject);
 }

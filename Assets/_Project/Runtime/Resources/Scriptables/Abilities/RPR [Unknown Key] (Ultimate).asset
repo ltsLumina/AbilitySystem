@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 607a7f27dc29c4541b753c3658683d25, type: 3}
-  m_Name: RPR [Unknown] (Ultimate)
+  m_Name: RPR [Unknown Key] (Ultimate)
   m_EditorClassIdentifier: 
   job: 0
   abilityName: Ultimate
@@ -23,4 +23,5 @@ MonoBehaviour:
   castTime: 0
   cooldown: 10
   damage: 500
-  effects: []
+  effects:
+  - {fileID: 11400000, guid: 1aa2ef381d8732c4881ee1407acaa7a6, type: 2}

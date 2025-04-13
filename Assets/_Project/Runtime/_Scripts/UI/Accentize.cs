@@ -22,8 +22,11 @@ public class Accentize : MonoBehaviour
 	{
 		if (target.TryGetComponent(out Outline outline)) outline.effectColor = accentColor;
 		else if (target.TryGetComponent(out Image image)) image.color = accentColor;
-		else if (target.TryGetComponent(out TextMeshProUGUI textMeshPro)) textMeshPro.color = accentColor;
 		else if (target.TryGetComponent(out SpriteRenderer spriteRenderer)) spriteRenderer.color = accentColor;
+		else if (target.TryGetComponent(out TextMeshProUGUI textMeshPro))
+		{
+			if (textMeshPro.fontMaterial.HasProperty(ShaderUtilities.ID_OutlineColor)) textMeshPro.fontMaterial.SetColor(ShaderUtilities.ID_OutlineColor, accentColor);
+		}
 		else Debug.LogWarning($"No Accentize component found on {gameObject.name}");
 	}
 }

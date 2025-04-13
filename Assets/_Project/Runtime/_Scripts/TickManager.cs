@@ -13,7 +13,7 @@ using UnityEngine;
 ///     <para>A "tick" is a single cycle of ticks and occurs every second.</para>
 /// </summary>
 [DisallowMultipleComponent]
-public class TickManager : Singleton<TickManager>
+public class TickManager : MonoBehaviour
 {
 	[SerializeField] Tick tick;
 

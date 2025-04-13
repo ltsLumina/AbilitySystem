@@ -58,7 +58,7 @@ public class Behaviour
 				break;
 
 			case Type.Attack:
-				new Attack(attackKey, duration, delay, position).Invoke(context);
+				new Attack(position, attackKey, duration, delay).Invoke(context);
 				break;
 
 			case Type.Dialogue:
@@ -81,12 +81,12 @@ public class Move : Behaviour
 		this.duration = duration;
 	}
 
-	protected override void Invoke(Entity self) => self.transform.DOMove(position, duration).SetEase(Ease.OutCubic).SetLink(self.gameObject).SetId("Move");
+	protected override void Invoke(Entity self) => self.transform.DOMove(position.WithStageOffset(), duration).SetEase(Ease.OutCubic).SetLink(self.gameObject).SetId("Move");
 }
 
 public class Attack : Behaviour
 {
-	public Attack(string attackKey, float duration, float delay, Vector2 position)
+	public Attack(Vector2 position, string attackKey, float duration, float delay)
 	{
 		this.position = position;
 		this.attackKey = attackKey;
@@ -107,7 +107,7 @@ public class Attack : Behaviour
 
 			object[] args = parameters.Length > 0
 					? new object[]
-					{ position, delay }
+					{ position.WithStageOffset(), delay }
 					: null;
 
 			method.Invoke(attacks, args);
