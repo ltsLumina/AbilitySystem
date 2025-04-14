@@ -74,6 +74,8 @@ public class Player : Entity
 
 	#region Properties
 	public Stats Stats { get; private set; }
+
+	public Inventory Inventory { get; private set; }
 	#endregion
 
 	protected override void OnTick() { }
@@ -92,6 +94,7 @@ public class Player : Entity
 		playerInput = inputs.GetComponent<PlayerInput>();
 		rb = GetComponent<Rigidbody2D>();
 		Stats = GetComponent<Stats>();
+		Inventory = GetComponent<Inventory>();
 
 		//Rebind(mouseMove);
 

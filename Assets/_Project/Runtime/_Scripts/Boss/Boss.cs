@@ -5,10 +5,10 @@ using System.Collections.Generic;
 using System.IO;
 using DG.Tweening;
 using JetBrains.Annotations;
-using Lumina.Essentials.Modules;
 using UnityEditor;
 using UnityEngine;
 using VInspector;
+using static Lumina.Essentials.Modules.Helpers;
 #endregion
 
 [RequireComponent(typeof(Attacks))]
@@ -24,7 +24,6 @@ public partial class Boss : Entity
 	[Header("Visual")]
 	[ColorUsage(false)]
 	[SerializeField] Color accentColour = Color.black;
-	[SerializeField] AnimationCurve deathCurve;
 
 	[Foldout("Sequence")]
 	[SerializeField] List<Phase> phases = new ();
@@ -32,7 +31,7 @@ public partial class Boss : Entity
 	
 	[Header("Enrage Settings")]
 	[SerializeField] float enrageDialogueDelay = 3f;
-	[SerializeField] float enrageDelay = 5f;
+	[SerializeField] float enrageInterval = 5f;
 
 	int currentPhaseIndex;
 	Attacks attacks;
@@ -104,8 +103,14 @@ public partial class Boss : Entity
 	void Awake()
 	{
 		attacks = GetComponent<Attacks>();
-		
-		OnDeath += Death;
+
+		OnBossStarted += () => CameraMain.DOOrthoSize(CameraMain.orthographicSize * 1.10f, 1.5f);
+
+		OnDeath += () =>
+		{
+			CameraMain.DOOrthoSize(CameraMain.orthographicSize * 0.9f, 1.5f);
+			Death();
+		};
 	}
 	
 	protected override void OnStart()
@@ -119,6 +124,9 @@ public partial class Boss : Entity
 		}
 
 		health = maxHealth;
+		name = name.Replace("(Clone)", "");
+		transform.SetParent(GameObject.Find("Important").transform);
+		transform.SetAsLastSibling();
 
 		InitBossUI();
 	}
@@ -185,19 +193,15 @@ public partial class Boss : Entity
 		else
 		{
 			Debug.Log("All phases completed.");
-			Enrage();
+			StartCoroutine(Enrage());
 		}
 	}
 
-	void Enrage()
+	IEnumerator Enrage()
 	{
 		Logger.LogWarning("Enrage!");
-		StartCoroutine(EnrageCoroutine());
-	}
 
-	IEnumerator EnrageCoroutine()
-	{
-		var dialogue = new Dialogue("I've had it with you!", enrageDialogueDelay + 2f);
+		var dialogue = new Dialogue("I've had it with you!", enrageDialogueDelay);
 		dialogue.type = Behaviour.Type.Dialogue;
 		dialogue.Start(this);
 
@@ -207,15 +211,10 @@ public partial class Boss : Entity
 		move.type = Behaviour.Type.Move;
 		move.Start(this);
 
-		yield return new WaitForSeconds(enrageDelay);
+		yield return new WaitForSeconds(2f);
 
-		while (Helpers.Find<Player>().Health > 0)
-		{
-			attacks.Enrage();
-			yield return new WaitForSeconds(enrageDelay);
-		}
+		attacks.Enrage(enrageInterval);
 
-		Debug.LogWarning("Player has died. Ending enrage.");
 	}
 	#endregion
 }

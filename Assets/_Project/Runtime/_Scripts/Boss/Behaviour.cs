@@ -24,16 +24,15 @@ public class Behaviour
 		Move,
 		Attack,
 		Dialogue,
+		Wait,
 	}
 
 	[UsedImplicitly]
 	[SerializeField] public string description;
 	[SerializeField] public Type type;
-	[ShowIf(nameof(type), Type.Move)]
 	[SerializeField] protected Vector2 position;
-	[ShowIf(nameof(type), Type.Attack)]
 	[SerializeField] protected string attackKey;
-	[ShowIf(nameof(type), Type.Dialogue)]
+	[SerializeField] protected bool showWarning;
 	[SerializeField] protected string dialogue;
 	[EndIf]
 	[Space(5)]
@@ -58,11 +57,15 @@ public class Behaviour
 				break;
 
 			case Type.Attack:
-				new Attack(position, attackKey, duration, delay).Invoke(context);
+				new Attack(position, attackKey, showWarning, duration, delay).Invoke(context);
 				break;
 
 			case Type.Dialogue:
 				new Dialogue(dialogue, duration).Invoke(context);
+				break;
+
+			case Type.Wait:
+				new Wait(duration).Invoke(context);
 				break;
 
 			default:
@@ -86,10 +89,11 @@ public class Move : Behaviour
 
 public class Attack : Behaviour
 {
-	public Attack(Vector2 position, string attackKey, float duration, float delay)
+	public Attack(Vector2 position, string attackKey, bool showWarning, float duration, float delay)
 	{
 		this.position = position;
 		this.attackKey = attackKey;
+		this.showWarning = showWarning;
 		this.delay = delay;
 		this.duration = duration;
 	}
@@ -107,7 +111,7 @@ public class Attack : Behaviour
 
 			object[] args = parameters.Length > 0
 					? new object[]
-					{ position.WithStageOffset(), delay }
+					{ position.WithStageOffset(), showWarning, delay }
 					: null;
 
 			method.Invoke(attacks, args);
@@ -146,4 +150,11 @@ public class Dialogue : Behaviour
 	}
 }
 
-// separator
+public class Wait : Behaviour
+{
+	public Wait(float duration) { this.duration = duration; }
+
+	protected override void Invoke(Entity self) => self.StartCoroutine(WaitFor(duration));
+
+	IEnumerator WaitFor(float duration) { yield return new WaitForSeconds(duration); }
+}

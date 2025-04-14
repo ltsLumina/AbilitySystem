@@ -50,6 +50,7 @@ public class AbilitySettings : ScriptableObject
 	{
 		public const string SCRIPTABLES = "Scriptables";
 		public const string ABILITIES = "Scriptables/Abilities";
+		public const string ITEMS = "Scriptables/Items";
 		public const string STATUS_EFFECTS = "Scriptables/Status Effects";
 		public const string JOB = "Scriptables/Jobs";
 	}

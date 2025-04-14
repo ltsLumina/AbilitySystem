@@ -119,107 +119,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &2156222
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2156223}
-  - component: {fileID: 2156225}
-  - component: {fileID: 2156224}
-  m_Layer: 0
-  m_Name: Level 4
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2156223
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2156222}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 237.2, y: 0, z: 0}
-  m_LocalScale: {x: 2.05, y: 2.05, z: 2.05}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1605362568}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2156224
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2156222}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1abf55e1a81f5f34caa8aa52c3c52c54, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  parallaxEffect: 0.1
---- !u!212 &2156225
-SpriteRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2156222}
-  m_Enabled: 1
-  m_CastShadows: 0
-  m_ReceiveShadows: 0
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 0
-  m_RayTraceProcedural: 0
-  m_RayTracingAccelStructBuildFlagsOverride: 0
-  m_RayTracingAccelStructBuildFlags: 1
-  m_SmallMeshCulling: 1
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 0
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: -2
-  m_Sprite: {fileID: 21300000, guid: 11727d4e57e5a60408ed4d4f78b19143, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_FlipX: 0
-  m_FlipY: 0
-  m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
-  m_AdaptiveModeThreshold: 0.5
-  m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
-  m_SpriteSortPoint: 0
 --- !u!114 &22507864
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -877,12 +776,6 @@ MonoBehaviour:
   health: 1000
   maxHealth: 1000
   accentColour: {r: 0, g: 0, b: 0, a: 0}
-  deathCurve:
-    serializedVersion: 2
-    m_Curve: []
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
   phases:
   - name: 
     startIndex: 0
@@ -891,6 +784,7 @@ MonoBehaviour:
       type: 0
       position: {x: 10, y: 0}
       attackKey: 
+      showWarning: 0
       dialogue: 
       duration: 1
       delay: 0
@@ -898,6 +792,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 0}
       attackKey: CleaveTopLeft
+      showWarning: 0
       dialogue: 
       duration: 0
       delay: 3
@@ -905,6 +800,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 0}
       attackKey: CleaveBottomLeft
+      showWarning: 0
       dialogue: 
       duration: 0
       delay: 3
@@ -912,6 +808,7 @@ MonoBehaviour:
       type: 1
       position: {x: -2.5, y: 0}
       attackKey: Donut
+      showWarning: 0
       dialogue: 
       duration: 3
       delay: 3
@@ -919,6 +816,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 0}
       attackKey: CleaveRight
+      showWarning: 0
       dialogue: 
       duration: 1
       delay: 1
@@ -926,6 +824,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 0}
       attackKey: CleaveLeft
+      showWarning: 0
       dialogue: 
       duration: 1
       delay: 1
@@ -933,6 +832,7 @@ MonoBehaviour:
       type: 1
       position: {x: -4, y: -4}
       attackKey: Donut
+      showWarning: 0
       dialogue: 
       duration: 0
       delay: 1.5
@@ -940,6 +840,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 10}
       attackKey: Line315
+      showWarning: 0
       dialogue: 
       duration: 0.2
       delay: 1
@@ -947,6 +848,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 7}
       attackKey: Line315
+      showWarning: 0
       dialogue: 
       duration: 0.2
       delay: 1
@@ -954,6 +856,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 4}
       attackKey: Line315
+      showWarning: 0
       dialogue: 
       duration: 0.2
       delay: 1
@@ -961,6 +864,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 1}
       attackKey: Line315
+      showWarning: 0
       dialogue: 
       duration: 0.2
       delay: 1
@@ -968,6 +872,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: -2}
       attackKey: Line315
+      showWarning: 0
       dialogue: 
       duration: 0.2
       delay: 1
@@ -975,6 +880,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: -5}
       attackKey: Line315
+      showWarning: 0
       dialogue: 
       duration: 0.2
       delay: 1
@@ -982,6 +888,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: -8}
       attackKey: Line315
+      showWarning: 0
       dialogue: 
       duration: 0.2
       delay: 1
@@ -989,6 +896,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 0}
       attackKey: CleaveUp
+      showWarning: 0
       dialogue: 
       duration: 1
       delay: 1.5
@@ -996,11 +904,12 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 0}
       attackKey: CleaveDown
+      showWarning: 0
       dialogue: 
       duration: 0
       delay: 1
   enrageDialogueDelay: 3
-  enrageDelay: 5
+  enrageInterval: 5
 --- !u!4 &249713667
 Transform:
   m_ObjectHideFlags: 0
@@ -1417,12 +1326,6 @@ MonoBehaviour:
   health: 5000
   maxHealth: 5000
   accentColour: {r: 1, g: 0.03137255, b: 0.15294118, a: 1}
-  deathCurve:
-    serializedVersion: 2
-    m_Curve: []
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
   phases:
   - name: Phase 1
     startIndex: 0
@@ -1431,6 +1334,7 @@ MonoBehaviour:
       type: 0
       position: {x: -8, y: 0}
       attackKey: 
+      showWarning: 0
       dialogue: 
       duration: 1
       delay: 0
@@ -1438,6 +1342,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 10}
       attackKey: Line
+      showWarning: 0
       dialogue: 
       duration: 0
       delay: 2
@@ -1445,6 +1350,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 0}
       attackKey: Line
+      showWarning: 0
       dialogue: 
       duration: 0
       delay: 2
@@ -1452,6 +1358,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: -10}
       attackKey: Line
+      showWarning: 0
       dialogue: 
       duration: 0
       delay: 2
@@ -1459,6 +1366,7 @@ MonoBehaviour:
       type: 1
       position: {x: -11, y: 0}
       attackKey: Pillar
+      showWarning: 0
       dialogue: 
       duration: 0
       delay: 2
@@ -1466,6 +1374,7 @@ MonoBehaviour:
       type: 1
       position: {x: -5, y: 0}
       attackKey: Pillar
+      showWarning: 0
       dialogue: 
       duration: 0
       delay: 2
@@ -1473,6 +1382,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 0}
       attackKey: CleaveDown
+      showWarning: 0
       dialogue: 
       duration: 3
       delay: 2
@@ -1480,6 +1390,7 @@ MonoBehaviour:
       type: 0
       position: {x: 10, y: 0}
       attackKey: 
+      showWarning: 0
       dialogue: 
       duration: 1
       delay: 0
@@ -1487,6 +1398,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 10}
       attackKey: Line
+      showWarning: 0
       dialogue: 
       duration: 0
       delay: 2
@@ -1494,6 +1406,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 0}
       attackKey: Line
+      showWarning: 0
       dialogue: 
       duration: 0
       delay: 2
@@ -1501,6 +1414,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: -10}
       attackKey: Line
+      showWarning: 0
       dialogue: 
       duration: 0
       delay: 2
@@ -1508,6 +1422,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 0}
       attackKey: CleaveUp
+      showWarning: 0
       dialogue: 
       duration: 0
       delay: 2
@@ -1515,6 +1430,7 @@ MonoBehaviour:
       type: 1
       position: {x: 11, y: 0}
       attackKey: Pillar
+      showWarning: 0
       dialogue: 
       duration: 0
       delay: 2
@@ -1522,6 +1438,7 @@ MonoBehaviour:
       type: 1
       position: {x: 5, y: 0}
       attackKey: Pillar
+      showWarning: 0
       dialogue: 
       duration: 3
       delay: 2
@@ -1532,6 +1449,7 @@ MonoBehaviour:
       type: 0
       position: {x: -4, y: -4}
       attackKey: 
+      showWarning: 0
       dialogue: 
       duration: 1
       delay: 0
@@ -1539,6 +1457,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 0}
       attackKey: Pillar
+      showWarning: 0
       dialogue: 
       duration: 0
       delay: 3
@@ -1546,6 +1465,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 0}
       attackKey: Line
+      showWarning: 0
       dialogue: 
       duration: 3
       delay: 3
@@ -1553,6 +1473,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 0}
       attackKey: Line45
+      showWarning: 0
       dialogue: 
       duration: 0
       delay: 3
@@ -1560,6 +1481,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 0}
       attackKey: Line315
+      showWarning: 0
       dialogue: 
       duration: 0
       delay: 3
@@ -1567,6 +1489,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 0}
       attackKey: Line45
+      showWarning: 0
       dialogue: 
       duration: 3
       delay: 3
@@ -1574,6 +1497,7 @@ MonoBehaviour:
       type: 1
       position: {x: -5, y: 0}
       attackKey: Pillar
+      showWarning: 0
       dialogue: 
       duration: 0
       delay: 4
@@ -1581,6 +1505,7 @@ MonoBehaviour:
       type: 1
       position: {x: 5, y: 0}
       attackKey: Pillar
+      showWarning: 0
       dialogue: 
       duration: 4
       delay: 4
@@ -1588,6 +1513,7 @@ MonoBehaviour:
       type: 1
       position: {x: 5, y: 0}
       attackKey: Pillar
+      showWarning: 0
       dialogue: 
       duration: 0
       delay: 4
@@ -1595,6 +1521,7 @@ MonoBehaviour:
       type: 1
       position: {x: -5, y: 0}
       attackKey: Pillar
+      showWarning: 0
       dialogue: 
       duration: 3
       delay: 4
@@ -1602,6 +1529,7 @@ MonoBehaviour:
       type: 2
       position: {x: 0, y: 0}
       attackKey: 
+      showWarning: 0
       dialogue: Why wont you die?
       duration: 3
       delay: 0
@@ -1609,6 +1537,7 @@ MonoBehaviour:
       type: 0
       position: {x: 10, y: 0}
       attackKey: 
+      showWarning: 0
       dialogue: 
       duration: 3
       delay: 0
@@ -1616,6 +1545,7 @@ MonoBehaviour:
       type: 2
       position: {x: 10, y: 0}
       attackKey: 
+      showWarning: 0
       dialogue: Such a waste of life...
       duration: 3
       delay: 0
@@ -1623,6 +1553,7 @@ MonoBehaviour:
       type: 2
       position: {x: 0, y: 0}
       attackKey: 
+      showWarning: 0
       dialogue: Time for our final move!
       duration: 4
       delay: 0
@@ -1630,6 +1561,7 @@ MonoBehaviour:
       type: 0
       position: {x: 0, y: 0}
       attackKey: 
+      showWarning: 0
       dialogue: 
       duration: 5
       delay: 0
@@ -1640,6 +1572,7 @@ MonoBehaviour:
       type: 2
       position: {x: 0, y: 0}
       attackKey: 
+      showWarning: 0
       dialogue: You Better Run...
       duration: 10
       delay: 0
@@ -1647,6 +1580,7 @@ MonoBehaviour:
       type: 0
       position: {x: -5, y: -5}
       attackKey: 
+      showWarning: 0
       dialogue: 
       duration: 1
       delay: 0
@@ -1654,6 +1588,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: -5}
       attackKey: CleaveUp
+      showWarning: 0
       dialogue: 
       duration: 0
       delay: 2
@@ -1661,6 +1596,7 @@ MonoBehaviour:
       type: 1
       position: {x: -5, y: -10}
       attackKey: Donut
+      showWarning: 0
       dialogue: 
       duration: 1
       delay: 2.5
@@ -1668,6 +1604,7 @@ MonoBehaviour:
       type: 1
       position: {x: 20, y: 0}
       attackKey: Line315
+      showWarning: 0
       dialogue: 
       duration: 0.1
       delay: 1
@@ -1675,6 +1612,7 @@ MonoBehaviour:
       type: 1
       position: {x: 17, y: 0}
       attackKey: Line315
+      showWarning: 0
       dialogue: 
       duration: 0.1
       delay: 1
@@ -1682,6 +1620,7 @@ MonoBehaviour:
       type: 1
       position: {x: 14, y: 0}
       attackKey: Line315
+      showWarning: 0
       dialogue: 
       duration: 0.1
       delay: 1
@@ -1689,6 +1628,7 @@ MonoBehaviour:
       type: 1
       position: {x: 11, y: 0}
       attackKey: Line315
+      showWarning: 0
       dialogue: 
       duration: 0.1
       delay: 1
@@ -1696,6 +1636,7 @@ MonoBehaviour:
       type: 1
       position: {x: 8, y: 0}
       attackKey: Line315
+      showWarning: 0
       dialogue: 
       duration: 0.1
       delay: 1
@@ -1703,6 +1644,7 @@ MonoBehaviour:
       type: 1
       position: {x: 5, y: 0}
       attackKey: Line315
+      showWarning: 0
       dialogue: 
       duration: 0.1
       delay: 1
@@ -1710,6 +1652,7 @@ MonoBehaviour:
       type: 1
       position: {x: 2, y: 0}
       attackKey: Line315
+      showWarning: 0
       dialogue: 
       duration: 0.1
       delay: 1
@@ -1717,6 +1660,7 @@ MonoBehaviour:
       type: 1
       position: {x: -1, y: 0}
       attackKey: Line315
+      showWarning: 0
       dialogue: 
       duration: 0.1
       delay: 1
@@ -1724,6 +1668,7 @@ MonoBehaviour:
       type: 1
       position: {x: -4, y: 0}
       attackKey: Line315
+      showWarning: 0
       dialogue: 
       duration: 0.1
       delay: 1
@@ -1731,6 +1676,7 @@ MonoBehaviour:
       type: 1
       position: {x: -7, y: 0}
       attackKey: Line315
+      showWarning: 0
       dialogue: 
       duration: 0.1
       delay: 1
@@ -1738,6 +1684,7 @@ MonoBehaviour:
       type: 2
       position: {x: 0, y: 0}
       attackKey: 
+      showWarning: 0
       dialogue: Again!
       duration: 2.75
       delay: 0
@@ -1748,6 +1695,7 @@ MonoBehaviour:
       type: 0
       position: {x: -8, y: 0}
       attackKey: 
+      showWarning: 0
       dialogue: 
       duration: 1
       delay: 0
@@ -1755,6 +1703,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 10}
       attackKey: Line
+      showWarning: 0
       dialogue: 
       duration: 0
       delay: 2
@@ -1762,6 +1711,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 0}
       attackKey: Line
+      showWarning: 0
       dialogue: 
       duration: 0
       delay: 2
@@ -1769,6 +1719,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: -10}
       attackKey: Line
+      showWarning: 0
       dialogue: 
       duration: 0
       delay: 2
@@ -1776,6 +1727,7 @@ MonoBehaviour:
       type: 1
       position: {x: -11, y: 0}
       attackKey: Pillar
+      showWarning: 0
       dialogue: 
       duration: 0
       delay: 2
@@ -1783,6 +1735,7 @@ MonoBehaviour:
       type: 1
       position: {x: -5, y: 0}
       attackKey: Pillar
+      showWarning: 0
       dialogue: 
       duration: 0
       delay: 2
@@ -1790,6 +1743,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 0}
       attackKey: CleaveDown
+      showWarning: 0
       dialogue: 
       duration: 3
       delay: 2
@@ -1797,6 +1751,7 @@ MonoBehaviour:
       type: 0
       position: {x: 10, y: 0}
       attackKey: 
+      showWarning: 0
       dialogue: 
       duration: 1
       delay: 0
@@ -1804,6 +1759,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 10}
       attackKey: Line
+      showWarning: 0
       dialogue: 
       duration: 0
       delay: 2
@@ -1811,6 +1767,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 0}
       attackKey: Line
+      showWarning: 0
       dialogue: 
       duration: 0
       delay: 2
@@ -1818,6 +1775,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: -10}
       attackKey: Line
+      showWarning: 0
       dialogue: 
       duration: 0
       delay: 2
@@ -1825,6 +1783,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 0}
       attackKey: CleaveUp
+      showWarning: 0
       dialogue: 
       duration: 0
       delay: 2
@@ -1832,6 +1791,7 @@ MonoBehaviour:
       type: 1
       position: {x: 11, y: 0}
       attackKey: Pillar
+      showWarning: 0
       dialogue: 
       duration: 0
       delay: 2
@@ -1839,11 +1799,12 @@ MonoBehaviour:
       type: 1
       position: {x: 5, y: 0}
       attackKey: Pillar
+      showWarning: 0
       dialogue: 
       duration: 3
       delay: 2
   enrageDialogueDelay: 3
-  enrageDelay: 5
+  enrageInterval: 5
 --- !u!4 &283100088
 Transform:
   m_ObjectHideFlags: 0
@@ -1962,39 +1923,6 @@ MonoBehaviour:
   health: 1000
   maxHealth: 1000
   accentColour: {r: 0, g: 0, b: 0, a: 0}
-  deathCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 7.895336
-      outSlope: 7.895336
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0.039283153
-    - serializedVersion: 3
-      time: 0.62462443
-      value: 1.006405
-      inSlope: -1.741838
-      outSlope: -1.741838
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.34622905
-      outWeight: 0.3029612
-    - serializedVersion: 3
-      time: 1
-      value: -0.000365939
-      inSlope: -4.7630324
-      outSlope: -4.7630324
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.10100412
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
   phases:
   - name: 
     startIndex: 0
@@ -2003,6 +1931,7 @@ MonoBehaviour:
       type: 1
       position: {x: 25, y: 10}
       attackKey: SpawnerLeft
+      showWarning: 0
       dialogue: 
       duration: 0
       delay: 10
@@ -2010,6 +1939,7 @@ MonoBehaviour:
       type: 1
       position: {x: 25, y: -10}
       attackKey: SpawnerLeft
+      showWarning: 0
       dialogue: 
       duration: 0
       delay: 10
@@ -2017,6 +1947,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 0}
       attackKey: Donut
+      showWarning: 0
       dialogue: 
       duration: 0
       delay: 5
@@ -2024,6 +1955,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 0}
       attackKey: CleaveUp
+      showWarning: 0
       dialogue: 
       duration: 0
       delay: 3
@@ -2031,11 +1963,12 @@ MonoBehaviour:
       type: 2
       position: {x: 10, y: 0}
       attackKey: 
+      showWarning: 0
       dialogue: ...
       duration: 99
       delay: 0
   enrageDialogueDelay: 3
-  enrageDelay: 5
+  enrageInterval: 5
 --- !u!4 &422729022
 Transform:
   m_ObjectHideFlags: 0
@@ -2181,7 +2114,7 @@ MonoBehaviour:
       type: {class: VInspectorData/Foldout, ns: VInspector, asm: VInspector}
       data:
         name: Sequence
-        expanded: 0
+        expanded: 1
         subfoldouts: []
 --- !u!1 &481365842
 GameObject:
@@ -2284,93 +2217,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   parallaxEffect: 0.1
---- !u!1 &500872699
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 500872700}
-  - component: {fileID: 500872701}
-  m_Layer: 0
-  m_Name: Triangle
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &500872700
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 500872699}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1596021477}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &500872701
-SpriteRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 500872699}
-  m_Enabled: 1
-  m_CastShadows: 0
-  m_ReceiveShadows: 0
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 0
-  m_RayTraceProcedural: 0
-  m_RayTracingAccelStructBuildFlagsOverride: 0
-  m_RayTracingAccelStructBuildFlags: 1
-  m_SmallMeshCulling: 1
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 0
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 75f5f34dc1b5347e0b8351032682f224, type: 3}
-  m_Color: {r: 0, g: 0.83348227, b: 1, a: 1}
-  m_FlipX: 0
-  m_FlipY: 0
-  m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
-  m_AdaptiveModeThreshold: 0.5
-  m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
-  m_SpriteSortPoint: 0
 --- !u!1 &512651278
 GameObject:
   m_ObjectHideFlags: 0
@@ -2662,25 +2508,28 @@ MonoBehaviour:
   health: 99999
   maxHealth: 99999
   accentColour: {r: 1, g: 0.5424528, b: 0.5424528, a: 1}
-  deathCurve:
-    serializedVersion: 2
-    m_Curve: []
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
   phases:
   - name: AFK
     startIndex: 0
     behaviours:
     - description: 
+      type: 0
+      position: {x: 0, y: 0}
+      attackKey: 
+      showWarning: 0
+      dialogue: 
+      duration: 1
+      delay: 0
+    - description: 
       type: 2
       position: {x: 0, y: 0}
       attackKey: 
+      showWarning: 0
       dialogue: AFK
       duration: 999
       delay: 0
   enrageDialogueDelay: 3
-  enrageDelay: 5
+  enrageInterval: 5
 --- !u!4 &597444218
 Transform:
   m_ObjectHideFlags: 0
@@ -2862,7 +2711,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be23055baa184dc896832efb65849275, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isPaused: 0
   currentBoss: {fileID: 0}
+  currentState: 0
+  events: 
   bypass: 1
 --- !u!114 &797995463
 MonoBehaviour:
@@ -2937,7 +2789,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   players:
-  - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
@@ -3077,386 +2928,6 @@ MonoBehaviour:
         name: Sequence
         expanded: 1
         subfoldouts: []
---- !u!1 &888808638
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 888808641}
-  - component: {fileID: 888808640}
-  - component: {fileID: 888808639}
-  m_Layer: 0
-  m_Name: Rem, the Sooteared Wolf
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!114 &888808639
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 888808638}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7e803cfa06294a2789f4a1da94a4b551, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  orbPrefab: {fileID: 6281664029389054506, guid: 2ed8ce8a6f299a1458ecdbced9398ba9, type: 3}
-  orbCount: 10
-  orbSpeed: 10
-  radius: 1
---- !u!114 &888808640
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 888808638}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0a8593165e40477ab6448eef0c0c7169, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  statusEffects: []
-  data: {fileID: 856490709}
-  health: 6500
-  maxHealth: 6500
-  accentColour: {r: 0.24313726, g: 0.40392157, b: 0.85490197, a: 1}
-  deathCurve:
-    serializedVersion: 2
-    m_Curve: []
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  phases:
-  - name: Phase 1
-    startIndex: 0
-    behaviours:
-    - description: 
-      type: 0
-      position: {x: 15, y: 0}
-      attackKey: 
-      dialogue: 
-      duration: 2
-      delay: 0
-    - description: WAIT
-      type: 2
-      position: {x: 0, y: 0}
-      attackKey: 
-      dialogue: 
-      duration: 3
-      delay: 0
-    - description: 
-      type: 1
-      position: {x: 0, y: 0}
-      attackKey: Line
-      dialogue: 
-      duration: 0
-      delay: 2
-    - description: 
-      type: 0
-      position: {x: -15, y: 0}
-      attackKey: 
-      dialogue: 
-      duration: 1
-      delay: 0
-    - description: 
-      type: 0
-      position: {x: -15, y: -5}
-      attackKey: 
-      dialogue: 
-      duration: 1
-      delay: 0
-    - description: WAIT
-      type: 2
-      position: {x: 0, y: 0}
-      attackKey: 
-      dialogue: 
-      duration: 0
-      delay: 0
-    - description: 
-      type: 1
-      position: {x: 6, y: 0}
-      attackKey: CleaveLeft
-      dialogue: 
-      duration: 0
-      delay: 4
-    - description: 
-      type: 1
-      position: {x: 10, y: 0}
-      attackKey: CleaveRight
-      dialogue: 
-      duration: 0
-      delay: 4
-    - description: 
-      type: 1
-      position: {x: 0, y: -8}
-      attackKey: LineBig
-      dialogue: 
-      duration: 1.5
-      delay: 3
-    - description: 
-      type: 0
-      position: {x: 15, y: -8}
-      attackKey: 
-      dialogue: 
-      duration: 1
-      delay: 0
-    - description: WAIT
-      type: 2
-      position: {x: 0, y: 0}
-      attackKey: 
-      dialogue: 
-      duration: 2
-      delay: 0
-    - description: 
-      type: 1
-      position: {x: 0, y: 8}
-      attackKey: CleaveUp
-      dialogue: 
-      duration: 0
-      delay: 3
-    - description: 
-      type: 1
-      position: {x: 0, y: 0}
-      attackKey: CleaveDown
-      dialogue: 
-      duration: 0
-      delay: 3
-    - description: 
-      type: 0
-      position: {x: -15, y: -8}
-      attackKey: 
-      dialogue: 
-      duration: 1
-      delay: 0
-    - description: 
-      type: 0
-      position: {x: -15, y: 5}
-      attackKey: 
-      dialogue: 
-      duration: 1
-      delay: 0
-    - description: WAIT
-      type: 2
-      position: {x: 0, y: 0}
-      attackKey: 
-      dialogue: 
-      duration: 2
-      delay: 0
-    - description: 
-      type: 1
-      position: {x: 8, y: 0}
-      attackKey: CleaveLeft
-      dialogue: 
-      duration: 0
-      delay: 3
-    - description: 
-      type: 1
-      position: {x: 12, y: 0}
-      attackKey: CleaveRight
-      dialogue: 
-      duration: 0
-      delay: 3
-    - description: 
-      type: 1
-      position: {x: 0, y: 5}
-      attackKey: LineBig
-      dialogue: 
-      duration: 1
-      delay: 3
-    - description: 
-      type: 0
-      position: {x: 15, y: 5}
-      attackKey: 
-      dialogue: 
-      duration: 1
-      delay: 0
-    - description: 
-      type: 0
-      position: {x: 15, y: 10}
-      attackKey: 
-      dialogue: 
-      duration: 1
-      delay: 0
-    - description: WAIT
-      type: 2
-      position: {x: 0, y: 0}
-      attackKey: 
-      dialogue: 
-      duration: 1
-      delay: 0
-    - description: 
-      type: 1
-      position: {x: 0, y: 6}
-      attackKey: CleaveDown
-      dialogue: 
-      duration: 0
-      delay: 3
-    - description: 
-      type: 1
-      position: {x: 0, y: 9}
-      attackKey: Line
-      dialogue: 
-      duration: 1
-      delay: 2
-    - description: 
-      type: 0
-      position: {x: -15, y: 10}
-      attackKey: 
-      dialogue: 
-      duration: 1
-      delay: 0
-    - description: 
-      type: 0
-      position: {x: -15, y: -10}
-      attackKey: 
-      dialogue: 
-      duration: 1
-      delay: 0
-    - description: WAIT
-      type: 2
-      position: {x: 0, y: 0}
-      attackKey: 
-      dialogue: 
-      duration: 1
-      delay: 0
-    - description: 
-      type: 1
-      position: {x: -2, y: 0}
-      attackKey: CleaveLeft
-      dialogue: 
-      duration: 0
-      delay: 3
-    - description: 
-      type: 1
-      position: {x: 2, y: 0}
-      attackKey: CleaveRight
-      dialogue: 
-      duration: 0
-      delay: 3
-    - description: 
-      type: 1
-      position: {x: 0, y: -6}
-      attackKey: LineBig
-      dialogue: 
-      duration: 1
-      delay: 2
-    - description: 
-      type: 0
-      position: {x: 15, y: -10}
-      attackKey: 
-      dialogue: 
-      duration: 1
-      delay: 0
-    - description: 
-      type: 0
-      position: {x: 15, y: 0}
-      attackKey: 
-      dialogue: 
-      duration: 1
-      delay: 0
-    - description: 
-      type: 1
-      position: {x: 0, y: 3}
-      attackKey: CleaveUp
-      dialogue: 
-      duration: 0
-      delay: 4
-    - description: 
-      type: 1
-      position: {x: 0, y: -2}
-      attackKey: CleaveDown
-      dialogue: 
-      duration: 0
-      delay: 4
-    - description: 
-      type: 1
-      position: {x: 0, y: 0.5}
-      attackKey: Line
-      dialogue: 
-      duration: 3
-      delay: 3
-    - description: 
-      type: 0
-      position: {x: -15, y: 0}
-      attackKey: 
-      dialogue: 
-      duration: 1
-      delay: 0
-    - description: 
-      type: 0
-      position: {x: -15, y: 8}
-      attackKey: 
-      dialogue: 
-      duration: 1
-      delay: 0
-    - description: 
-      type: 1
-      position: {x: 8, y: 0}
-      attackKey: CleaveLeft
-      dialogue: 
-      duration: 0
-      delay: 3
-    - description: 
-      type: 1
-      position: {x: 12, y: 0}
-      attackKey: CleaveRight
-      dialogue: 
-      duration: 0
-      delay: 3
-    - description: 
-      type: 1
-      position: {x: 0, y: 8}
-      attackKey: LineBig
-      dialogue: 
-      duration: 0
-      delay: 2
-    - description: WAIT
-      type: 2
-      position: {x: 0, y: 0}
-      attackKey: 
-      dialogue: 
-      duration: 2
-      delay: 0
-    - description: 
-      type: 0
-      position: {x: 15, y: 8}
-      attackKey: 
-      dialogue: 
-      duration: 1
-      delay: 0
-    - description: 
-      type: 0
-      position: {x: 15, y: 0}
-      attackKey: 
-      dialogue: 
-      duration: 1
-      delay: 0
-  enrageDialogueDelay: 3
-  enrageDelay: 5
---- !u!4 &888808641
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 888808638}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 1717185089}
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &971241381
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3591,107 +3062,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 1156579964293774581, guid: bd26d039aaea4764c986e51a58e57f9f, type: 3}
   m_PrefabInstance: {fileID: 1055080591}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1143870901
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1143870902}
-  - component: {fileID: 1143870904}
-  - component: {fileID: 1143870903}
-  m_Layer: 0
-  m_Name: Level 3
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1143870902
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1143870901}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 118.6, y: 0, z: 0}
-  m_LocalScale: {x: 2.05, y: 2.05, z: 2.05}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1605362568}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1143870903
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1143870901}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1abf55e1a81f5f34caa8aa52c3c52c54, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  parallaxEffect: 0.1
---- !u!212 &1143870904
-SpriteRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1143870901}
-  m_Enabled: 1
-  m_CastShadows: 0
-  m_ReceiveShadows: 0
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 0
-  m_RayTraceProcedural: 0
-  m_RayTracingAccelStructBuildFlagsOverride: 0
-  m_RayTracingAccelStructBuildFlags: 1
-  m_SmallMeshCulling: 1
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 0
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: -2
-  m_Sprite: {fileID: 21300000, guid: 11727d4e57e5a60408ed4d4f78b19143, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_FlipX: 0
-  m_FlipY: 0
-  m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
-  m_AdaptiveModeThreshold: 0.5
-  m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
-  m_SpriteSortPoint: 0
 --- !u!114 &1220354133
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4284,12 +3654,6 @@ MonoBehaviour:
   health: 5000
   maxHealth: 5000
   accentColour: {r: 0.41568628, g: 0.8862745, b: 0.46666667, a: 1}
-  deathCurve:
-    serializedVersion: 2
-    m_Curve: []
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
   phases:
   - name: Phase 1
     startIndex: 0
@@ -4298,6 +3662,7 @@ MonoBehaviour:
       type: 0
       position: {x: -8, y: 5}
       attackKey: 
+      showWarning: 0
       dialogue: 
       duration: 1
       delay: 0
@@ -4305,6 +3670,7 @@ MonoBehaviour:
       type: 1
       position: {x: -10, y: 0}
       attackKey: CleaveLeft
+      showWarning: 0
       dialogue: 
       duration: 0
       delay: 2
@@ -4312,6 +3678,7 @@ MonoBehaviour:
       type: 1
       position: {x: -11, y: 5}
       attackKey: Donut
+      showWarning: 0
       dialogue: 
       duration: 3
       delay: 2
@@ -4319,6 +3686,7 @@ MonoBehaviour:
       type: 0
       position: {x: 8, y: -5}
       attackKey: 
+      showWarning: 0
       dialogue: 
       duration: 1
       delay: 0
@@ -4326,6 +3694,7 @@ MonoBehaviour:
       type: 1
       position: {x: 10, y: 0}
       attackKey: CleaveRight
+      showWarning: 0
       dialogue: 
       duration: 0
       delay: 2
@@ -4333,6 +3702,7 @@ MonoBehaviour:
       type: 1
       position: {x: 11, y: -5}
       attackKey: Donut
+      showWarning: 0
       dialogue: 
       duration: 3
       delay: 2
@@ -4343,6 +3713,7 @@ MonoBehaviour:
       type: 0
       position: {x: 0, y: 0}
       attackKey: 
+      showWarning: 0
       dialogue: 
       duration: 1
       delay: 0
@@ -4350,6 +3721,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 0}
       attackKey: Donut
+      showWarning: 0
       dialogue: 
       duration: 3
       delay: 3
@@ -4357,6 +3729,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 0}
       attackKey: Donut
+      showWarning: 0
       dialogue: 
       duration: 3
       delay: 3
@@ -4364,6 +3737,7 @@ MonoBehaviour:
       type: 0
       position: {x: 0, y: 8}
       attackKey: 
+      showWarning: 0
       dialogue: 
       duration: 1
       delay: 0
@@ -4371,6 +3745,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 8}
       attackKey: CleaveDown
+      showWarning: 0
       dialogue: 
       duration: 0
       delay: 3
@@ -4378,6 +3753,7 @@ MonoBehaviour:
       type: 1
       position: {x: -3.5, y: -8}
       attackKey: CleaveLeft
+      showWarning: 0
       dialogue: 
       duration: 0
       delay: 3
@@ -4385,6 +3761,7 @@ MonoBehaviour:
       type: 1
       position: {x: 3.5, y: -8}
       attackKey: CleaveRight
+      showWarning: 0
       dialogue: 
       duration: 3
       delay: 3
@@ -4392,6 +3769,7 @@ MonoBehaviour:
       type: 0
       position: {x: 0, y: -8}
       attackKey: 
+      showWarning: 0
       dialogue: 
       duration: 1
       delay: 0
@@ -4399,6 +3777,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: -8}
       attackKey: CleaveUp
+      showWarning: 0
       dialogue: 
       duration: 0
       delay: 3
@@ -4406,6 +3785,7 @@ MonoBehaviour:
       type: 1
       position: {x: -3.5, y: -8}
       attackKey: CleaveLeft
+      showWarning: 0
       dialogue: 
       duration: 0
       delay: 3
@@ -4413,6 +3793,7 @@ MonoBehaviour:
       type: 1
       position: {x: 3.5, y: -8}
       attackKey: CleaveRight
+      showWarning: 0
       dialogue: 
       duration: 3
       delay: 3
@@ -4420,6 +3801,7 @@ MonoBehaviour:
       type: 0
       position: {x: 10, y: 0}
       attackKey: 
+      showWarning: 0
       dialogue: 
       duration: 1
       delay: 0
@@ -4427,6 +3809,7 @@ MonoBehaviour:
       type: 1
       position: {x: -10, y: 0}
       attackKey: Donut
+      showWarning: 0
       dialogue: 
       duration: 3
       delay: 3
@@ -4434,6 +3817,7 @@ MonoBehaviour:
       type: 0
       position: {x: -10, y: 0}
       attackKey: 
+      showWarning: 0
       dialogue: 
       duration: 1
       delay: 0
@@ -4441,6 +3825,7 @@ MonoBehaviour:
       type: 1
       position: {x: 10, y: 0}
       attackKey: Donut
+      showWarning: 0
       dialogue: 
       duration: 3
       delay: 3
@@ -4448,6 +3833,7 @@ MonoBehaviour:
       type: 2
       position: {x: 0, y: 0}
       attackKey: 
+      showWarning: 0
       dialogue: Time for our final move!
       duration: 4
       delay: 0
@@ -4455,6 +3841,7 @@ MonoBehaviour:
       type: 0
       position: {x: 0, y: 0}
       attackKey: 
+      showWarning: 0
       dialogue: 
       duration: 5
       delay: 0
@@ -4465,6 +3852,7 @@ MonoBehaviour:
       type: 2
       position: {x: 0, y: 0}
       attackKey: 
+      showWarning: 0
       dialogue: You Better Run...
       duration: 3
       delay: 0
@@ -4472,6 +3860,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 0}
       attackKey: CleaveRight
+      showWarning: 0
       dialogue: 
       duration: 0
       delay: 5
@@ -4479,6 +3868,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 0}
       attackKey: Pillar
+      showWarning: 0
       dialogue: 
       duration: 0.3
       delay: 2.5
@@ -4486,6 +3876,7 @@ MonoBehaviour:
       type: 1
       position: {x: -3, y: 0}
       attackKey: Pillar
+      showWarning: 0
       dialogue: 
       duration: 0.3
       delay: 2.5
@@ -4493,6 +3884,7 @@ MonoBehaviour:
       type: 1
       position: {x: -6, y: 0}
       attackKey: Pillar
+      showWarning: 0
       dialogue: 
       duration: 0.3
       delay: 2.5
@@ -4500,6 +3892,7 @@ MonoBehaviour:
       type: 1
       position: {x: -9, y: 0}
       attackKey: Pillar
+      showWarning: 0
       dialogue: 
       duration: 0.3
       delay: 2.5
@@ -4507,6 +3900,7 @@ MonoBehaviour:
       type: 1
       position: {x: -12, y: 0}
       attackKey: Pillar
+      showWarning: 0
       dialogue: 
       duration: 0.3
       delay: 2.5
@@ -4514,6 +3908,7 @@ MonoBehaviour:
       type: 1
       position: {x: -15, y: 0}
       attackKey: Pillar
+      showWarning: 0
       dialogue: 
       duration: 0.3
       delay: 2.5
@@ -4521,6 +3916,7 @@ MonoBehaviour:
       type: 1
       position: {x: -18, y: 0}
       attackKey: Pillar
+      showWarning: 0
       dialogue: 
       duration: 1.5
       delay: 2.5
@@ -4528,6 +3924,7 @@ MonoBehaviour:
       type: 2
       position: {x: 0, y: 0}
       attackKey: 
+      showWarning: 0
       dialogue: 
       duration: 6.5
       delay: 0
@@ -4535,6 +3932,7 @@ MonoBehaviour:
       type: 2
       position: {x: 0, y: 0}
       attackKey: 
+      showWarning: 0
       dialogue: Again!
       duration: 3
       delay: 0
@@ -4545,6 +3943,7 @@ MonoBehaviour:
       type: 0
       position: {x: -8, y: 5}
       attackKey: 
+      showWarning: 0
       dialogue: 
       duration: 1
       delay: 0
@@ -4552,6 +3951,7 @@ MonoBehaviour:
       type: 1
       position: {x: -10, y: 0}
       attackKey: CleaveLeft
+      showWarning: 0
       dialogue: 
       duration: 0
       delay: 2
@@ -4559,6 +3959,7 @@ MonoBehaviour:
       type: 1
       position: {x: -11, y: 5}
       attackKey: Donut
+      showWarning: 0
       dialogue: 
       duration: 3
       delay: 2
@@ -4566,6 +3967,7 @@ MonoBehaviour:
       type: 0
       position: {x: 8, y: -5}
       attackKey: 
+      showWarning: 0
       dialogue: 
       duration: 1
       delay: 0
@@ -4573,6 +3975,7 @@ MonoBehaviour:
       type: 1
       position: {x: 10, y: 0}
       attackKey: CleaveRight
+      showWarning: 0
       dialogue: 
       duration: 0
       delay: 2
@@ -4580,11 +3983,12 @@ MonoBehaviour:
       type: 1
       position: {x: 11, y: -5}
       attackKey: Donut
+      showWarning: 0
       dialogue: 
       duration: 3
       delay: 2
   enrageDialogueDelay: 3
-  enrageDelay: 5
+  enrageInterval: 5
 --- !u!4 &1487842264
 Transform:
   m_ObjectHideFlags: 0
@@ -4651,6 +4055,108 @@ MonoBehaviour:
   tickRate: 20
   tickCycleDuration: 1
   laps: 
+--- !u!1 &1514093661
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1514093662}
+  - component: {fileID: 1514093663}
+  - component: {fileID: 1514093664}
+  m_Layer: 0
+  m_Name: Triangle
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1514093662
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1514093661}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2073751696}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!212 &1514093663
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1514093661}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_Sprite: {fileID: 7482667652216324306, guid: 75f5f34dc1b5347e0b8351032682f224, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 1, y: 1}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0
+--- !u!114 &1514093664
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1514093661}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 555d4b05ffa3a6a4f995ceee59d41f22, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  associatedBoss: {fileID: 0}
+  target: {fileID: 1514093663}
 --- !u!1 &1540854015 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 491577334395305249, guid: ba7611aff9776f640ab14c5cdb24c2ff, type: 3}
@@ -4731,148 +4237,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Asset: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_ActionId: 3c7022bf-7922-4f7c-a998-c437916075ad
---- !u!1 &1596021474
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1596021477}
-  - component: {fileID: 1596021476}
-  - component: {fileID: 1596021475}
-  m_Layer: 0
-  m_Name: Cleave Testing
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!114 &1596021475
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1596021474}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7e803cfa06294a2789f4a1da94a4b551, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  orbPrefab: {fileID: 6281664029389054506, guid: 2ed8ce8a6f299a1458ecdbced9398ba9, type: 3}
-  orbCount: 10
-  orbSpeed: 1
-  radius: 1
---- !u!114 &1596021476
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1596021474}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0a8593165e40477ab6448eef0c0c7169, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  statusEffects: []
-  data: {fileID: 856490709}
-  health: 1000
-  maxHealth: 1000
-  accentColour: {r: 0, g: 0, b: 0, a: 0}
-  deathCurve:
-    serializedVersion: 2
-    m_Curve: []
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  phases:
-  - name: 
-    startIndex: 0
-    behaviours:
-    - description: 
-      type: 1
-      position: {x: 0, y: 0}
-      attackKey: CleaveUp
-      dialogue: 
-      duration: 1
-      delay: 2
-    - description: 
-      type: 1
-      position: {x: 0, y: 0}
-      attackKey: CleaveTopLeft
-      dialogue: 
-      duration: 1
-      delay: 2
-    - description: 
-      type: 1
-      position: {x: 0, y: 0}
-      attackKey: CleaveLeft
-      dialogue: 
-      duration: 1
-      delay: 2
-    - description: 
-      type: 1
-      position: {x: 0, y: 0}
-      attackKey: CleaveBottomLeft
-      dialogue: 
-      duration: 1
-      delay: 2
-    - description: 
-      type: 1
-      position: {x: 0, y: 0}
-      attackKey: CleaveDown
-      dialogue: 
-      duration: 1
-      delay: 2
-    - description: 
-      type: 1
-      position: {x: 0, y: 0}
-      attackKey: CleaveBottomRight
-      dialogue: 
-      duration: 1
-      delay: 2
-    - description: 
-      type: 1
-      position: {x: 0, y: 0}
-      attackKey: CleaveRight
-      dialogue: 
-      duration: 1
-      delay: 2
-    - description: 
-      type: 1
-      position: {x: 0, y: 0}
-      attackKey: CleaveTopRight
-      dialogue: 
-      duration: 1
-      delay: 2
-    - description: 
-      type: 2
-      position: {x: 0, y: 0}
-      attackKey: 
-      dialogue: enrage paused
-      duration: 99
-      delay: 0
-  enrageDialogueDelay: 3
-  enrageDelay: 5
---- !u!4 &1596021477
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1596021474}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 500872700}
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1603452318
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4918,8 +4282,6 @@ Transform:
   m_Children:
   - {fileID: 481365843}
   - {fileID: 1387720389}
-  - {fileID: 1143870902}
-  - {fileID: 2156223}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1611865604
@@ -4989,12 +4351,6 @@ MonoBehaviour:
   health: 1000
   maxHealth: 1000
   accentColour: {r: 0, g: 0, b: 0, a: 0}
-  deathCurve:
-    serializedVersion: 2
-    m_Curve: []
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
   phases:
   - name: 
     startIndex: 0
@@ -5003,6 +4359,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 0}
       attackKey: Line
+      showWarning: 0
       dialogue: 
       duration: 3
       delay: 3
@@ -5010,6 +4367,7 @@ MonoBehaviour:
       type: 1
       position: {x: 15, y: 10}
       attackKey: HSphere
+      showWarning: 0
       dialogue: 
       duration: 0
       delay: 3
@@ -5017,6 +4375,7 @@ MonoBehaviour:
       type: 1
       position: {x: -15, y: -10}
       attackKey: HSphere
+      showWarning: 0
       dialogue: 
       duration: 0
       delay: 3
@@ -5024,6 +4383,7 @@ MonoBehaviour:
       type: 1
       position: {x: 15, y: -10}
       attackKey: VSphere
+      showWarning: 0
       dialogue: 
       duration: 0
       delay: 3
@@ -5031,6 +4391,7 @@ MonoBehaviour:
       type: 1
       position: {x: -15, y: 10}
       attackKey: VSphere
+      showWarning: 0
       dialogue: 
       duration: 0
       delay: 3
@@ -5038,11 +4399,12 @@ MonoBehaviour:
       type: 2
       position: {x: 0, y: 0}
       attackKey: 
+      showWarning: 0
       dialogue: wait
       duration: 99
       delay: 0
   enrageDialogueDelay: 3
-  enrageDelay: 5
+  enrageInterval: 5
 --- !u!114 &1646910405
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5088,93 +4450,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1717185088
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1717185089}
-  - component: {fileID: 1717185090}
-  m_Layer: 0
-  m_Name: Triangle
-  m_TagString: Accentable
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1717185089
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1717185088}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 888808641}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &1717185090
-SpriteRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1717185088}
-  m_Enabled: 1
-  m_CastShadows: 0
-  m_ReceiveShadows: 0
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 0
-  m_RayTraceProcedural: 0
-  m_RayTracingAccelStructBuildFlagsOverride: 0
-  m_RayTracingAccelStructBuildFlags: 1
-  m_SmallMeshCulling: 1
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 0
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 75f5f34dc1b5347e0b8351032682f224, type: 3}
-  m_Color: {r: 0.24313727, g: 0.4039216, b: 0.854902, a: 1}
-  m_FlipX: 0
-  m_FlipY: 0
-  m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
-  m_AdaptiveModeThreshold: 0.5
-  m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
-  m_SpriteSortPoint: 0
 --- !u!1 &1750356377
 GameObject:
   m_ObjectHideFlags: 0
@@ -5894,7 +5169,7 @@ GameObject:
   - component: {fileID: 1859361223}
   - component: {fileID: 1859361222}
   m_Layer: 0
-  m_Name: Cleave Testing (1)
+  m_Name: Cleave Testing
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5933,12 +5208,6 @@ MonoBehaviour:
   health: 1000
   maxHealth: 1000
   accentColour: {r: 0, g: 1, b: 0.8481014, a: 0}
-  deathCurve:
-    serializedVersion: 2
-    m_Curve: []
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
   phases:
   - name: 
     startIndex: 0
@@ -5947,6 +5216,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 0}
       attackKey: CleaveUp
+      showWarning: 0
       dialogue: 
       duration: 1
       delay: 2
@@ -5954,6 +5224,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 0}
       attackKey: CleaveTopLeft
+      showWarning: 0
       dialogue: 
       duration: 1
       delay: 2
@@ -5961,6 +5232,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 0}
       attackKey: CleaveLeft
+      showWarning: 0
       dialogue: 
       duration: 1
       delay: 2
@@ -5968,6 +5240,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 0}
       attackKey: CleaveBottomLeft
+      showWarning: 0
       dialogue: 
       duration: 1
       delay: 2
@@ -5975,6 +5248,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 0}
       attackKey: CleaveDown
+      showWarning: 0
       dialogue: 
       duration: 0
       delay: 2
@@ -5982,6 +5256,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 0}
       attackKey: CleaveBottomRight
+      showWarning: 0
       dialogue: 
       duration: 0
       delay: 2
@@ -5989,6 +5264,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 0}
       attackKey: CleaveRight
+      showWarning: 0
       dialogue: 
       duration: 0
       delay: 2
@@ -5996,6 +5272,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 0}
       attackKey: CleaveTopRight
+      showWarning: 0
       dialogue: 
       duration: 1
       delay: 2
@@ -6003,11 +5280,12 @@ MonoBehaviour:
       type: 2
       position: {x: 0, y: 0}
       attackKey: 
+      showWarning: 0
       dialogue: enrage paused
       duration: 99
       delay: 0
   enrageDialogueDelay: 3
-  enrageDelay: 5
+  enrageInterval: 5
 --- !u!4 &1859361224
 Transform:
   m_ObjectHideFlags: 0
@@ -6365,7 +5643,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1927155240
 Transform:
   m_ObjectHideFlags: 0
@@ -6399,12 +5677,6 @@ MonoBehaviour:
   health: 10000
   maxHealth: 10000
   accentColour: {r: 1, g: 0, b: 0, a: 0}
-  deathCurve:
-    serializedVersion: 2
-    m_Curve: []
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
   phases:
   - name: Phase 1
     startIndex: 0
@@ -6413,6 +5685,7 @@ MonoBehaviour:
       type: 0
       position: {x: 15, y: 0}
       attackKey: 
+      showWarning: 0
       dialogue: 
       duration: 1
       delay: 0
@@ -6420,6 +5693,7 @@ MonoBehaviour:
       type: 1
       position: {x: 15, y: 0}
       attackKey: Spiral
+      showWarning: 0
       dialogue: 
       duration: 1
       delay: 1
@@ -6427,6 +5701,7 @@ MonoBehaviour:
       type: 1
       position: {x: -12, y: 0}
       attackKey: Donut
+      showWarning: 1
       dialogue: 
       duration: 1
       delay: 3
@@ -6434,6 +5709,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 10}
       attackKey: Line
+      showWarning: 0
       dialogue: 
       duration: 0.1
       delay: 5
@@ -6441,6 +5717,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 7.5}
       attackKey: Line
+      showWarning: 0
       dialogue: 
       duration: 0.1
       delay: 5
@@ -6448,6 +5725,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 5}
       attackKey: Line
+      showWarning: 0
       dialogue: 
       duration: 0.1
       delay: 5
@@ -6455,6 +5733,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: -5}
       attackKey: Line
+      showWarning: 0
       dialogue: 
       duration: 0.1
       delay: 5
@@ -6462,6 +5741,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: -7.5}
       attackKey: Line
+      showWarning: 0
       dialogue: 
       duration: 0.1
       delay: 5
@@ -6469,6 +5749,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: -10}
       attackKey: Line
+      showWarning: 0
       dialogue: 
       duration: 0.1
       delay: 5
@@ -6476,6 +5757,7 @@ MonoBehaviour:
       type: 1
       position: {x: -6, y: 0}
       attackKey: Donut
+      showWarning: 1
       dialogue: 
       duration: 1
       delay: 3
@@ -6483,6 +5765,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 0}
       attackKey: Donut
+      showWarning: 1
       dialogue: 
       duration: 1
       delay: 3
@@ -6490,6 +5773,7 @@ MonoBehaviour:
       type: 1
       position: {x: 6, y: 0}
       attackKey: Donut
+      showWarning: 1
       dialogue: 
       duration: 1
       delay: 3
@@ -6497,6 +5781,7 @@ MonoBehaviour:
       type: 1
       position: {x: 12, y: 0}
       attackKey: Donut
+      showWarning: 1
       dialogue: 
       duration: 1
       delay: 3
@@ -6504,6 +5789,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 10}
       attackKey: Line
+      showWarning: 0
       dialogue: 
       duration: 0.1
       delay: 3
@@ -6511,6 +5797,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 7.5}
       attackKey: Line
+      showWarning: 0
       dialogue: 
       duration: 0.1
       delay: 3
@@ -6518,6 +5805,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 0}
       attackKey: Line
+      showWarning: 1
       dialogue: 
       duration: 0.1
       delay: 3.5
@@ -6525,6 +5813,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: -7.5}
       attackKey: Line
+      showWarning: 0
       dialogue: 
       duration: 0.1
       delay: 3
@@ -6532,6 +5821,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: -10}
       attackKey: Line
+      showWarning: 0
       dialogue: 
       duration: 0.1
       delay: 3
@@ -6539,6 +5829,7 @@ MonoBehaviour:
       type: 2
       position: {x: 0, y: 0}
       attackKey: 
+      showWarning: 0
       dialogue: weak.
       duration: 5
       delay: 1
@@ -6549,6 +5840,7 @@ MonoBehaviour:
       type: 2
       position: {x: 0, y: 0}
       attackKey: 
+      showWarning: 0
       dialogue: fall.
       duration: 3
       delay: 0
@@ -6556,6 +5848,7 @@ MonoBehaviour:
       type: 0
       position: {x: 0, y: 0}
       attackKey: 
+      showWarning: 0
       dialogue: 
       duration: 1
       delay: 1
@@ -6563,6 +5856,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 0}
       attackKey: Spiral4
+      showWarning: 0
       dialogue: 
       duration: 3
       delay: 1
@@ -6570,6 +5864,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 0}
       attackKey: Donut
+      showWarning: 0
       dialogue: 
       duration: 1.5
       delay: 4.5
@@ -6577,6 +5872,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 20}
       attackKey: Line45
+      showWarning: 0
       dialogue: 
       duration: 0.05
       delay: 3
@@ -6584,6 +5880,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 10}
       attackKey: Line45
+      showWarning: 0
       dialogue: 
       duration: 0.05
       delay: 3
@@ -6591,6 +5888,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 0}
       attackKey: Line45
+      showWarning: 0
       dialogue: 
       duration: 0.05
       delay: 3
@@ -6598,6 +5896,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: -10}
       attackKey: Line45
+      showWarning: 0
       dialogue: 
       duration: 0.05
       delay: 3
@@ -6605,6 +5904,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: -20}
       attackKey: Line45
+      showWarning: 0
       dialogue: 
       duration: 0.05
       delay: 3
@@ -6612,6 +5912,7 @@ MonoBehaviour:
       type: 1
       position: {x: 20, y: 0}
       attackKey: Line315
+      showWarning: 0
       dialogue: 
       duration: 0.05
       delay: 3
@@ -6619,6 +5920,7 @@ MonoBehaviour:
       type: 1
       position: {x: 10, y: 0}
       attackKey: Line315
+      showWarning: 0
       dialogue: 
       duration: 0.05
       delay: 3
@@ -6626,6 +5928,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 0}
       attackKey: Line315
+      showWarning: 0
       dialogue: 
       duration: 0.05
       delay: 3
@@ -6633,6 +5936,7 @@ MonoBehaviour:
       type: 1
       position: {x: -10, y: 0}
       attackKey: Line315
+      showWarning: 0
       dialogue: 
       duration: 0.05
       delay: 3
@@ -6640,6 +5944,7 @@ MonoBehaviour:
       type: 1
       position: {x: -20, y: 0}
       attackKey: Line315
+      showWarning: 0
       dialogue: 
       duration: 5
       delay: 3
@@ -6647,6 +5952,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 0}
       attackKey: CleaveUp
+      showWarning: 0
       dialogue: 
       duration: 1
       delay: 3
@@ -6654,6 +5960,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 0}
       attackKey: CleaveLeft
+      showWarning: 0
       dialogue: 
       duration: 1
       delay: 3
@@ -6661,6 +5968,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 0}
       attackKey: CleaveDown
+      showWarning: 0
       dialogue: 
       duration: 1
       delay: 3
@@ -6668,6 +5976,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 0}
       attackKey: CleaveRight
+      showWarning: 0
       dialogue: 
       duration: 1
       delay: 3
@@ -6675,6 +5984,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 10}
       attackKey: Line
+      showWarning: 0
       dialogue: 
       duration: 0.2
       delay: 2
@@ -6682,6 +5992,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 8}
       attackKey: Line
+      showWarning: 0
       dialogue: 
       duration: 0.2
       delay: 1.75
@@ -6689,6 +6000,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 6}
       attackKey: Line
+      showWarning: 0
       dialogue: 
       duration: 0.2
       delay: 1.75
@@ -6696,6 +6008,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 4}
       attackKey: Line
+      showWarning: 0
       dialogue: 
       duration: 0.2
       delay: 1.75
@@ -6703,6 +6016,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 2}
       attackKey: Line
+      showWarning: 0
       dialogue: 
       duration: 0.2
       delay: 1.75
@@ -6710,6 +6024,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 2}
       attackKey: Line
+      showWarning: 0
       dialogue: 
       duration: 1
       delay: 1.75
@@ -6717,6 +6032,7 @@ MonoBehaviour:
       type: 1
       position: {x: 0, y: 0}
       attackKey: CleaveDown
+      showWarning: 0
       dialogue: 
       duration: 5
       delay: 1.5
@@ -6724,11 +6040,12 @@ MonoBehaviour:
       type: 2
       position: {x: 0, y: 0}
       attackKey: 
+      showWarning: 0
       dialogue: wiating
       duration: 33
       delay: 2.5
   enrageDialogueDelay: 3
-  enrageDelay: 5
+  enrageInterval: 5
 --- !u!114 &1927155242
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6938,6 +6255,347 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &2073751695
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2073751696}
+  - component: {fileID: 2073751698}
+  - component: {fileID: 2073751697}
+  m_Layer: 0
+  m_Name: Debug (cycles through all attacks)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &2073751696
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2073751695}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1514093662}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2073751697
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2073751695}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e803cfa06294a2789f4a1da94a4b551, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  orbPrefab: {fileID: 6281664029389054506, guid: 2ed8ce8a6f299a1458ecdbced9398ba9, type: 3}
+  orbCount: 10
+  orbSpeed: 5
+  radius: 1
+--- !u!114 &2073751698
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2073751695}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a8593165e40477ab6448eef0c0c7169, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  statusEffects: []
+  data: {fileID: 480543352}
+  health: 10000
+  maxHealth: 10000
+  accentColour: {r: 1, g: 1, b: 1, a: 0}
+  phases:
+  - name: Movement
+    startIndex: 0
+    behaviours:
+    - description: UP
+      type: 0
+      position: {x: 0, y: 5}
+      attackKey: 
+      showWarning: 0
+      dialogue: 
+      duration: 0.5
+      delay: 0
+    - description: ZERO
+      type: 0
+      position: {x: 0, y: 0}
+      attackKey: 
+      showWarning: 0
+      dialogue: 
+      duration: 0.5
+      delay: 0
+    - description: DOWN
+      type: 0
+      position: {x: 0, y: -5}
+      attackKey: 
+      showWarning: 0
+      dialogue: 
+      duration: 0.5
+      delay: 0
+    - description: ZERO
+      type: 0
+      position: {x: 0, y: 0}
+      attackKey: 
+      showWarning: 0
+      dialogue: 
+      duration: 0.5
+      delay: 0
+    - description: LEFT
+      type: 0
+      position: {x: -5, y: 0}
+      attackKey: 
+      showWarning: 0
+      dialogue: 
+      duration: 0.5
+      delay: 0
+    - description: ZERO
+      type: 0
+      position: {x: 0, y: 0}
+      attackKey: 
+      showWarning: 0
+      dialogue: 
+      duration: 0.5
+      delay: 0
+    - description: RIGHT
+      type: 0
+      position: {x: 5, y: 0}
+      attackKey: 
+      showWarning: 0
+      dialogue: 
+      duration: 0.5
+      delay: 0
+    - description: ZERO
+      type: 0
+      position: {x: 0, y: 0}
+      attackKey: 
+      showWarning: 0
+      dialogue: 
+      duration: 0.5
+      delay: 0
+  - name: Attacks
+    startIndex: 0
+    behaviours:
+    - description: 
+      type: 1
+      position: {x: 0, y: 0}
+      attackKey: Donut
+      showWarning: 1
+      dialogue: 
+      duration: 1
+      delay: 3
+    - description: 
+      type: 1
+      position: {x: 0, y: 5}
+      attackKey: Line
+      showWarning: 1
+      dialogue: 
+      duration: 1
+      delay: 3
+    - description: 
+      type: 1
+      position: {x: 0, y: 0}
+      attackKey: LineBig
+      showWarning: 1
+      dialogue: 
+      duration: 1
+      delay: 3
+    - description: 
+      type: 1
+      position: {x: -10, y: 0}
+      attackKey: Pillar
+      showWarning: 1
+      dialogue: 
+      duration: 1
+      delay: 3
+    - description: 
+      type: 1
+      position: {x: 0, y: 0}
+      attackKey: Line45
+      showWarning: 1
+      dialogue: 
+      duration: 1
+      delay: 3
+    - description: 
+      type: 1
+      position: {x: 0, y: 0}
+      attackKey: Line315
+      showWarning: 1
+      dialogue: 
+      duration: 1
+      delay: 3
+    - description: 
+      type: 1
+      position: {x: -10, y: 10}
+      attackKey: HSphere
+      showWarning: 0
+      dialogue: 
+      duration: 1
+      delay: 1
+    - description: 
+      type: 1
+      position: {x: 10, y: 10}
+      attackKey: VSphere
+      showWarning: 0
+      dialogue: 
+      duration: 3
+      delay: 1
+    - description: 
+      type: 1
+      position: {x: 0, y: 0}
+      attackKey: CleaveUp
+      showWarning: 1
+      dialogue: 
+      duration: 1
+      delay: 1
+    - description: 
+      type: 1
+      position: {x: 0, y: 0}
+      attackKey: CleaveRight
+      showWarning: 1
+      dialogue: 
+      duration: 1
+      delay: 1
+    - description: 
+      type: 1
+      position: {x: 0, y: 0}
+      attackKey: CleaveDown
+      showWarning: 1
+      dialogue: 
+      duration: 1
+      delay: 1
+    - description: 
+      type: 1
+      position: {x: 0, y: 0}
+      attackKey: CleaveLeft
+      showWarning: 1
+      dialogue: 
+      duration: 1
+      delay: 1
+    - description: 
+      type: 3
+      position: {x: 0, y: 0}
+      attackKey: 
+      showWarning: 0
+      dialogue: 
+      duration: 3
+      delay: 0
+    - description: 
+      type: 1
+      position: {x: 0, y: 0}
+      attackKey: CleaveTopRight
+      showWarning: 0
+      dialogue: 
+      duration: 1
+      delay: 1
+    - description: 
+      type: 1
+      position: {x: 0, y: 0}
+      attackKey: CleaveBottomRight
+      showWarning: 0
+      dialogue: 
+      duration: 1
+      delay: 1
+    - description: 
+      type: 1
+      position: {x: 0, y: 0}
+      attackKey: CleaveBottomLeft
+      showWarning: 0
+      dialogue: 
+      duration: 1
+      delay: 1
+    - description: 
+      type: 1
+      position: {x: 0, y: 0}
+      attackKey: CleaveTopLeft
+      showWarning: 0
+      dialogue: 
+      duration: 1
+      delay: 1
+  enrageDialogueDelay: 3
+  enrageInterval: 5
+--- !u!1001 &8272718113680319609
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4191709746486330050, guid: 75b31075c9095b242a420789342ed1bd, type: 3}
+      propertyPath: m_Name
+      value: Rem, the Sooteared Wolf
+      objectReference: {fileID: 0}
+    - target: {fileID: 4191709746486330050, guid: 75b31075c9095b242a420789342ed1bd, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5683136269972689629, guid: 75b31075c9095b242a420789342ed1bd, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5683136269972689629, guid: 75b31075c9095b242a420789342ed1bd, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5683136269972689629, guid: 75b31075c9095b242a420789342ed1bd, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5683136269972689629, guid: 75b31075c9095b242a420789342ed1bd, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5683136269972689629, guid: 75b31075c9095b242a420789342ed1bd, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5683136269972689629, guid: 75b31075c9095b242a420789342ed1bd, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5683136269972689629, guid: 75b31075c9095b242a420789342ed1bd, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5683136269972689629, guid: 75b31075c9095b242a420789342ed1bd, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5683136269972689629, guid: 75b31075c9095b242a420789342ed1bd, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5683136269972689629, guid: 75b31075c9095b242a420789342ed1bd, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5808623352821904042, guid: 75b31075c9095b242a420789342ed1bd, type: 3}
+      propertyPath: data
+      value: 
+      objectReference: {fileID: 856490709}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 75b31075c9095b242a420789342ed1bd, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -6949,15 +6607,15 @@ SceneRoots:
   - {fileID: 211791242}
   - {fileID: 1699095679}
   - {fileID: 597444218}
+  - {fileID: 2073751696}
   - {fileID: 1927155240}
   - {fileID: 1611865605}
-  - {fileID: 1596021477}
   - {fileID: 1859361224}
   - {fileID: 249713667}
   - {fileID: 283100088}
   - {fileID: 1487842264}
   - {fileID: 422729022}
-  - {fileID: 888808641}
+  - {fileID: 8272718113680319609}
   - {fileID: 414170388}
   - {fileID: 833019452}
   - {fileID: 114420523}

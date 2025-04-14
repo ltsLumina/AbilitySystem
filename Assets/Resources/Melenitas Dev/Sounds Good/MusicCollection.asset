@@ -28,3 +28,13 @@ MonoBehaviour:
     - {fileID: 8300000, guid: 64c6cab1e9086ef438b6079d9e390726, type: 3}
     compressionPreset: 0
     forceToMono: 0
+  - tag: VictoryMusic
+    clips:
+    - {fileID: 8300000, guid: cd4587a921bc73e44bbfa2ec3d0b7403, type: 3}
+    compressionPreset: 0
+    forceToMono: 0
+  - tag: LootMusic
+    clips:
+    - {fileID: 8300000, guid: 80f50717a6e192b43b7ed1d98aa38fca, type: 3}
+    compressionPreset: 0
+    forceToMono: 0

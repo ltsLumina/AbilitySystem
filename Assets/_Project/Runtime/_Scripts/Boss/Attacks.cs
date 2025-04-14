@@ -1,6 +1,7 @@
 ﻿#region
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
@@ -33,7 +34,7 @@ public class Attacks : MonoBehaviour
 		}
 	}
 
-	public void Spiral(Vector2 origin, float delay)
+	public void Spiral(Vector2 origin, bool showWarning, float delay)
 	{
 		int totalBursts = 8;      // Number of bursts (quarter rotations)
 		int orbCount = 10;        // Number of orbs per burst
@@ -65,7 +66,7 @@ public class Attacks : MonoBehaviour
 		}
 	}
 
-	public void Spiral4(Vector2 origin, float delay)
+	public void Spiral4(Vector2 origin, bool showWarning, float delay)
 	{
 		int totalBursts = 4;      // Number of bursts (quarter rotations)
 		int orbCount = 4;         // Number of orbs per burst
@@ -75,6 +76,7 @@ public class Attacks : MonoBehaviour
 
 		StartCoroutine(SpiralRoutine());
 
+		return;
 		IEnumerator SpiralRoutine()
 		{
 			for (int burst = 0; burst < totalBursts; burst++)
@@ -95,7 +97,7 @@ public class Attacks : MonoBehaviour
 		}
 	}
 
-	public void Spiral12(Vector2 origin, float delay)
+	public void Spiral12(Vector2 origin, bool showWarning, float delay)
 	{
 		int totalBursts = 12;     // Number of bursts (quarter rotations)
 		int orbCount = 6;         // Number of orbs per burst
@@ -105,6 +107,7 @@ public class Attacks : MonoBehaviour
 
 		StartCoroutine(SpiralRoutine());
 
+		return;
 		IEnumerator SpiralRoutine()
 		{
 			for (int burst = 0; burst < totalBursts; burst++)
@@ -125,7 +128,7 @@ public class Attacks : MonoBehaviour
 		}
 	}
 
-	public void Spiral24(Vector2 origin, float delay)
+	public void Spiral24(Vector2 origin, bool showWarning, float delay)
 	{
 		int totalBursts = 24;     // Number of bursts (quarter rotations)
 		int orbCount = 12;        // Number of orbs per burst
@@ -135,6 +138,7 @@ public class Attacks : MonoBehaviour
 
 		StartCoroutine(SpiralRoutine());
 
+		return;
 		IEnumerator SpiralRoutine()
 		{
 			for (int burst = 0; burst < totalBursts; burst++)
@@ -155,14 +159,14 @@ public class Attacks : MonoBehaviour
 		}
 	}
 
-	public void Donut(Vector2 origin, float delay)
+	public void Donut(Vector2 origin, bool showWarning, float delay)
 	{
 		int orbCount = 100;
 		float orbSpeed = 10f;
 		float radius = 5f;
 
 		StartCoroutine(Yield());
-		Countdown("get in the circle!", origin, delay);
+		Countdown("get in the circle!", origin, showWarning, delay);
 
 		var markerPrefab = Resources.Load<GameObject>("PREFABS/Boss VFX/Donut AoE");
 		GameObject marker = Instantiate(markerPrefab, origin, Quaternion.identity);
@@ -190,8 +194,10 @@ public class Attacks : MonoBehaviour
 	/// <summary>
 	///     Spawns a 'dynamic' countdown that follows the player for a given delay while displaying the countdown message.
 	/// </summary>
-	void Countdown(string message, float delay)
+	void Countdown(string message, bool showWarning, float delay)
 	{
+		if (!showWarning) return;
+		
 		ReadOnlyArray<Player> players = PlayerManager.Instance.Players;
 		var countdownPrefab = Resources.Load<GameObject>("PREFABS/Boss VFX/AoE Countdown");
 		Transform parent = GameObject.FindWithTag("Worldspace Canvas").transform;
@@ -233,15 +239,17 @@ public class Attacks : MonoBehaviour
 	}
 
 	/// <summary>
-	///     Spawns the countdown prefab at a given position and displays the countdown message.
+	///     Spawns a 'static' countdown prefab at a given position and displays the countdown message.
 	///     <para>Used for AoEs that have a static position, or for AoEs that don't follow the player.</para>
 	///     <example> Donut, Line, Cleave, etc.</example>
 	/// </summary>
-	void Countdown(string message, Vector2 origin, float delay) // note for self: this will be for countdowns that use a static position
+	void Countdown(string message, Vector2 origin, bool showWarning, float delay) // note for self: this will be for countdowns that use a static position
 	{
+		if (!showWarning) return;
+		
 		var countdownPrefab = Resources.Load<GameObject>("PREFABS/Boss VFX/AoE Countdown");
 		Transform parent = GameObject.FindWithTag("Worldspace Canvas").transform;
-		Vector2 offset = Vector2.up * 3f;
+		Vector2 offset = Vector2.up * 2f;
 
 		GameObject countdown = Instantiate(countdownPrefab, origin + offset, Quaternion.identity, parent);
 		countdown.name = $"Countdown: \"{message}\" @ {origin} | (#{countdowns.Count})";
@@ -266,7 +274,7 @@ public class Attacks : MonoBehaviour
 		sequence.OnComplete(() => Destroy(countdown));
 	}
 
-	public void Line(Vector2 origin, float delay)
+	public void Line(Vector2 origin, bool showWarning, float delay)
 	{
 		var linePrefab = Resources.Load<GameObject>("PREFABS/Boss VFX/Line AoE");
 		GameObject line = Instantiate(linePrefab, origin, Quaternion.identity);
@@ -276,10 +284,9 @@ public class Attacks : MonoBehaviour
 		StartCoroutine(Anim());
 		StartCoroutine(Yield());
 
-		//Countdown("get away from the line!", origin, delay);
+		Countdown("get away from the line!", origin, showWarning, delay);
 
 		return;
-
 		IEnumerator Anim()
 		{
 			var spriteRenderer = line.GetComponentInChildren<SpriteRenderer>();
@@ -318,7 +325,7 @@ public class Attacks : MonoBehaviour
 		}
 	}
 
-	public void LineBig(Vector2 origin, float delay)
+	public void LineBig(Vector2 origin, bool showWarning, float delay)
 	{
 		var linePrefab = Resources.Load<GameObject>("PREFABS/Boss VFX/Line AoE");
 		GameObject line = Instantiate(linePrefab, origin, Quaternion.identity);
@@ -327,10 +334,9 @@ public class Attacks : MonoBehaviour
 		StartCoroutine(Anim());
 		StartCoroutine(Yield());
 
-		//Countdown("get away from the line!", origin, delay);
+		Countdown("get away from the line!", origin, showWarning, delay);
 
 		return;
-
 		IEnumerator Anim()
 		{
 			var spriteRenderer = line.GetComponentInChildren<SpriteRenderer>();
@@ -369,7 +375,7 @@ public class Attacks : MonoBehaviour
 		}
 	}
 
-	public void Pillar(Vector2 origin, float delay)
+	public void Pillar(Vector2 origin, bool showWarning, float delay)
 	{
 		var linePrefab = Resources.Load<GameObject>("PREFABS/Boss VFX/Line AoE");
 		GameObject line = Instantiate(linePrefab, origin, Quaternion.identity);
@@ -379,10 +385,9 @@ public class Attacks : MonoBehaviour
 		StartCoroutine(Anim());
 		StartCoroutine(Yield());
 
-		//Countdown("get away from the line!", origin, delay);
+		Countdown("get away from the line!", origin, showWarning, delay);
 
 		return;
-
 		IEnumerator Anim()
 		{
 			var spriteRenderer = line.GetComponentInChildren<SpriteRenderer>();
@@ -421,7 +426,7 @@ public class Attacks : MonoBehaviour
 		}
 	}
 
-	public void Line45(Vector2 origin, float delay)
+	public void Line45(Vector2 origin, bool showWarning, float delay)
 	{
 		var linePrefab = Resources.Load<GameObject>("PREFABS/Boss VFX/Line AoE");
 		GameObject line = Instantiate(linePrefab, origin, Quaternion.identity);
@@ -431,7 +436,7 @@ public class Attacks : MonoBehaviour
 		StartCoroutine(Anim());
 		StartCoroutine(Yield());
 
-		//Countdown("get away from the line!", origin, delay);
+		Countdown("get away from the line!", origin, showWarning, delay);
 
 		return;
 
@@ -470,7 +475,7 @@ public class Attacks : MonoBehaviour
 		}
 	}
 
-	public void Line315(Vector2 origin, float delay)
+	public void Line315(Vector2 origin, bool showWarning, float delay)
 	{
 		var linePrefab = Resources.Load<GameObject>("PREFABS/Boss VFX/Line AoE");
 		GameObject line = Instantiate(linePrefab, origin, Quaternion.identity);
@@ -480,7 +485,7 @@ public class Attacks : MonoBehaviour
 		StartCoroutine(Anim());
 		StartCoroutine(Yield());
 
-		//Countdown("get away from the line!", origin, delay);
+		Countdown("get away from the line!", origin, showWarning, delay);
 
 		return;
 
@@ -519,17 +524,24 @@ public class Attacks : MonoBehaviour
 		}
 	}
 
-	#region Cleave
-	public void CleaveUp(Vector2 origin, float delay) => PerformCleave(origin, delay, 0f);
-	public void CleaveDown(Vector2 origin, float delay) => PerformCleave(origin, delay, 180f);
-	public void CleaveLeft(Vector2 origin, float delay) => PerformCleave(origin, delay, 90f);
-	public void CleaveRight(Vector2 origin, float delay) => PerformCleave(origin, delay, 270f);
-	public void CleaveTopLeft(Vector2 origin, float delay) => PerformCleave(origin, delay, 45f);
-	public void CleaveBottomLeft(Vector2 origin, float delay) => PerformCleave(origin, delay, 135f);
-	public void CleaveBottomRight(Vector2 origin, float delay) => PerformCleave(origin, delay, 225f);
-	public void CleaveTopRight(Vector2 origin, float delay) => PerformCleave(origin, delay, 315f);
+	public void CleaveUp(Vector2 origin, bool showWarning, float delay) => PerformCleave(origin, showWarning, delay, 0f);
 
-	void PerformCleave(Vector2 origin, float delay, float angle)
+	public void CleaveDown(Vector2 origin, bool showWarning, float delay) => PerformCleave(origin, showWarning, delay, 180f);
+
+	public void CleaveLeft(Vector2 origin, bool showWarning, float delay) => PerformCleave(origin, showWarning, delay, 90f);
+
+	public void CleaveRight(Vector2 origin, bool showWarning, float delay) => PerformCleave(origin, showWarning, delay, 270f);
+
+	public void CleaveTopLeft(Vector2 origin, bool showWarning, float delay) => PerformCleave(origin, showWarning, delay, 45f);
+
+	public void CleaveTopRight(Vector2 origin, bool showWarning, float delay) => PerformCleave(origin, showWarning, delay, 315f);
+
+	public void CleaveBottomLeft(Vector2 origin, bool showWarning, float delay) => PerformCleave(origin, showWarning, delay, 135f);
+
+	public void CleaveBottomRight(Vector2 origin, bool showWarning, float delay) => PerformCleave(origin, showWarning, delay, 225f);
+
+	#region Cleave
+	void PerformCleave(Vector2 origin, bool showWarning, float delay, float angle)
 	{
 		var cleavePrefab = Resources.Load<GameObject>("PREFABS/Boss VFX/Cleave AoE");
 		GameObject cleave = Instantiate(cleavePrefab, origin, Quaternion.identity);
@@ -540,7 +552,7 @@ public class Attacks : MonoBehaviour
 		graphic.transform.localScale = new (Screen.width / 100f, graphic.transform.localScale.y, graphic.transform.localScale.z);
 
 		StartCoroutine(CleaveHitRoutine(cleave, delay));
-		Countdown("cleaving one side!", delay);
+		Countdown("cleaving one side!", showWarning, delay);
 	}
 
 	IEnumerator CleaveHitRoutine(GameObject cleave, float delay)
@@ -583,12 +595,47 @@ public class Attacks : MonoBehaviour
 	#endregion
 	#endregion
 
-	public void HSphere(Vector2 origin, float delay)
+	public void HSphere(Vector2 origin, bool showWarning, float delay)
 	{
 		var spherePrefab = Resources.Load<GameObject>("PREFABS/Boss VFX/Sphere AoE");
-		GameObject sphere = Instantiate(spherePrefab, origin, Quaternion.identity);
-		Destroy(sphere, delay);
+		GameObject marker = Instantiate(spherePrefab, origin, Quaternion.identity);
+		Destroy(marker, delay);
 
+		float dx = -origin.x - origin.x;                    // The x-direction of travel
+		float angleH = Mathf.Atan2(0f, dx) * Mathf.Rad2Deg; // 0 or 180
+		marker.transform.rotation = Quaternion.Euler(0f, 0f, angleH);
+		
+
+		StartCoroutine(Yield());
+
+		return;
+		IEnumerator Yield()
+		{
+			yield return new WaitForSeconds(delay);
+
+			float scale = 10f;
+			float duration = 10f;
+
+			GameObject orb = Instantiate(orbPrefab, origin, Quaternion.identity);
+			orb.transform.localScale *= scale;
+			var rb = orb.GetComponent<Rigidbody2D>();
+			rb.linearVelocity = Vector2.zero; // No initial speed
+
+			// Move the orb to the LEFT over time, then fade it out, and finally destroy it
+			orb.transform.DOMoveX(-origin.x, duration).SetEase(Ease.Linear).OnComplete(() => orb.GetComponent<SpriteRenderer>().DOFade(0, 1f).OnComplete(() => Destroy(orb)).SetLink(orb.gameObject));
+		}
+	}
+
+	public void VSphere(Vector2 origin, bool showWarning, float delay)
+	{
+		var spherePrefab = Resources.Load<GameObject>("PREFABS/Boss VFX/Sphere AoE");
+		GameObject marker = Instantiate(spherePrefab, origin, Quaternion.identity);
+		Destroy(marker, delay);
+
+		float dy = -origin.y - origin.y;                    // The y-direction of travel
+		float angleV = Mathf.Atan2(dy, 0f) * Mathf.Rad2Deg; // 90 or -90
+		marker.transform.rotation = Quaternion.Euler(0f, 0f, angleV);
+		
 		StartCoroutine(Yield());
 
 		return;
@@ -606,46 +653,19 @@ public class Attacks : MonoBehaviour
 			rb.linearVelocity = Vector2.zero; // No initial speed
 
 			// Move the orb to the LEFT over time, then fade it out, and finally destroy it
-			orb.transform.DOMoveX(-origin.x, duration).SetEase(Ease.Linear).OnComplete(() => orb.GetComponent<SpriteRenderer>().DOFade(0, 1f).OnComplete(() => Destroy(orb)));
+			orb.transform.DOMoveY(-origin.y, duration).SetEase(Ease.Linear).OnComplete(() => orb.GetComponent<SpriteRenderer>().DOFade(0, 1f).OnComplete(() => Destroy(orb)).SetLink(orb.gameObject));
 		}
 	}
 
-	public void VSphere(Vector2 origin, float delay)
-	{
-		var spherePrefab = Resources.Load<GameObject>("PREFABS/Boss VFX/Sphere AoE");
-		GameObject sphere = Instantiate(spherePrefab, origin, Quaternion.identity);
-		Destroy(sphere, delay);
+	public void SpawnerUp(Vector2 origin, bool showWarning, float delay) => Spawner(origin, showWarning, Vector2.up, delay);
 
-		StartCoroutine(Yield());
+	public void SpawnerDown(Vector2 origin, bool showWarning, float delay) => Spawner(origin, showWarning, Vector2.down, delay);
 
-		return;
+	public void SpawnerLeft(Vector2 origin, bool showWarning, float delay) => Spawner(origin, showWarning, Vector2.left, delay);
 
-		IEnumerator Yield()
-		{
-			yield return new WaitForSeconds(delay);
+	public void SpawnerRight(Vector2 origin, bool showWarning, float delay) => Spawner(origin, showWarning, Vector2.right, delay);
 
-			float scale = 10f;
-			float duration = 10f;
-
-			GameObject orb = Instantiate(orbPrefab, origin, Quaternion.identity);
-			orb.transform.localScale *= scale;
-			var rb = orb.GetComponent<Rigidbody2D>();
-			rb.linearVelocity = Vector2.zero; // No initial speed
-
-			// Move the orb to the LEFT over time, then fade it out, and finally destroy it
-			orb.transform.DOMoveY(-origin.y, duration).SetEase(Ease.Linear).OnComplete(() => orb.GetComponent<SpriteRenderer>().DOFade(0, 1f).OnComplete(() => Destroy(orb)));
-		}
-	}
-
-	public void SpawnerUp(Vector2 origin, float delay) => Spawner(origin, Vector2.up, delay);
-
-	public void SpawnerDown(Vector2 origin, float delay) => Spawner(origin, Vector2.down, delay);
-
-	public void SpawnerLeft(Vector2 origin, float delay) => Spawner(origin, Vector2.left, delay);
-
-	public void SpawnerRight(Vector2 origin, float delay) => Spawner(origin, Vector2.right, delay);
-
-	void Spawner(Vector2 origin, Vector2 direction, float delay)
+	void Spawner(Vector2 origin, bool showWarning, Vector2 direction, float delay)
 	{
 		StartCoroutine(SpawnRoutine());
 
@@ -667,21 +687,30 @@ public class Attacks : MonoBehaviour
 		}
 	}
 
-	public void Enrage()
+	public void Enrage(float enrageDelay) => StartCoroutine(EnrageCoroutine(enrageDelay));
+
+	IEnumerator EnrageCoroutine(float enrageDelay)
 	{
-		int orbCount = 100;
-		float orbSpeed = 10f;
-		float radius = 0.1f;
-
-		for (int i = 0; i < orbCount; i++)
+		while (PlayerManager.Instance.Players.Any(p => p.Health > 0))
 		{
-			float angle = i * Mathf.PI * 2 / orbCount;
-			Vector2 position = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * radius;
-			GameObject orb = Instantiate(orbPrefab, self.transform.position + (Vector3) position, Quaternion.identity);
-			var rb = orb.GetComponent<Rigidbody2D>();
-			rb.linearVelocity = position.normalized * orbSpeed;
+			Countdown("get ready for the enrage!", new (0, 0), true, enrageDelay);
 
-			Destroy(orb, 5f);
+			int orbCount = 100;
+			float orbSpeed = 10f;
+			float radius = 0.1f;
+
+			for (int i = 0; i < orbCount; i++)
+			{
+				float angle = i * Mathf.PI * 2 / orbCount;
+				Vector2 position = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * radius;
+				GameObject orb = Instantiate(orbPrefab, self.transform.position + (Vector3) position, Quaternion.identity);
+				var rb = orb.GetComponent<Rigidbody2D>();
+				rb.linearVelocity = position.normalized * orbSpeed;
+			}
+
+			yield return new WaitForSeconds(enrageDelay);
 		}
+
+		Debug.LogWarning("Player(s) has died. Ending enrage.");
 	}
 }

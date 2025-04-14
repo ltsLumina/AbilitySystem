@@ -105,29 +105,20 @@ public sealed class Ability : ScriptableObject
 
 		return;
 
-		// [Obsolete("This method is obsolete. Use FindBoss() instead.", true)]
-		// [return: NotNull]
-		// static Entity FindClosestTarget()
-		// {
-		// 	// Entity[] entities = FindObjectsByType<Entity>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
-		// 	//
-		// 	// // Find the closest entity to the player. If anything is null, throw an exception.
-		// 	// return (localPlayer == null ? null : entities.Where(entity => entity != localPlayer).OrderBy(entity => Vector2.Distance(localPlayer.transform.position, entity.transform.position)).FirstOrDefault()) ?? throw new InvalidOperationException();
-		// }
-
-		static Boss FindBoss()
+		Boss FindBoss()
 		{
-			var first = FindFirstObjectByType<Boss>();
+			Boss[] allBosses = FindObjectsByType<Boss>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+			Boss nearest = allBosses.Where(b => b != null && b.gameObject.activeInHierarchy).OrderBy(b => Vector2.Distance(localPlayer.transform.position, b.transform.position)).FirstOrDefault();
 
-			if (first == null)
+			if (nearest == null)
 			{
 				// TODO: change to find dummy class.
-				Boss dummy = FindObjectsByType<Boss>(FindObjectsInactive.Include, FindObjectsSortMode.InstanceID).FirstOrDefault(b => b.name == "Scarecrow");
-				dummy!.gameObject.SetActive(true);
-				return dummy;
+				var scarecrow = FindAnyObjectByType<Scarecrow>(FindObjectsInactive.Include).GetComponent<Boss>();
+				scarecrow!.gameObject.SetActive(true);
+				return scarecrow;
 			}
 
-			return first;
+			return nearest;
 		}
 
 		void Attack()

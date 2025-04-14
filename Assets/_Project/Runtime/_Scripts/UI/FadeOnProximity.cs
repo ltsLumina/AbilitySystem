@@ -25,7 +25,15 @@ public class FadeOnProximity : MonoBehaviour
 			if (distance < minDistance) minDistance = distance;
 		}
 
-		float fadeStartDistance = 75f;
+		if (GameManager.Instance.CurrentBoss != null)
+		{
+			Boss boss = GameManager.Instance.CurrentBoss;
+			Vector3 bossScreenPos = CameraMain.WorldToScreenPoint(boss.transform.position);
+			float bossDistance = Vector2.Distance(bossScreenPos, uiScreenPos);
+			if (bossDistance < minDistance) minDistance = bossDistance;
+		}
+
+		float fadeStartDistance = 125f;
 		float fadeEndDistance = 150f;
 		float t = Mathf.InverseLerp(fadeStartDistance, fadeEndDistance, minDistance);
 		canvas.GetComponent<CanvasGroup>().alpha = Mathf.Clamp01(t);

@@ -27,6 +27,18 @@ public partial class AudioManager : MonoBehaviour
 
 public partial class AudioManager // Internal Static Methods
 {
+	static AudioMixer audioMixer;
+	public static AudioMixer Mixer
+	{
+		get
+		{
+			if (audioMixer != null) return audioMixer;
+
+			audioMixer = Resources.Load<AudioMixer>("Melenitas Dev/Sounds Good/Outputs/Master");
+			return audioMixer;
+		}
+	}
+
 	internal static SourcePoolElement GetSource() => GetSoundSourceFromPool();
 
 	internal static AudioMixerGroup GetOutput(Output output)
@@ -192,17 +204,20 @@ public partial class AudioManager // Public Static Methods
 		foreach (SourcePoolElement sourcePoolElement in audioSourcePool) sourcePoolElement.Stop(fadeOutTime);
 	}
 
-    /// <summary>
-    ///     Stop music, dynamic music or playlist without having the sound reference.
-    /// </summary>
-    /// <param name="id">The Id you've set to the music</param>
-    /// <param name="fadeOutTime">Seconds that fade out will last</param>
-    public static void StopMusic(string id, float fadeOutTime = 0)
+	/// <summary>
+	///     Stop music, dynamic music or playlist without having the sound reference.
+	/// </summary>
+	/// <param name="id">The Id you've set to the music</param>
+	/// <param name="fadeOutTime">Seconds that fade out will last</param>
+	/// <param name="warnOnMissingID"> If true, a warning will be logged if the ID is not found</param>
+	public static void StopMusic(string id, float fadeOutTime = 0, bool warnOnMissingID = true)
 	{
 		SourcePoolElement sourcePoolElement = audioSourcePool.FirstOrDefault(sourceElement => sourceElement.Id == id);
 
 		if (sourcePoolElement == null)
 		{
+			if (!warnOnMissingID) return;
+			
 			Debug.LogWarning($"There is no music with the id '{id}'");
 			return;
 		}
