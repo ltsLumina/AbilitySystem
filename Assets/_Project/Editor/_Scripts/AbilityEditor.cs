@@ -20,7 +20,9 @@ public class AbilityEditor : Editor
 	SerializedProperty castTime;
 	SerializedProperty cooldown;
 	SerializedProperty damage;
-	SerializedProperty charge;
+	SerializedProperty abilityToPrime;
+	SerializedProperty abilityToRefund;
+	SerializedProperty refundChance;
 	SerializedProperty effects;
 
 	#region Properties
@@ -71,7 +73,16 @@ public class AbilityEditor : Editor
 #if false
 			return $"{PlayerManager.Instance.Players[0].PlayerInput.actions[InputManager.AbilityKeys[type.enumValueIndex]].GetBindingDisplayString()}";
 #else
-			return "X";
+			string key = type.enumValueIndex switch
+			{
+				0 => "1",
+				1 => "2",
+				2 => "3",
+				3 => "4",
+				_ => "Unknown"
+			};
+			
+			return key;
 #endif
 		}
 	}
@@ -90,7 +101,9 @@ public class AbilityEditor : Editor
 		castTime = serializedObject.FindProperty("castTime");
 		cooldown = serializedObject.FindProperty("cooldown");
 		damage = serializedObject.FindProperty("damage");
-		charge = serializedObject.FindProperty("charge");
+		abilityToPrime = serializedObject.FindProperty("abilityToPrime");
+		abilityToRefund = serializedObject.FindProperty("abilityToRefund");
+		refundChance = serializedObject.FindProperty("refundChance");
 		effects = serializedObject.FindProperty("effects");
 	}
 
@@ -136,7 +149,6 @@ public class AbilityEditor : Editor
 		GUILayout.Space(25);
 
 		using (new GUILayout.HorizontalScope("textField")) { showProperties = EditorGUILayout.BeginFoldoutHeaderGroup(showProperties, "Ability Properties", headerButtonStyle); }
-
 		{
 			if (showProperties)
 			{
@@ -146,7 +158,10 @@ public class AbilityEditor : Editor
 					GUILayout.Label($"Key: {abilityTypeKey}", EditorStyles.centeredGreyMiniLabel);
 
 					damage.floatValue = EditorGUILayout.FloatField("Damage", Mathf.Clamp(damage.floatValue, 0f, 1000));
-					EditorGUILayout.PropertyField(charge, new GUIContent("Overcharge", "If a value is set, this ability will overcharge the selected ability."));
+					EditorGUILayout.PropertyField(abilityToPrime, new GUIContent("Overcharge", "If a value is set, this ability will overcharge the selected ability."));
+					EditorGUILayout.PropertyField(abilityToRefund, new GUIContent("Refund", "If a value is set, this ability will refund the selected ability."));
+					if (abilityToRefund.objectReferenceValue != null) refundChance.floatValue = EditorGUILayout.Slider("Refund Chance", refundChance.floatValue, 0f, 1f);
+					else refundChance.floatValue = 0;
 					range.floatValue = EditorGUILayout.Slider("Range", range.floatValue, 0f, 25);
 					radius.floatValue = EditorGUILayout.Slider("Radius", radius.floatValue, 0f, 25);
 

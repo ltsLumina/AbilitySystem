@@ -135,8 +135,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   statusEffects: []
   data: {fileID: 0}
-  health: 6500
-  maxHealth: 6500
+  health: 13000
+  maxHealth: 13000
   accentColour: {r: 0.24313726, g: 0.40392157, b: 0.85490197, a: 1}
   phases:
   - name: Phase 1

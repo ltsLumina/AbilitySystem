@@ -11,6 +11,7 @@ public class Scarecrow : MonoBehaviour
 	enum DPSCheckType
 	{
 		Continuous,
+		TenSeconds,
 		HalfMinute,
 		Minute,
 	}
@@ -54,9 +55,11 @@ public class Scarecrow : MonoBehaviour
 	{
 		totalDamage += amount;
 		lastDamageTime = Time.time;
+		
+		BeginDPSCheck();
 	}
 
-	void BeginDPSCheck() => StartCoroutine(DPSCheckCoroutine());
+	void BeginDPSCheck() => dpsCheckCoroutine ??= StartCoroutine(DPSCheckCoroutine());
 
 	IEnumerator DPSCheckCoroutine()
 	{
@@ -75,6 +78,16 @@ public class Scarecrow : MonoBehaviour
 				}
 
 				Logger.Log($"DPS over {timeElapsed:F2} seconds: {dps:F2}");
+				break;
+			
+			case DPSCheckType.TenSeconds:
+				totalDamage = 0;
+				timeElapsed = 0;
+
+				yield return new WaitForSeconds(10);
+
+				dps = totalDamage / Mathf.Max(timeElapsed, 0.001f);
+				Logger.Log($"DPS over 10 seconds: {dps:F2}");
 				break;
 
 			case DPSCheckType.HalfMinute:

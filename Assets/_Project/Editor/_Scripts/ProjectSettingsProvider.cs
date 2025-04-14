@@ -28,6 +28,9 @@ public static class ProjectSettingsProvider
 			  SerializedObject settings = AbilitySettings.GetSerializedSettings();
 			  EditorGUILayout.PropertyField(settings.FindProperty("globalCooldown"));
 			  EditorGUILayout.PropertyField(settings.FindProperty("dotRate"));
+			  EditorGUILayout.PropertyField(settings.FindProperty("damageVariance"));
+			  EditorGUILayout.PropertyField(settings.FindProperty("critChance"));
+			  EditorGUILayout.PropertyField(settings.FindProperty("critMultiplier"));
 			  settings.ApplyModifiedPropertiesWithoutUndo();
 
 			  EditorGUILayout.EndFoldoutHeaderGroup();

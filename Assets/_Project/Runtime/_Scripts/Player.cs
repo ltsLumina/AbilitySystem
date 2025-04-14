@@ -88,14 +88,18 @@ public class Player : Entity
 		gameObject.tag = $"Player {playerInput.playerIndex + 1}";
 	}
 
+	void Awake()
+	{
+		Stats = GetComponent<Stats>();
+		Inventory = GetComponent<Inventory>();
+	}
+
 	protected override void OnStart()
 	{
 		inputs = GetComponentInChildren<InputManager>();
 		playerInput = inputs.GetComponent<PlayerInput>();
 		rb = GetComponent<Rigidbody2D>();
-		Stats = GetComponent<Stats>();
-		Inventory = GetComponent<Inventory>();
-
+		
 		//Rebind(mouseMove);
 
 		#region Init Player

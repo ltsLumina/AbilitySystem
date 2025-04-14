@@ -8,4 +8,20 @@ public class Dualcast : Buff
 		target = Target.Self;
 		timing = Timing.Postfix;
 	}
+
+	protected override void OnInvoke()
+	{
+		OnInvoked += OnOnInvoked;
+		OnDecayed += OnOnDecayed;
+	}
+
+	void OnOnInvoked(StatusEffect obj)
+	{
+		
+	}
+
+	void OnOnDecayed(StatusEffect obj)
+	{
+		
+	}
 }

@@ -5,8 +5,10 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using DG.Tweening;
+using Lumina.Essentials.Attributes;
 using UnityEngine;
 using static Job;
+using Random = UnityEngine.Random;
 #endregion
 
 [CreateAssetMenu(fileName = "New Ability", menuName = "Abilities/Ability")]
@@ -46,7 +48,9 @@ public sealed class Ability : ScriptableObject
 	[Header("Damage Properties")]
 	[SerializeField] float damage;
 	[Tooltip("If a value is set, this ability will overcharge the selected ability.")]
-	[SerializeField] Ability charge;
+	[SerializeField] Ability abilityToPrime;
+	[SerializeField] Ability abilityToRefund;
+	[SerializeField] float refundChance;
 
 	[Tooltip("The status effects that this ability applies.")]
 	[SerializeField] List<StatusEffect> effects;
@@ -68,7 +72,7 @@ public sealed class Ability : ScriptableObject
 	public float Cooldown => cooldown;
 	public float Damage => damage;
 
-	Player localPlayer;
+	Player caster;
 
 	/// <returns> Returns true if the ability is actively being cast, otherwise false. </returns>
 	public bool casting => castCoroutine != null;
@@ -80,7 +84,7 @@ public sealed class Ability : ScriptableObject
 	{
 		get
 		{
-			InputManager inputManager = localPlayer.Inputs;
+			InputManager inputManager = caster.Inputs;
 			return inputManager.MoveInput != Vector2.zero;
 		}
 	}
@@ -93,7 +97,7 @@ public sealed class Ability : ScriptableObject
 
 	public void Invoke(Player owner)
 	{
-		localPlayer = owner;
+		caster = owner;
 
 		Entity nearestTarget = FindBoss();
 		bool isGCD = cooldownType == CooldownType.GCD;
@@ -106,7 +110,7 @@ public sealed class Ability : ScriptableObject
 		Boss FindBoss()
 		{
 			Boss[] allBosses = FindObjectsByType<Boss>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
-			Boss nearest = allBosses.Where(b => b != null && b.gameObject.activeInHierarchy).OrderBy(b => Vector2.Distance(localPlayer.transform.position, b.transform.position)).FirstOrDefault();
+			Boss nearest = allBosses.Where(b => b != null && b.gameObject.activeInHierarchy).OrderBy(b => Vector2.Distance(caster.transform.position, b.transform.position)).FirstOrDefault();
 
 			if (nearest == null)
 			{
@@ -128,7 +132,7 @@ public sealed class Ability : ScriptableObject
 					break;
 
 				case true when isCast:
-					localPlayer.StartCoroutine(Cast(nearestTarget));
+					caster.StartCoroutine(Cast(nearestTarget));
 					break;
 
 				case true when isInstant:
@@ -169,24 +173,34 @@ public sealed class Ability : ScriptableObject
 
 	void GlobalCooldown(Entity target)
 	{
-		OnGlobalCooldown?.Invoke(localPlayer);
+		OnGlobalCooldown?.Invoke(caster);
 
 		ApplyEffects(target);
 	}
 
 	IEnumerator Cast(Entity target)
 	{
-		OnGlobalCooldown?.Invoke(localPlayer);
+		OnGlobalCooldown?.Invoke(caster);
 
-		castCoroutine = localPlayer.StartCoroutine(CastCoroutine());
-		var particle = Instantiate(Resources.Load<GameObject>("PREFABS/Casting Particles")).GetComponent<ParticleSystem>();
-		ParticleSystem.MainModule particleMain = particle.main;
-		particleMain.duration = castTime + 0.5f;
-		particle.transform.position = localPlayer.transform.position + new Vector3(0, -0.8f);
-		particle.Play();
-		yield return new WaitWhile(Casting);
+		if // is primed, skip casting
+			(primedStates.TryGetValue(caster, out bool isPrimed) && isPrimed) { /* skip */ }
+		else // is not primed, start casting
+		{
+			castCoroutine = caster.StartCoroutine(CastCoroutine());
+			var particle = Instantiate(Resources.Load<GameObject>("PREFABS/Casting Particles")).GetComponent<ParticleSystem>();
+			particle.transform.SetParent(caster.transform);
+			ParticleSystem.MainModule particleMain = particle.main;
+			particleMain.duration = (castTime * 2) - 0.35f;
+			particle.transform.position = caster.transform.position + new Vector3(0, -0.8f);
+			particle.Play();
+			yield return new WaitWhile(Casting);
 
-		if (cancelled) yield break;
+			if (cancelled)
+			{
+				particle.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+				yield break;
+			}
+		}
 
 		ApplyEffects(target);
 	}
@@ -204,11 +218,100 @@ public sealed class Ability : ScriptableObject
 
 		target.TryGetComponent(out IDamageable enemy);
 
-		if (prefix.Count > 0) prefix.Apply((target, localPlayer));
-		enemy.TakeDamage(damage * localPlayer.Stats.Damage);
-		if (postfix.Count > 0) postfix.Apply((target, localPlayer));
+		float variance = DamageVariance();
+		float critMult = CritChance();
+		float chargedMult = IsPrimed(caster);
+		SetPrimed(caster, false);
 		
+		float damageBeforePlayerStats = damage * variance * critMult;
+		float damageWithPlayerStats = damageBeforePlayerStats * caster.Stats.Damage;
+		float finalDamage = damageWithPlayerStats * chargedMult;
+		
+		if (prefix.Count > 0) prefix.Apply((target, caster));
+		enemy.TakeDamage(finalDamage);
+		if (postfix.Count > 0) postfix.Apply((target, caster));
+
+		if (abilityToPrime)
+		{
+			abilityToPrime.SetPrimed(caster, true);
+
+			if (abilityName.Contains("Enochian"))
+			{
+				var quickEffect = StatusEffect.CreateCustomStatusEffect("Enochian", "Flare Star is empowered and can be used without cast time!", 12, StatusEffect.Target.Self, StatusEffect.Timing.Prefix, caster);
+				quickEffect.OnDecayed += _ =>
+				{
+					abilityToPrime.SetPrimed(caster, false);
+				};
+				quickEffect.Invoke(caster);
+			}
+		}
+
+		if (abilityToRefund)
+			if (Proc(refundChance)) SetPendingRefund(caster, true);
 	}
+
+	#region Utility for Prime / Refund
+	static bool Proc(float chance)
+	{
+		if (chance <= 0) return false;
+
+		float randomValue = Random.Range(0f, 1f);
+		return randomValue <= chance;
+	}
+
+	readonly Dictionary<Player, bool> primedStates = new ();
+	readonly Dictionary<Player, bool> refundStates = new ();
+
+	void SetPrimed(Player player, bool value) => primedStates[player] = value;
+	
+	/// <returns> 1.25f if the ability is primed, otherwise 1. </returns>
+	public float IsPrimed(Player player)
+	{
+		const float primedMultiplier = 1.25f;
+
+		if (player == null) return 1f;
+		
+		if (primedStates.TryGetValue(player, out bool isPrimed) && isPrimed) 
+			return primedMultiplier;
+
+		return 1;
+	}
+
+	void SetPendingRefund(Player player, bool value) => refundStates[player] = value;
+
+	public bool TryRefund(Player player, out Ability ability)
+	{
+		if (refundStates.TryGetValue(player, out bool pending) && pending)
+		{
+			SetPendingRefund(player, false);
+			ability = abilityToRefund;
+			return true;
+		}
+
+		ability = null;
+		return false;
+	}
+
+	float DamageVariance()
+	{
+		RangedFloat defaultVariance = AbilitySettings.DamageVariance;
+		float variance = defaultVariance.GetRandomValue();
+		return variance;
+	}
+	
+	float CritChance()
+	{
+		float critChance = AbilitySettings.CritChance;
+		float critMultiplier = AbilitySettings.CritMultiplier;
+
+		if (Random.Range(0f, 1f) <= critChance)
+		{
+			return critMultiplier;
+		}
+
+		return 1;
+	}
+	#endregion
 
 	static void VisualEffect(Entity target, bool isDoT = false)
 	{

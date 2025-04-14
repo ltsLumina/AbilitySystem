@@ -1,6 +1,7 @@
 #region
 using System.Collections;
 using System.Globalization;
+using System.Linq;
 using DG.Tweening;
 using JetBrains.Annotations;
 using Lumina.Essentials.Attributes;
@@ -16,8 +17,8 @@ using ColorTween = DG.Tweening.Core.TweenerCore<UnityEngine.Color, UnityEngine.C
 public class AbilityButton : MonoBehaviour
 {
 	[Tab("Ability")]
-	[SerializeField] [ReadOnly] Ability ability;
-	[SerializeField] Player owner;
+	[SerializeField] Ability ability;
+	[SerializeField] [ReadOnly] Player owner;
 
 	[Tab("UI")]
 	[Header("References")]
@@ -44,6 +45,8 @@ public class AbilityButton : MonoBehaviour
 	[SerializeField] bool showDecimals;
 	[EndTab]
 
+	public Ability _Ability => ability;
+	
 	bool OnCooldown
 	{
 		get => cooldownTween.IsActive() && cooldownTween.IsPlaying();
@@ -70,13 +73,17 @@ public class AbilityButton : MonoBehaviour
 	{
 		if (performer != owner) return; // Only trigger the GCD for the player that owns this ability button.
 
-		if (ability.CDType is Ability.CooldownType.Instant || ability.Cooldown > AbilitySettings.GlobalCooldown) return; // Instant abilities are not affected by the global cooldown.
+		if (ability.CDType is Ability.CooldownType.Instant) return; // Instant abilities are not affected by the global cooldown.
 
+		if (OnCooldown) return;
+		
 		Cooldown();
 	}
 
 	IEnumerator Start()
 	{
+		if (!ability) Logger.LogError("Ability is null. \nPlease assign an ability to this button.");
+		
 		PlayerManager.Instance.OnPlayerJoined += player =>
 		{
 			// if the player and the ability button have the same tag, then we can set the owner
@@ -91,7 +98,7 @@ public class AbilityButton : MonoBehaviour
 		ability = job.Abilities[abilityIndex];
 
 		button.onClick.AddListener(Invoke);
-		button.image.sprite = ability.Icon;
+		button.transform.GetChild(0).GetChild(0).GetComponent<Image>().sprite = ability.Icon;
 
 		circle.fillAmount = 0;
 		duration.alpha = 0;
@@ -111,6 +118,18 @@ public class AbilityButton : MonoBehaviour
 
 	void Update()
 	{
+		if (owner)
+		{
+			if (AbilityIsPrimed(ability))
+			{
+				GetComponentInChildren<Outline>().effectColor = Color.yellow;
+			}
+			else if (!AbilityIsPrimed(ability))
+			{
+				GetComponentInChildren<Outline>().effectColor = Color.black;
+			}
+		}
+		
 		// in simple terms, this checks the following:
 		// - if the ability is on cooldown
 		// - if the ability has been cancelled
@@ -153,7 +172,7 @@ public class AbilityButton : MonoBehaviour
 			// Always show decimals in the hierarchy.
 			// Mostly a debugging feature.
 			availabilityLayer.gameObject.name = $"Unavailable ({CooldownTime(showDecimals: true)} seconds)";
-			duration.text = CooldownTime(showDecimals) < AbilitySettings.GlobalCooldown ? string.Empty : CooldownTime(showDecimals).ToString(CultureInfo.InvariantCulture);
+			duration.text = CooldownTime(showDecimals).ToString(CultureInfo.InvariantCulture);
 			yield return null;
 		}
 
@@ -199,7 +218,7 @@ public class AbilityButton : MonoBehaviour
 		void Terminate() => duration.DOFade(0, 0.35f);
 	}
 
-	void ResetCooldown()
+	public void ResetCooldown()
 	{
 		// Reset everything and apply the fade out animation to the duration text
 
@@ -215,9 +234,19 @@ public class AbilityButton : MonoBehaviour
 	{
 		if (OnCooldown) return;
 
-		ability?.Invoke(owner);
+		ability.Invoke(owner);
 		Cooldown();
+
+		if (ability.TryRefund(owner, out Ability refundee))
+		{
+			AbilityButton abilityButton = FindObjectsByType<AbilityButton>(FindObjectsSortMode.None)
+			    .FirstOrDefault(b => b.ability == refundee);
+			
+			abilityButton?.ResetCooldown();
+		}
 	}
+	
+	bool AbilityIsPrimed(Ability ability) => ability.IsPrimed(owner) > 1;
 
 	bool TweenIsInvalid(Tween tween) => tween != null && tween.IsActive() && tween.IsPlaying();
 

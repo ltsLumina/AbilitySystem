@@ -10,18 +10,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 607a7f27dc29c4541b753c3658683d25, type: 3}
-  m_Name: RPR [Unknown Key] (Ultimate)
+  m_Name: BLM [4] (Ultimate)
   m_EditorClassIdentifier: 
-  job: 0
-  abilityName: Ultimate
-  description: 
-  icon: {fileID: 21300000, guid: 425db54a9e7cd5440b4d5763eea55aa4, type: 3}
+  job: 2
+  abilityName: Flare Star
+  description: 'Deals massive damage, especially while [Primed] by Enochian.
+
+    Has
+    a long cast time, unless [Primed].'
+  icon: {fileID: 21300000, guid: c4f15360cfea6a24aa0ab7734903ecff, type: 3}
   type: 3
   range: 0
   radius: 0
   cooldownType: 1
   castTime: 0
-  cooldown: 10
-  damage: 500
-  effects:
-  - {fileID: 11400000, guid: 1aa2ef381d8732c4881ee1407acaa7a6, type: 2}
+  cooldown: 24
+  damage: 1000
+  abilityToPrime: {fileID: 0}
+  abilityToRefund: {fileID: 0}
+  refundChance: 0
+  effects: []

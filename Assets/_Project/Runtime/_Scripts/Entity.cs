@@ -51,6 +51,18 @@ public abstract class Entity : MonoBehaviour, IEntity, IDamageable
 		else Debug.LogWarning($"{name} does not have the status effect {effect.StatusName}.");
 	}
 
+	public void RemoveStatusEffect(string effectName) // Note: I have no clue if this actually works.
+	{
+		StatusEffect effect = statusEffects.FirstOrDefault(e => e.StatusName == effectName);
+
+		if (effect != null)
+		{
+			statusEffects.Remove(effect);
+			effect.OnDecayed -= e => statusEffects.Remove(effect);
+		}
+		else Debug.LogWarning($"{name} does not have the status effect {effectName}.");
+	}
+
 	/// <summary>
 	///     Cleanses all status effects from the entity.
 	///     <remarks> Does not call OnDecayed on the status effects.</remarks>

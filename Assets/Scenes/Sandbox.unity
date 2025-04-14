@@ -1323,8 +1323,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   statusEffects: []
   data: {fileID: 856490709}
-  health: 5000
-  maxHealth: 5000
+  health: 30000
+  maxHealth: 30000
   accentColour: {r: 1, g: 0.03137255, b: 0.15294118, a: 1}
   phases:
   - name: Phase 1
@@ -2561,7 +2561,7 @@ MonoBehaviour:
   associatedBoss: {fileID: 0}
   dpsText: {fileID: 1861841997}
   checkDPS: 0
-  checkType: 0
+  checkType: 1
 --- !u!1 &619394800
 GameObject:
   m_ObjectHideFlags: 0
@@ -3692,8 +3692,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   statusEffects: []
   data: {fileID: 856490709}
-  health: 5000
-  maxHealth: 5000
+  health: 30000
+  maxHealth: 30000
   accentColour: {r: 0.41568628, g: 0.8862745, b: 0.46666667, a: 1}
   phases:
   - name: Phase 1
@@ -4682,6 +4682,22 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2326067313256549195, guid: ba7611aff9776f640ab14c5cdb24c2ff, type: 3}
+      propertyPath: ability
+      value: 
+      objectReference: {fileID: 11400000, guid: 8b65c98639cf5954e9e87a30cf0591f7, type: 2}
+    - target: {fileID: 2726314433005506592, guid: ba7611aff9776f640ab14c5cdb24c2ff, type: 3}
+      propertyPath: m_TagString
+      value: Player 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3070691274137225734, guid: ba7611aff9776f640ab14c5cdb24c2ff, type: 3}
+      propertyPath: ability
+      value: 
+      objectReference: {fileID: 11400000, guid: 72392e313fec2064e8a43d8dff64ec86, type: 2}
+    - target: {fileID: 3390999534892667245, guid: ba7611aff9776f640ab14c5cdb24c2ff, type: 3}
+      propertyPath: m_TagString
+      value: Player 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3762740384839201664, guid: ba7611aff9776f640ab14c5cdb24c2ff, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -4786,6 +4802,14 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5887037511656795303, guid: ba7611aff9776f640ab14c5cdb24c2ff, type: 3}
+      propertyPath: m_TagString
+      value: Player 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6062122177697576908, guid: ba7611aff9776f640ab14c5cdb24c2ff, type: 3}
+      propertyPath: ability
+      value: 
+      objectReference: {fileID: 11400000, guid: 7c162e3e99b5d314999fa337774519f8, type: 2}
     - target: {fileID: 7465366762611626603, guid: ba7611aff9776f640ab14c5cdb24c2ff, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -4813,6 +4837,14 @@ PrefabInstance:
     - target: {fileID: 7620202547266529083, guid: ba7611aff9776f640ab14c5cdb24c2ff, type: 3}
       propertyPath: m_Enabled
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7730113195009437137, guid: ba7611aff9776f640ab14c5cdb24c2ff, type: 3}
+      propertyPath: ability
+      value: 
+      objectReference: {fileID: 11400000, guid: c42476a04219e9941808d743144426de, type: 2}
+    - target: {fileID: 7986264857626638010, guid: ba7611aff9776f640ab14c5cdb24c2ff, type: 3}
+      propertyPath: m_TagString
+      value: Player 1
       objectReference: {fileID: 0}
     - target: {fileID: 8698172543803091220, guid: ba7611aff9776f640ab14c5cdb24c2ff, type: 3}
       propertyPath: m_Pivot.x

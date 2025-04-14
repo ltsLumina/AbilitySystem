@@ -14,3 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   globalCooldown: 1.5
   dotRate: 3
+  damageVariance:
+    min: 0.95
+    max: 1.1
+  critChance: 0.05
+  critMultiplier: 1.5

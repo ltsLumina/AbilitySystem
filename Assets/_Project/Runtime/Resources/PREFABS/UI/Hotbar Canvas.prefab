@@ -843,65 +843,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 499632364684504860, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: 9540215692c7ead449ab9d7040c446a7, type: 3}
-    - target: {fileID: 499632364684504860, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
-      propertyPath: m_Color.b
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 499632364684504860, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
-      propertyPath: m_Color.g
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 499632364684504860, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
-      propertyPath: m_Color.r
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5832864610646627859, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
-      propertyPath: m_Name
-      value: Available
-      objectReference: {fileID: 0}
     - target: {fileID: 7515439847528555595, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
       propertyPath: m_Name
       value: 'Ability [" J | A "]'
-      objectReference: {fileID: 0}
-    - target: {fileID: 7515439847528555595, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7515439847528555595, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
-      propertyPath: m_TagString
-      value: Player 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7762464440543954903, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
-      propertyPath: m_text
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 7916833178086342432, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
-      propertyPath: owner
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 7916833178086342432, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
-      propertyPath: ability
-      value: 
-      objectReference: {fileID: 11400000, guid: 77eb844baaa6e164e87cbf2969e507b7, type: 2}
-    - target: {fileID: 7916833178086342432, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
-      propertyPath: cooldown
-      value: 2.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 7916833178086342432, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
-      propertyPath: coyoteTime
-      value: 0.15
-      objectReference: {fileID: 0}
-    - target: {fileID: 7916833178086342432, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
-      propertyPath: showDecimals
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7916833178086342432, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
-      propertyPath: cooldownDuration
-      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1001,69 +945,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 499632364684504860, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: 72d74b3c26cef2d4ea85f6a3a853539d, type: 3}
-    - target: {fileID: 499632364684504860, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
-      propertyPath: m_Color.b
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 499632364684504860, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
-      propertyPath: m_Color.g
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 499632364684504860, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
-      propertyPath: m_Color.r
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5832864610646627859, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
-      propertyPath: m_Name
-      value: Available
-      objectReference: {fileID: 0}
     - target: {fileID: 7515439847528555595, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
       propertyPath: m_Name
       value: 'Ability [" K | B "]'
-      objectReference: {fileID: 0}
-    - target: {fileID: 7515439847528555595, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7515439847528555595, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
-      propertyPath: m_TagString
-      value: Player 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7762464440543954903, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
-      propertyPath: m_text
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 7916833178086342432, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
-      propertyPath: owner
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 7916833178086342432, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
-      propertyPath: ability
-      value: 
-      objectReference: {fileID: 11400000, guid: 436c9be7bb2ed044e8ceb2c7ef39a040, type: 2}
-    - target: {fileID: 7916833178086342432, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
-      propertyPath: cooldown
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 7916833178086342432, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
-      propertyPath: coyoteTime
-      value: 0.15
-      objectReference: {fileID: 0}
-    - target: {fileID: 7916833178086342432, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
-      propertyPath: showDecimals
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7916833178086342432, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
-      propertyPath: showSettings
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7916833178086342432, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
-      propertyPath: cooldownDuration
-      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1163,65 +1047,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 499632364684504860, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: 425db54a9e7cd5440b4d5763eea55aa4, type: 3}
-    - target: {fileID: 499632364684504860, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
-      propertyPath: m_Color.b
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 499632364684504860, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
-      propertyPath: m_Color.g
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 499632364684504860, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
-      propertyPath: m_Color.r
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5832864610646627859, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
-      propertyPath: m_Name
-      value: Available
-      objectReference: {fileID: 0}
     - target: {fileID: 7515439847528555595, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
       propertyPath: m_Name
       value: 'Ability [" L | Y "]'
-      objectReference: {fileID: 0}
-    - target: {fileID: 7515439847528555595, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7515439847528555595, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
-      propertyPath: m_TagString
-      value: Player 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7762464440543954903, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
-      propertyPath: m_text
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 7916833178086342432, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
-      propertyPath: owner
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 7916833178086342432, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
-      propertyPath: ability
-      value: 
-      objectReference: {fileID: 11400000, guid: d15570f6e6541524a9feff4252a606b5, type: 2}
-    - target: {fileID: 7916833178086342432, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
-      propertyPath: cooldown
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 7916833178086342432, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
-      propertyPath: coyoteTime
-      value: 0.15
-      objectReference: {fileID: 0}
-    - target: {fileID: 7916833178086342432, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
-      propertyPath: showDecimals
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7916833178086342432, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
-      propertyPath: cooldownDuration
-      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1324,34 +1152,6 @@ PrefabInstance:
     - target: {fileID: 7515439847528555595, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
       propertyPath: m_Name
       value: 'Ability [" H | X "]'
-      objectReference: {fileID: 0}
-    - target: {fileID: 7515439847528555595, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
-      propertyPath: m_TagString
-      value: Player 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7916833178086342432, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
-      propertyPath: owner
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 7916833178086342432, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
-      propertyPath: ability
-      value: 
-      objectReference: {fileID: 11400000, guid: afbdf85f3e271f6409967ae0003f86bc, type: 2}
-    - target: {fileID: 7916833178086342432, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
-      propertyPath: cooldown
-      value: 2.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 7916833178086342432, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
-      propertyPath: coyoteTime
-      value: 0.15
-      objectReference: {fileID: 0}
-    - target: {fileID: 7916833178086342432, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
-      propertyPath: showDecimals
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7960038183676868197, guid: be4ece04e9753c349b5a8f2a772243bc, type: 3}
-      propertyPath: m_Enabled
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
