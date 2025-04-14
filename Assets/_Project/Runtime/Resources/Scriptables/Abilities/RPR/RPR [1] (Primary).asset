@@ -10,18 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 607a7f27dc29c4541b753c3658683d25, type: 3}
-  m_Name: RPR [3] (Utility)
+  m_Name: RPR [1] (Primary)
   m_EditorClassIdentifier: 
   job: 0
-  abilityName: Utility
+  abilityName: Primary
   description: 
-  icon: {fileID: 21300000, guid: 72d74b3c26cef2d4ea85f6a3a853539d, type: 3}
-  type: 2
+  icon: {fileID: 21300000, guid: eceb0f510ddf4464cbb9dfb8afd35294, type: 3}
+  type: 0
   range: 0
   radius: 0
   cooldownType: 0
   castTime: 0
-  cooldown: 12
-  damage: 65
-  effects:
-  - {fileID: 11400000, guid: ac855e64ab924de4da2c686619f9b3c2, type: 2}
+  cooldown: 1.5
+  damage: 500
+  effects: []

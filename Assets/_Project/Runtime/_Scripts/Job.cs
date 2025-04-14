@@ -19,7 +19,7 @@ public sealed class Job : ScriptableObject
 	{
 		RPR,
 		RDM,
-		DRK,
+		BLM,
 		SGE,
 	}
 

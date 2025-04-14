@@ -20,10 +20,10 @@ public class AbilityEditor : Editor
 	SerializedProperty castTime;
 	SerializedProperty cooldown;
 	SerializedProperty damage;
+	SerializedProperty charge;
 	SerializedProperty effects;
 
 	#region Properties
-	static Player player => FindAnyObjectByType<Player>();
 
 	/// <summary>
 	///     Gets the job name based on the ability class enum value.
@@ -32,19 +32,19 @@ public class AbilityEditor : Editor
 	string jobName => job.enumValueIndex switch
 	{ 0 => "Reaper",
 	  1 => "Red Mage",
-	  2 => "Dark Knight",
+	  2 => "Black Mage",
 	  3 => "Sage",
 	  4 => "Developer",
 	  _ => "Unknown" };
 
 	/// <summary>
 	///     Gets the job tri-code based on the ability class enum value.
-	///     <example> RPR, RDM, DRK, SGE, DEV </example>
+	///     <example> RPR, RDM, BLM, SGE, DEV </example>
 	/// </summary>
 	string jobTriCode => job.enumValueIndex switch
 	{ 0 => "RPR",
 	  1 => "RDM",
-	  2 => "DRK",
+	  2 => "BLM",
 	  3 => "SGE",
 	  4 => "DEV",
 	  _ => "Unknown" };
@@ -69,9 +69,9 @@ public class AbilityEditor : Editor
 		get
 		{
 #if false
-			return $"{player.PlayerInput.actions[InputManager.AbilityKeys[type.enumValueIndex]].GetBindingDisplayString()}";
+			return $"{PlayerManager.Instance.Players[0].PlayerInput.actions[InputManager.AbilityKeys[type.enumValueIndex]].GetBindingDisplayString()}";
 #else
-			return "Unknown Key";
+			return "X";
 #endif
 		}
 	}
@@ -90,6 +90,7 @@ public class AbilityEditor : Editor
 		castTime = serializedObject.FindProperty("castTime");
 		cooldown = serializedObject.FindProperty("cooldown");
 		damage = serializedObject.FindProperty("damage");
+		charge = serializedObject.FindProperty("charge");
 		effects = serializedObject.FindProperty("effects");
 	}
 
@@ -100,6 +101,7 @@ public class AbilityEditor : Editor
 	static bool overrideGCD;
 	int selectedEffect;
 	TextAsset csv;
+	
 	int loadStage
 	{
 		get => EditorPrefs.GetInt("LoadStage", 0);
@@ -144,6 +146,7 @@ public class AbilityEditor : Editor
 					GUILayout.Label($"Key: {abilityTypeKey}", EditorStyles.centeredGreyMiniLabel);
 
 					damage.floatValue = EditorGUILayout.FloatField("Damage", Mathf.Clamp(damage.floatValue, 0f, 1000));
+					EditorGUILayout.PropertyField(charge, new GUIContent("Overcharge", "If a value is set, this ability will overcharge the selected ability."));
 					range.floatValue = EditorGUILayout.Slider("Range", range.floatValue, 0f, 25);
 					radius.floatValue = EditorGUILayout.Slider("Radius", radius.floatValue, 0f, 25);
 

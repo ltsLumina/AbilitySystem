@@ -461,7 +461,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   statusEffects: []
   data: {fileID: 0}
-  job: {fileID: 11400000, guid: b6f539e5710b64641bf28e90f7f12a17, type: 2}
+  job: {fileID: 11400000, guid: 4c4708f843ac0f9459bd7c157c8b9b32, type: 2}
   health: 5
   maxHealth: 5
   takeDamageCooldown: 1

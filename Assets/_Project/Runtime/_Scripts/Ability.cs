@@ -29,7 +29,6 @@ public sealed class Ability : ScriptableObject
 	}
 
 	[Header("Ability Info")]
-
 	[SerializeField] Class job;
 	[SerializeField] string abilityName;
 	[TextArea]
@@ -38,7 +37,6 @@ public sealed class Ability : ScriptableObject
 	[SerializeField] AbilityType type;
 
 	[Header("Ability Properties")]
-
 	[SerializeField] float range;
 	[SerializeField] float radius;
 	[SerializeField] CooldownType cooldownType;
@@ -46,8 +44,9 @@ public sealed class Ability : ScriptableObject
 	[SerializeField] float cooldown;
 
 	[Header("Damage Properties")]
-
 	[SerializeField] float damage;
+	[Tooltip("If a value is set, this ability will overcharge the selected ability.")]
+	[SerializeField] Ability charge;
 
 	[Tooltip("The status effects that this ability applies.")]
 	[SerializeField] List<StatusEffect> effects;
@@ -104,7 +103,6 @@ public sealed class Ability : ScriptableObject
 		Attack();
 
 		return;
-
 		Boss FindBoss()
 		{
 			Boss[] allBosses = FindObjectsByType<Boss>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
@@ -206,15 +204,10 @@ public sealed class Ability : ScriptableObject
 
 		target.TryGetComponent(out IDamageable enemy);
 
-		if (enemy == null)
-		{
-			Logger.LogError($"{target} is not damageable.");
-			return;
-		}
-
 		if (prefix.Count > 0) prefix.Apply((target, localPlayer));
 		enemy.TakeDamage(damage * localPlayer.Stats.Damage);
 		if (postfix.Count > 0) postfix.Apply((target, localPlayer));
+		
 	}
 
 	static void VisualEffect(Entity target, bool isDoT = false)

@@ -153,7 +153,7 @@ public class AbilityButton : MonoBehaviour
 			// Always show decimals in the hierarchy.
 			// Mostly a debugging feature.
 			availabilityLayer.gameObject.name = $"Unavailable ({CooldownTime(showDecimals: true)} seconds)";
-			duration.text = CooldownTime(showDecimals).ToString(CultureInfo.InvariantCulture);
+			duration.text = CooldownTime(showDecimals) < AbilitySettings.GlobalCooldown ? string.Empty : CooldownTime(showDecimals).ToString(CultureInfo.InvariantCulture);
 			yield return null;
 		}
 

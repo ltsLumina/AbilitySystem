@@ -20,8 +20,8 @@ MonoBehaviour:
   range: 0
   radius: 0
   cooldownType: 2
-  castTime: 1.5
+  castTime: 0
   cooldown: 8
-  damage: 250
+  damage: 500
   effects:
   - {fileID: 11400000, guid: a9199d18df4ed954ebf6cd0ed45f037e, type: 2}

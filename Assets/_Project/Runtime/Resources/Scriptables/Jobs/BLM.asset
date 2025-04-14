@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90923ec636836004ba48f1ef4a68fb6d, type: 3}
+  m_Name: BLM
+  m_EditorClassIdentifier: 
+  job: 2
+  abilities:
+  - {fileID: 11400000, guid: 8b65c98639cf5954e9e87a30cf0591f7, type: 2}
+  - {fileID: 11400000, guid: c42476a04219e9941808d743144426de, type: 2}
+  - {fileID: 11400000, guid: ab35050372f785941936f91043099211, type: 2}
+  - {fileID: 11400000, guid: 7c162e3e99b5d314999fa337774519f8, type: 2}
