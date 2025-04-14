@@ -5,5 +5,7 @@ public enum Track
 	LobbyMusic,
 	Footfalls,
 	BattleMusic,
+	VictoryMusic,
+	LootMusic,
 }
 }

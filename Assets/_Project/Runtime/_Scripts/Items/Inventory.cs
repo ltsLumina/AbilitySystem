@@ -29,7 +29,7 @@ public class Inventory : MonoBehaviour
 		AddToInventory(item);
 	}
 
-	void AddToInventory(Item item)
+	public void AddToInventory(Item item)
 	{
 		if (item == null) return;
 
@@ -54,10 +54,23 @@ public class Inventory : MonoBehaviour
 		foreach (Item item in inventory) cooldowns.Add(item, item.Cooldown);
 
 		//Debug.Log($"{item.name} has an initial cooldown of {item.Cooldown}.");
+
+		GameManager.Instance.OnEnterBattle += () =>
+		{ // reset the cooldowns when entering battle
+			foreach (Item item in inventory)
+			{
+				if (item == null) continue;
+				if (item.Consumed) continue;
+
+				cooldowns[item] = item.Cooldown;
+			}
+		};
 	}
 
 	void Update()
 	{
+		if (GameManager.Instance.CurrentState != GameManager.State.Battle) return;
+		
 		foreach (Item item in inventory)
 		{
 			if (item == null) continue;

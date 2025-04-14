@@ -1,15 +1,50 @@
 ﻿#region
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using DG.Tweening;
 using Lumina.Essentials.Attributes;
 using Lumina.Essentials.Modules;
 using MelenitasDev.SoundsGood;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using Random = UnityEngine.Random;
 #endregion
 
 public class GameManager : Singleton<GameManager>
 {
+	[Serializable]
+	public enum State
+	{
+		Lobby,
+		Battle,
+		Victory,
+		Defeat,
+		Loot,
+		Shop,
+	}
+
+	[Header("Paused")]
+	[SerializeField] bool isPaused;
+
+	[Header("Boss")]
 	[ReadOnly]
 	[SerializeField] Boss currentBoss;
+
+	[Header("State")]
+	[ReadOnly]
+	[SerializeField] State currentState = State.Lobby;
+	[ReadOnly]
+	[SerializeField] List<State> events = new ();
+
+	public State GetNextEvent()
+	{
+		if (events.Count == 0) return State.Lobby;
+
+		State nextEvent = events[0];
+		events.RemoveAt(0);
+		return nextEvent;
+	}
 
 	[Header("Debug")]
 	[Tooltip("Just for fun. Allows you to spawn bosses without despawning the current one.")]
@@ -24,9 +59,125 @@ public class GameManager : Singleton<GameManager>
 		}
 	}
 
+	public State CurrentState => currentState;
+
+	public bool IsPaused => isPaused;
+
+	#region Pause & State Events
+	public event Action<State> OnStateChanged;
+	public event Action OnEnterLobby;
+	public event Action OnEnterBattle;
+	public event Action OnVictory;
+	public event Action OnDefeat;
+	public event Action OnEnterLoot;
+	public event Action OnEnterShop;
+
+	public event Action OnPause;
+	public event Action OnResume;
+	#endregion
+
+	public void SetState(State state)
+	{
+		currentState = state;
+		OnStateChanged?.Invoke(state);
+
+		PlayerInputManager.instance.DisableJoining();
+
+		switch (state)
+		{
+			case State.Lobby:
+				PlayerInputManager.instance.EnableJoining();
+
+				AudioManager.StopMusic("VictoryMusic", 1f, false);
+
+				var lobbyMusic = new Music(Track.LobbyMusic);
+				lobbyMusic.SetOutput(Output.Music);
+				lobbyMusic.SetVolume(0.5f);
+				lobbyMusic.SetId("LobbyMusic");
+				lobbyMusic.Play();
+
+				OnEnterLobby?.Invoke();
+				break;
+
+			case State.Battle:
+				SpawnBoss("Rem");
+
+				AudioManager.StopMusic("LobbyMusic", 1f);
+
+				var music = new Music(Track.BattleMusic);
+				music.SetOutput(Output.Music);
+				music.SetId("BattleMusic");
+				music.SetVolume(0.5f);
+				music.Play();
+
+				OnEnterBattle?.Invoke();
+				break;
+
+			case State.Victory:
+				AudioManager.StopMusic("BattleMusic", 1f);
+
+				var victoryMusic = new Music(Track.VictoryMusic);
+				victoryMusic.SetOutput(Output.Music);
+				victoryMusic.SetVolume(0.5f);
+				victoryMusic.SetId("VictoryMusic");
+				victoryMusic.Play();
+
+				OnVictory?.Invoke();
+				break;
+
+			case State.Defeat:
+				OnDefeat += () =>
+				{
+					// AudioManager.StopAllMusic(1f);
+					//
+					// var defeatMusic = new Music(Track.DefeatMusic);
+					// defeatMusic.SetOutput(Output.Music);
+					// defeatMusic.SetVolume(0.5f);
+					// defeatMusic.SetId("DefeatMusic");
+					// defeatMusic.Play();
+				};
+
+				OnDefeat?.Invoke();
+				break;
+
+			case State.Loot:
+				var lootMusic = new Music(Track.LootMusic);
+				lootMusic.SetOutput(Output.Music);
+				lootMusic.SetVolume(0.5f);
+				lootMusic.SetId("LootMusic");
+				lootMusic.Play();
+
+				List<Item> items = Resources.LoadAll<Item>(AbilitySettings.ResourcePaths.ITEMS).ToList();
+				Item item = items[Random.Range(0, items.Count)];
+
+				foreach (Player player in PlayerManager.Instance.Players) player.Inventory.AddToInventory(item);
+
+				OnEnterLoot?.Invoke();
+				break;
+
+			case State.Shop:
+				OnEnterShop += () =>
+				{
+					AudioManager.StopAllMusic(1f);
+
+					// var shopMusic = new Music(Track.ShopMusic);
+					// shopMusic.SetOutput(Output.Music);
+					// shopMusic.SetVolume(0.5f);
+					// shopMusic.SetId("ShopMusic");
+					// shopMusic.Play();
+				};
+
+				OnEnterShop?.Invoke();
+				break;
+		}
+	}
+
+	public event Action<Boss> OnBossSpawned;
+
 	public void Initialize(Boss boss)
 	{
 		currentBoss = boss;
+		OnBossSpawned?.Invoke(boss);
 
 		currentBoss.OnBossStarted += () =>
 		{
@@ -36,17 +187,11 @@ public class GameManager : Singleton<GameManager>
 
 		currentBoss.OnDeath += () =>
 		{
+			SetState(State.Victory);
+
 			DarkenBackground(true);
 			StopTimer();
 		};
-
-		AudioManager.StopMusic("LobbyMusic", 1f);
-
-		var music = new Music(Track.BattleMusic);
-		music.SetVolume(0.5f);
-		music.SetFadeOut(1f);
-		music.SetOutput(Output.Music);
-		music.Play();
 	}
 
 	static void DarkenBackground(bool lighten = false)
@@ -75,13 +220,24 @@ public class GameManager : Singleton<GameManager>
 
 		StageManager.Reset();
 	}
-	
+
 	void Start()
 	{
-		var lobbyMusic = new Music(Track.LobbyMusic);
-		lobbyMusic.SetOutput(Output.Music);
-		lobbyMusic.SetId("LobbyMusic");
-		lobbyMusic.Play();
+		events.Clear();
+
+		OnEnterLobby += () =>
+		{
+			var allEvents = new List<State>
+			{ State.Battle,
+			  State.Loot,
+			  State.Battle,
+			  State.Shop,
+			  State.Battle };
+
+			events.AddRange(allEvents);
+		};
+
+		SetState(GetNextEvent());
 	}
 
 	void Update()
@@ -89,16 +245,25 @@ public class GameManager : Singleton<GameManager>
 		if (isTimerRunning) timer += Time.deltaTime;
 
 #if UNITY_EDITOR
-		if (Input.GetKeyDown(KeyCode.F1)) SpawnBoss(0);
-		if (Input.GetKeyDown(KeyCode.F2)) SpawnBoss(1);
-		if (Input.GetKeyDown(KeyCode.F3)) SpawnBoss(2);
-		if (Input.GetKeyDown(KeyCode.F4)) SpawnBoss(3);
-		if (Input.GetKeyDown(KeyCode.F5)) SpawnBoss(4);
-		if (Input.GetKeyDown(KeyCode.F6)) SpawnBoss(5);
-		if (Input.GetKeyDown(KeyCode.F7)) SpawnBoss(6);
-		if (Input.GetKeyDown(KeyCode.F8)) SpawnBoss(7);
-		if (Input.GetKeyDown(KeyCode.F9)) SpawnBoss(8);
-		if (Input.GetKeyDown(KeyCode.F10)) SpawnBoss(9);
+		if (Input.GetKeyDown(KeyCode.Escape))
+		{
+			isPaused = !isPaused;
+
+			const float maxCutoffFreq = 22000f;
+			const float cutoffFreq = 1000f;
+			AudioManager.Mixer.DOSetFloat("Muffler", isPaused ? cutoffFreq : maxCutoffFreq, 0.5f).SetUpdate(true);
+
+			if (isPaused)
+			{
+				Time.timeScale = 0f;
+				OnPause?.Invoke();
+			}
+			else
+			{
+				Time.timeScale = 1f;
+				OnResume?.Invoke();
+			}
+		}
 #endif
 	}
 
@@ -106,35 +271,24 @@ public class GameManager : Singleton<GameManager>
 	void OnGUI() => // Display the timer in the top right corner
 			GUI.Label(new (Screen.width - 200, 75, 200, 20), $"Time: {timer:F2}");
 
-	void SpawnBoss(int index)
+	void SpawnBoss(string shortName)
 	{
-		Boss[] bosses = FindObjectsByType<Boss>(FindObjectsInactive.Include, FindObjectsSortMode.InstanceID);
+		List<Boss> bosses = Resources.LoadAll<Boss>("PREFABS/Bosses").ToList();
 
-		if (index < 0 || index >= bosses.Length)
-		{
-			Debug.LogError($"Boss index {index} is out of range.");
-			return;
-		}
-
-		Boss boss = bosses[index];
-
+		// trim everything after the first comma
+		Boss boss = bosses.FirstOrDefault(b => b.name.StartsWith(shortName));
 		if (boss == null)
 		{
-			Debug.LogError($"Boss at index {index} is null.");
+			Debug.LogError($"Boss {shortName} not found");
 			return;
 		}
 
-		if (!bypass)
-		{
-			if (currentBoss != null)
-			{
-				Debug.LogError("A boss is already spawned. Please despawn the current boss before spawning a new one.");
-				return;
-			}
-		}
+		Boss instance = Instantiate(boss, Vector3.zero, Quaternion.identity);
+	}
 
-		boss.gameObject.SetActive(true);
-		currentBoss = boss;
+	void SpawnScarecrow()
+	{
+		
 	}
 #endif
 }
