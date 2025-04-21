@@ -9,14 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 27279103bad799a4e9a25365fe2cbdaa, type: 3}
-  m_Name: Phlegmacism
+  m_Script: {fileID: 11500000, guid: 54d0e469d1d86a74b9d58f7ebc708fbb, type: 3}
+  m_Name: Seraphism
   m_EditorClassIdentifier: 
-  statusName: Phlegmacism
-  description: Cast a divine veil around yourself and your allies, protecting everyone
-    from one instance of damage.
-  duration: 6
+  statusName: Seraphism
+  description: Reduces cast time by 20%, spell speed by 15%, and increases damage
+    dealt by 10% for self and allies.
+  duration: 12
   target: 5
-  timing: 0
+  timing: 1
   time: 0
   caster: {fileID: 0}

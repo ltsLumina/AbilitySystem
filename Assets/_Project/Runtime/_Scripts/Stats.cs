@@ -8,10 +8,16 @@ public class Stats : MonoBehaviour
 	[SerializeField] float damage = 1;
 	[Tooltip("A shield prevents a single instance of damage from being applied.")]
 	[SerializeField] int shields;
+	[Tooltip("A modifier that affects the cast time of spells.")]
+	[SerializeField] float castSpeed = 1;
+	[Tooltip("A modifier that affects the cooldown of spells.")]
+	[SerializeField] float spellSpeed = 1;
 
 	public float Speed => speed;
 	public float Damage => damage;
 	public int Shields => shields;
+	public float CastSpeed => castSpeed;
+	public float SpellSpeed => spellSpeed;
 
 	public void SetModifier(string modifier, float value)
 	{
@@ -27,6 +33,14 @@ public class Stats : MonoBehaviour
 
 			case "shields":
 				shields = Mathf.Clamp((int) value, 0, byte.MaxValue);
+				break;
+
+			case "cast speed":
+				castSpeed = Mathf.Clamp(value, -byte.MaxValue, byte.MaxValue);
+				break;
+
+			case "spell speed":
+				spellSpeed = Mathf.Clamp(value, -byte.MaxValue, byte.MaxValue);
 				break;
 
 			default:
@@ -51,6 +65,14 @@ public class Stats : MonoBehaviour
 				shields += Mathf.Clamp((int) value, 0, byte.MaxValue);
 				break;
 
+			case "cast speed":
+				castSpeed += Mathf.Clamp(value, -byte.MaxValue, byte.MaxValue);
+				break;
+
+			case "spell speed":
+				spellSpeed += Mathf.Clamp(value, -byte.MaxValue, byte.MaxValue);
+				break;
+
 			default:
 				Debug.LogWarning($"Modifier {modifier} not found.");
 				break;
@@ -71,6 +93,14 @@ public class Stats : MonoBehaviour
 
 			case "shields":
 				shields -= Mathf.Clamp((int) value, 0, byte.MaxValue);
+				break;
+
+			case "cast speed":
+				castSpeed -= Mathf.Clamp(value, -byte.MaxValue, byte.MaxValue);
+				break;
+
+			case "spell speed":
+				spellSpeed -= Mathf.Clamp(value, -byte.MaxValue, byte.MaxValue);
 				break;
 
 			default:

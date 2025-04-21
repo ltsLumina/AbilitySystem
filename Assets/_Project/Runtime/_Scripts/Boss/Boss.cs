@@ -134,6 +134,8 @@ public partial class Boss : Entity
 	#region Health / Take Damage
 	public override void TakeDamage(float damage)
 	{
+		if (isDead) return;
+		
 		int dmg = Mathf.Clamp((int) damage, 0, health);
 		Health -= dmg;
 		OnTookDamage?.Invoke(dmg);

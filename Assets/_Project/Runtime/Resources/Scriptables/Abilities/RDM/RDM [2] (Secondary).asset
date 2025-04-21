@@ -10,22 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 607a7f27dc29c4541b753c3658683d25, type: 3}
-  m_Name: RPR [2] (Secondary)
+  m_Name: RDM [2] (Secondary)
   m_EditorClassIdentifier: 
-  job: 0
-  abilityName: Secondary
+  job: 1
+  abilityName: Verfire
   description: 
-  icon: {fileID: 21300000, guid: 9540215692c7ead449ab9d7040c446a7, type: 3}
+  icon: {fileID: 0}
   type: 1
   range: 0
   radius: 0
-  cooldownType: 0
-  castTime: 0
+  cooldownType: 2
+  castTime: 3
   cooldown: 1.5
-  damage: 100
-  abilityToPrime: {fileID: 0}
-  primeChance: 0
-  abilityToRefund: {fileID: 0}
-  refundChance: 0
-  effects:
-  - {fileID: 11400000, guid: a9199d18df4ed954ebf6cd0ed45f037e, type: 2}
+  damage: 200
+  abilityToPrime: {fileID: 11400000, guid: 599b254ba4fe60e4b8463566621049d5, type: 2}
+  primeChance: 0.5
+  abilityToRefund: {fileID: 11400000, guid: 599b254ba4fe60e4b8463566621049d5, type: 2}
+  refundChance: 0.5
+  effects: []

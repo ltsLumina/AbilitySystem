@@ -6,7 +6,6 @@ using DG.Tweening;
 using JetBrains.Annotations;
 using Lumina.Essentials.Attributes;
 using TMPro;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 using VInspector;
@@ -73,6 +72,7 @@ public class AbilityButton : MonoBehaviour
 	{
 		if (performer != owner) return; // Only trigger the GCD for the player that owns this ability button.
 
+		if (ability.Cooldown > 5) return;
 		if (ability.CDType is Ability.CooldownType.Instant) return; // Instant abilities are not affected by the global cooldown.
 
 		if (OnCooldown) return;
@@ -90,6 +90,13 @@ public class AbilityButton : MonoBehaviour
 			if (gameObject.CompareTag(player.tag)) owner = player;
 		};
 
+		GameManager.Instance.OnBossSpawned += boss =>
+		{
+			if (ability.Cooldown >= 25) Cooldown();
+		};
+
+		GameManager.Instance.OnVictory += ResetCooldown;
+
 		yield return new WaitUntil(() => owner != null);
 		
 		Ability.OnGlobalCooldown += TriggerGCD;
@@ -105,13 +112,13 @@ public class AbilityButton : MonoBehaviour
 
 		InitAvailabilityLayer();
 
-#if UNITY_EDITOR
-
-		// This is probably due to using InvariantCulture in the ToString method rather than F0 or F2 as used previously.
-		if (showDecimals) Logger.LogWarning("For whatever reason, using showDecimals breaks the cooldown timer on the UI. \nUse at your own risk.");
-
-		EditorApplication.update += () => cooldownTime = CooldownTime(true);
-#endif
+		// #if UNITY_EDITOR
+		//
+		// 		// This is probably due to using InvariantCulture in the ToString method rather than F0 or F2 as used previously.
+		// 		if (showDecimals) Logger.LogWarning("For whatever reason, using showDecimals breaks the cooldown timer on the UI. \nUse at your own risk.");
+		//
+		// 		EditorApplication.update += () => cooldownTime = CooldownTime(true);
+		// #endif
 	}
 
 	void OnDestroy() => Ability.OnGlobalCooldown -= TriggerGCD;

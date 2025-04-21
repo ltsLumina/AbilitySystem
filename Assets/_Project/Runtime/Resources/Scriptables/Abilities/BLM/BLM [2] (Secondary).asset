@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   job: 2
   abilityName: Blizzard II
-  description: '[Primes] Fire IV, making it deal 25% more damage.'
+  description: 
   icon: {fileID: 21300000, guid: 1ae9bdff8cfeccb45b7801751b635821, type: 3}
   type: 1
   range: 0
@@ -24,6 +24,7 @@ MonoBehaviour:
   cooldown: 1.5
   damage: 125
   abilityToPrime: {fileID: 0}
+  primeChance: 0
   abilityToRefund: {fileID: 0}
   refundChance: 0
   effects: []

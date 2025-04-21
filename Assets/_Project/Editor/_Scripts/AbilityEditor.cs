@@ -21,6 +21,7 @@ public class AbilityEditor : Editor
 	SerializedProperty cooldown;
 	SerializedProperty damage;
 	SerializedProperty abilityToPrime;
+	SerializedProperty primeChance;
 	SerializedProperty abilityToRefund;
 	SerializedProperty refundChance;
 	SerializedProperty effects;
@@ -102,6 +103,7 @@ public class AbilityEditor : Editor
 		cooldown = serializedObject.FindProperty("cooldown");
 		damage = serializedObject.FindProperty("damage");
 		abilityToPrime = serializedObject.FindProperty("abilityToPrime");
+		primeChance = serializedObject.FindProperty("primeChance");
 		abilityToRefund = serializedObject.FindProperty("abilityToRefund");
 		refundChance = serializedObject.FindProperty("refundChance");
 		effects = serializedObject.FindProperty("effects");
@@ -158,10 +160,19 @@ public class AbilityEditor : Editor
 					GUILayout.Label($"Key: {abilityTypeKey}", EditorStyles.centeredGreyMiniLabel);
 
 					damage.floatValue = EditorGUILayout.FloatField("Damage", Mathf.Clamp(damage.floatValue, 0f, 1000));
-					EditorGUILayout.PropertyField(abilityToPrime, new GUIContent("Overcharge", "If a value is set, this ability will overcharge the selected ability."));
+					EditorGUILayout.PropertyField(abilityToPrime, new GUIContent("Prime", "If a value is set, this ability will prime the selected ability."));
+
+					if (abilityToPrime.objectReferenceValue != null) primeChance.floatValue = EditorGUILayout.Slider("Prime Chance", primeChance.floatValue, 0f, 1f);
+					else primeChance.floatValue = 0;
+					
 					EditorGUILayout.PropertyField(abilityToRefund, new GUIContent("Refund", "If a value is set, this ability will refund the selected ability."));
 					if (abilityToRefund.objectReferenceValue != null) refundChance.floatValue = EditorGUILayout.Slider("Refund Chance", refundChance.floatValue, 0f, 1f);
 					else refundChance.floatValue = 0;
+
+					GUILayout.Space(5);
+					GUILayout.Label(string.Empty, GUI.skin.horizontalSlider);
+					GUILayout.Space(20);
+					
 					range.floatValue = EditorGUILayout.Slider("Range", range.floatValue, 0f, 25);
 					radius.floatValue = EditorGUILayout.Slider("Radius", radius.floatValue, 0f, 25);
 

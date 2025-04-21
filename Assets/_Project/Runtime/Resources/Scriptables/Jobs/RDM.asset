@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90923ec636836004ba48f1ef4a68fb6d, type: 3}
+  m_Name: RDM
+  m_EditorClassIdentifier: 
+  job: 1
+  abilities:
+  - {fileID: 11400000, guid: abb6932df82de2f48909d99058957e40, type: 2}
+  - {fileID: 11400000, guid: fa0691b36ecc15d4aa89d1ba2386619e, type: 2}
+  - {fileID: 11400000, guid: 599b254ba4fe60e4b8463566621049d5, type: 2}
+  - {fileID: 11400000, guid: baed8f7121eb5a84681f57442d6f7351, type: 2}

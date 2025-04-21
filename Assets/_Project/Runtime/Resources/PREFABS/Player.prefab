@@ -487,6 +487,8 @@ MonoBehaviour:
   speed: 1
   damage: 1
   shields: 0
+  castSpeed: 1
+  spellSpeed: 1
 --- !u!114 &7469510165550881694
 MonoBehaviour:
   m_ObjectHideFlags: 0

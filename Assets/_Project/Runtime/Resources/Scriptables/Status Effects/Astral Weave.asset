@@ -9,14 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 27279103bad799a4e9a25365fe2cbdaa, type: 3}
-  m_Name: Phlegmacism
+  m_Script: {fileID: 11500000, guid: 21058bb5a56d0d8459c5479e476e06a5, type: 3}
+  m_Name: Astral Weave
   m_EditorClassIdentifier: 
-  statusName: Phlegmacism
-  description: Cast a divine veil around yourself and your allies, protecting everyone
-    from one instance of damage.
-  duration: 6
-  target: 5
-  timing: 0
+  statusName: Astral Weave
+  description: Reduces cast times by 25%, and increases damage by 10% for 8 seconds.
+  duration: 7
+  target: 1
+  timing: 1
   time: 0
   caster: {fileID: 0}

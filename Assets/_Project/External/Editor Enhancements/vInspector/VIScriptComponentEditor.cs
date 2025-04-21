@@ -308,7 +308,7 @@ class VIScriptComponentEditor : Editor
         else data                                                                    = datasByTarget[target] = (VInspectorData) (serializedDataField?.GetValue(target)) ?? CreateInstance<VInspectorData>();
 
         serializedDataField?.SetValue(target, data);
-
+        
         data.Setup(target);
         data.Dirty();
     }

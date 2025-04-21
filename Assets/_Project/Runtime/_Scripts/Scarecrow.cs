@@ -31,6 +31,7 @@ public class Scarecrow : MonoBehaviour
 	{
 		associatedBoss = GetComponent<Boss>();
 
+		if (!dpsText) dpsText = GameObject.Find("DPS Text").GetComponent<TMP_Text>();
 		dpsText.enabled = true;
 
 		if (checkDPS) BeginDPSCheck();

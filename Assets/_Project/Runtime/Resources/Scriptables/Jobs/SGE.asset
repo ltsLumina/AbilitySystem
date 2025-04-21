@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90923ec636836004ba48f1ef4a68fb6d, type: 3}
+  m_Name: SGE
+  m_EditorClassIdentifier: 
+  job: 3
+  abilities:
+  - {fileID: 11400000, guid: f0b5d2e00ab45d143a4213382741de9c, type: 2}
+  - {fileID: 11400000, guid: d44e77112db5b7c48939c7b414e3a2ef, type: 2}
+  - {fileID: 11400000, guid: a4916ec390189ff41b5615aacb014021, type: 2}
+  - {fileID: 11400000, guid: 93e675c739ce3e64e9a0ee881e24004c, type: 2}

@@ -1,5 +1,4 @@
 #region
-using System.Linq;
 #endregion
 
 public class Phlegmacism : Buff
@@ -21,6 +20,10 @@ public class Phlegmacism : Buff
 
     protected override void OnDecay()
     {
-        foreach (Player player in PlayerManager.Instance.Players.Where(p => p.HasStatusEffect(this, out _))) player.Stats.Remove("shields", 1);
+        if (entity.HasStatusEffect(this, out _))
+        {
+            entity.TryGetComponent(out Player player);
+            player?.Stats.Add("shields", 1);
+        }
     }
 }

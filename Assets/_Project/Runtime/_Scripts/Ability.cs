@@ -49,6 +49,7 @@ public sealed class Ability : ScriptableObject
 	[SerializeField] float damage;
 	[Tooltip("If a value is set, this ability will overcharge the selected ability.")]
 	[SerializeField] Ability abilityToPrime;
+	[SerializeField] float primeChance;
 	[SerializeField] Ability abilityToRefund;
 	[SerializeField] float refundChance;
 
@@ -68,8 +69,15 @@ public sealed class Ability : ScriptableObject
 	public float Range => range;
 	public float Radius => radius;
 	public CooldownType CDType => cooldownType;
-	public float CastTime => castTime;
-	public float Cooldown => cooldown;
+	public float CastTime => castTime * caster.Stats.CastSpeed;
+	public float Cooldown
+	{
+		get
+		{
+			if (!caster) return cooldown;
+			return cooldown * caster.Stats.SpellSpeed;
+		}
+	}
 	public float Damage => damage;
 
 	Player caster;
@@ -114,10 +122,10 @@ public sealed class Ability : ScriptableObject
 
 			if (nearest == null)
 			{
-				// TODO: change to find dummy class.
-				var scarecrow = FindAnyObjectByType<Scarecrow>(FindObjectsInactive.Include).GetComponent<Boss>();
-				scarecrow!.gameObject.SetActive(true);
-				return scarecrow;
+				var scarecrow = Resources.Load<Boss>("PREFABS/Bosses/Scarecrow");
+				Boss instance = Instantiate(scarecrow, Vector3.zero, Quaternion.identity);
+				instance.gameObject.SetActive(true);
+				return instance;
 			}
 
 			return nearest;
@@ -155,7 +163,7 @@ public sealed class Ability : ScriptableObject
 	{
 		float elapsedTime = 0f;
 
-		while (elapsedTime < castTime)
+		while (elapsedTime < CastTime)
 		{
 			if (cancelled)
 			{
@@ -190,7 +198,7 @@ public sealed class Ability : ScriptableObject
 			var particle = Instantiate(Resources.Load<GameObject>("PREFABS/Casting Particles")).GetComponent<ParticleSystem>();
 			particle.transform.SetParent(caster.transform);
 			ParticleSystem.MainModule particleMain = particle.main;
-			particleMain.duration = (castTime * 2) - 0.35f;
+			particleMain.duration = CastTime * 2 - 0.35f;
 			particle.transform.position = caster.transform.position + new Vector3(0, -0.8f);
 			particle.Play();
 			yield return new WaitWhile(Casting);
@@ -231,20 +239,24 @@ public sealed class Ability : ScriptableObject
 		enemy.TakeDamage(finalDamage);
 		if (postfix.Count > 0) postfix.Apply((target, caster));
 
-		if (abilityToPrime)
-		{
-			abilityToPrime.SetPrimed(caster, true);
+		bool sameValues = Mathf.Approximately(primeChance, refundChance);
 
-			if (abilityName.Contains("Enochian"))
+		if (sameValues)
+		{
+			float chance = Mathf.Max(primeChance, refundChance);
+
+			if (Proc(chance))
 			{
-				var quickEffect = StatusEffect.CreateCustomStatusEffect("Enochian", "Flare Star is empowered and can be used without cast time!", 12, StatusEffect.Target.Self, StatusEffect.Timing.Prefix, caster);
-				quickEffect.OnDecayed += _ =>
-				{
-					abilityToPrime.SetPrimed(caster, false);
-				};
-				quickEffect.Invoke(caster);
+				if (abilityToPrime) abilityToPrime.SetPrimed(caster, true);
+				if (abilityToRefund) SetPendingRefund(caster, true);
 			}
+
+			return;
 		}
+		
+		if (abilityToPrime)
+			if (Proc(primeChance))
+				abilityToPrime.SetPrimed(caster, true);
 
 		if (abilityToRefund)
 			if (Proc(refundChance)) SetPendingRefund(caster, true);

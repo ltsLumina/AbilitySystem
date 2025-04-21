@@ -22,7 +22,10 @@ MonoBehaviour:
   cooldownType: 0
   castTime: 0
   cooldown: 1.5
-  damage: 500
-  charge: {fileID: 0}
+  damage: 65
+  abilityToPrime: {fileID: 0}
+  primeChance: 0
+  abilityToRefund: {fileID: 0}
+  refundChance: 0
   effects:
   - {fileID: 11400000, guid: ac855e64ab924de4da2c686619f9b3c2, type: 2}

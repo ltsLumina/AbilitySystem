@@ -193,6 +193,7 @@ public class Player : Entity
 		// Destroy all projectiles within a radius of 5 units
 		DestroyNearbyOrbs();
 
+		Debug.Assert((int) damage == 1, $"Tried to deal {damage} damage to {name}, but it was clamped to {(int) damage}." + "\nThis is likely due to the damage being negative, zero, or greater than the current health.");
 		Health -= Mathf.RoundToInt(damage);
 		StartCoroutine(DamageCooldown());
 

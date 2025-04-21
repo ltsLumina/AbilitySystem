@@ -11,16 +11,10 @@ public class Dualcast : Buff
 
 	protected override void OnInvoke()
 	{
-		OnInvoked += OnOnInvoked;
-		OnDecayed += OnOnDecayed;
-	}
-
-	void OnOnInvoked(StatusEffect obj)
-	{
 		
 	}
 
-	void OnOnDecayed(StatusEffect obj)
+	protected override void OnDecay()
 	{
 		
 	}
