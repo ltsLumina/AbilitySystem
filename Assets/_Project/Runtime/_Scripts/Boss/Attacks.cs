@@ -541,16 +541,25 @@ public class Attacks : MonoBehaviour
 		cleave.transform.rotation = Quaternion.Euler(0, 0, angle);
 
 		var graphic = cleave.GetComponentInChildren<SpriteRenderer>();
-		graphic.sortingOrder = 1;
 		graphic.transform.localScale = new (Screen.width / 100f, graphic.transform.localScale.y, graphic.transform.localScale.z);
 
 		StartCoroutine(CleaveHitRoutine(cleave, delay));
-		Countdown("cleaving one side!", showWarning, delay);
+		Countdown("cleaving one side!", origin, showWarning, delay);
 	}
 
 	IEnumerator CleaveHitRoutine(GameObject cleave, float delay)
 	{
-		yield return new WaitForSeconds(delay);
+		const float duration = 0.2f;
+		const float totalDuration = duration * 2;
+		
+		yield return new WaitForSeconds(delay - totalDuration);
+
+		// visual effect: flash white then fade out
+		var spriteRenderer = cleave.GetComponentInChildren<SpriteRenderer>();
+		spriteRenderer.DOFade(1, duration).SetEase(Ease.Linear).OnComplete(() => spriteRenderer.DOFade(0, duration).SetEase(Ease.Linear).SetLink(cleave));
+		
+		yield return new WaitForSeconds(totalDuration);
+		
 		var boxCollider = cleave.GetComponentInChildren<BoxCollider2D>();
 		
 		var results = new List<Collider2D>();

@@ -31,7 +31,7 @@ public class ChainStratagem : Debuff
 		{
 			foreach (Player player in PlayerManager.Instance.Players)
 			{
-				player.Stats.Add("shields", 1);
+				player.Attributes.Add(Attributes.Stats.Shields, 1);
 				Debug.Log("Chain Stratagem shield granted to " + player.name);
 			}
 		}

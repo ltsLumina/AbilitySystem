@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.UI;
 using VInspector;
 #endregion
 
@@ -71,13 +72,17 @@ public class InputManager : MonoBehaviour
 		}
 	}
 
+	void Start()
+	{
+		var playerInput = GetComponent<PlayerInput>();
+		playerInput.uiInputModule = FindAnyObjectByType<InputSystemUIInputModule>();
+	}
+
 	public void OnMove(InputAction.CallbackContext context)
 	{
 		MoveInput = context.ReadValue<Vector2>();
 		IsMoving = MoveInput != Vector2.zero;
 	}
-
-	public void OnDash(InputAction.CallbackContext context) => Logger.LogWarning("Dash is not implemented.");
 
 	public void Ability(InputAction.CallbackContext context)
 	{
@@ -86,7 +91,14 @@ public class InputManager : MonoBehaviour
 		SetDictionaryKeys();
 		if (abilityButtons.TryGetValue(context.action.name, out GameObject button)) button.GetComponent<AbilityButton>().Invoke();
 	}
-	
+
+	public void OnPause(InputAction.CallbackContext context)
+	{
+		if (!context.performed) return;
+
+		GameManager.Instance.PauseManager.TogglePause();
+	}
+
 	#region Utility
 	public static List<string> AbilityKeys => (from action in FindAnyObjectByType<PlayerInput>().actions where action.name.StartsWith("Ability") select action.name).ToList();
 

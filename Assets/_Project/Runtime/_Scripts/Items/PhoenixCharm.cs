@@ -7,7 +7,7 @@ public class PhoenixCharm : Item
 {
 	public override void Action(Player owner)
 	{
-		owner.Stats.Add("shields", 1);
+		owner.Attributes.Add(Attributes.Stats.Shields, 1);
 
 		Consumed = true;
 	}

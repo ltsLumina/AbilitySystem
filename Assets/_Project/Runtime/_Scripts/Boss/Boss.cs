@@ -20,6 +20,8 @@ public sealed partial class Boss : Entity
 	[Header("Health")]
 	[SerializeField] int health = 10000;
 	[SerializeField] int maxHealth = 10000;
+	[Tooltip("The scalar for the boss' health. \nThis is multiplied by the number of players in the game. \nE.g. 1.25 = 25% health per player.")]
+	[SerializeField] float healthScalar = 1.25f;
 
 	[Header("Visual")]
 	[ColorUsage(false)]
@@ -104,7 +106,7 @@ public sealed partial class Boss : Entity
 		JsonUtility.FromJsonOverwrite(json, this);
 	}
 #endif
-
+	
 	void Awake()
 	{
 		attacks = GetComponent<Attacks>();
@@ -151,9 +153,12 @@ public sealed partial class Boss : Entity
 			int players = PlayerManager.Instance.Players.Count;
 			if (players == 0) players = 1;
 
-			// each player adds 25% health to the boss
-			float scalar = 1f + (players - 1) * 0.25f;
-
+			// each player after the first adds {healthScalar}% health to the boss (e.g. 1.25 = 25% health per player)
+			float scalar;
+			if (players > 1) scalar = healthScalar * (players - 1);
+			else scalar = 1;
+			
+			Debug.Assert(scalar >= 1, $"Health scalar is less than 1: {scalar}");
 			return scalar;
 		}
 	}

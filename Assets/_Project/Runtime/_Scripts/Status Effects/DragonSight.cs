@@ -15,12 +15,12 @@ public class DragonSight : Buff
 	protected override void OnInvoke()
 	{
 		caster.TryGetComponent(out Player player);
-		player.Stats.Add("Damage", 0.1f);
+		player.Attributes.Add(Attributes.Stats.Damage, 0.1f);
 	}
 
 	protected override void OnDecay()
 	{
 		caster.TryGetComponent(out Player player);
-		player.Stats.Remove("Damage", 0.1f);
+		player.Attributes.Remove(Attributes.Stats.Damage, 0.1f);
 	}
 }

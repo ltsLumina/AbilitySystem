@@ -16,7 +16,7 @@ public partial class Boss
 		
 		Transform canvas = GameObject.FindWithTag("Boss Canvas").transform;
 		var fader = canvas.GetComponent<CanvasGroup>();
-
+		
 		Sequence sequence = DOTween.Sequence();
 		sequence.OnStart(() => fader.alpha = 0);
 		sequence.Append(fader.DOFade(1f, 0.5f).SetEase(Ease.OutCubic));

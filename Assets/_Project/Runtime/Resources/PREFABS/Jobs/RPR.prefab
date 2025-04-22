@@ -76,7 +76,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 10
   m_Sprite: {fileID: -9095717837082945937, guid: 207ee8102dd4143d288186ef0be518ee, type: 3}
   m_Color: {r: 0.42745098, g: 0.5019608, b: 0.49411765, a: 1}
   m_FlipX: 0
@@ -102,6 +102,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   associatedBoss: {fileID: 0}
   target: {fileID: 6433385797019857020}
+  isMarker: 0
 --- !u!1 &4578161536406194208
 GameObject:
   m_ObjectHideFlags: 0
@@ -177,7 +178,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 11
   m_Sprite: {fileID: 21300000, guid: c58a013e12e03e04c9170bb64c6cbf70, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -296,10 +297,6 @@ MonoBehaviour:
     m_ActionName: 'Player/Move[/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]'
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: 852140f2-7766-474d-8707-702459ba45f3
-    m_ActionName: 'Player/Interact[/Keyboard/e]'
-  - m_PersistentCalls:
-      m_Calls: []
     m_ActionId: c95b2375-e6d9-4b88-9c4c-c5e76515df4b
     m_ActionName: 'UI/Navigate[/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]'
   - m_PersistentCalls:
@@ -330,14 +327,6 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 0489e84a-4833-4c40-bfae-cea84b696689
     m_ActionName: 'UI/ScrollWheel[/Mouse/scroll]'
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 24908448-c609-4bc3-a128-ea258674378a
-    m_ActionName: UI/TrackedDevicePosition
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 9caa3d8a-6b2f-4e8e-8bad-6ede561bd9be
-    m_ActionName: UI/TrackedDeviceOrientation
   - m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 3645904173574332846}
@@ -406,7 +395,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 3645904173574332846}
         m_TargetAssemblyTypeName: InputManager, Assembly-CSharp
-        m_MethodName: OnDash
+        m_MethodName: OnPause
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -416,8 +405,8 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-    m_ActionId: 6524fa3e-2186-4ac7-b23e-a52eecd1d1f1
-    m_ActionName: Player/Dash
+    m_ActionId: 19ff9f11-79f3-4523-a9e2-bc8ef321b6b6
+    m_ActionName: 'Player/Pause[/Keyboard/shift]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -479,14 +468,11 @@ MonoBehaviour:
   health: 5
   maxHealth: 5
   takeDamageCooldown: 1
-  speeds:
-  - 50
-  - 75
+  speed: 50
   topSpeed: 10
   moveDamping: 0
   stopDamping: 50
   accentColour: {r: 0.5566038, g: 0.18115878, b: 0.25511, a: 1}
-  mouseMove: 0
 --- !u!114 &5836204446567265204
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -501,9 +487,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 1
   damage: 1
-  shields: 0
   castSpeed: 1
   spellSpeed: 1
+  shields: 0
 --- !u!114 &7469510165550881694
 MonoBehaviour:
   m_ObjectHideFlags: 0

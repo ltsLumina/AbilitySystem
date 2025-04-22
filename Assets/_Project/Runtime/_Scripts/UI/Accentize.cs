@@ -10,6 +10,7 @@ public class Accentize : MonoBehaviour
 	[ReadOnly]
 	[SerializeField] Boss associatedBoss;
 	[SerializeField] Component target;
+	[SerializeField] bool isMarker;
 	
 	void Start()
 	{
@@ -26,6 +27,12 @@ public class Accentize : MonoBehaviour
 
 	public void Recolour(Color accentColor)
 	{
+		if (isMarker)
+		{
+			float alpha = target.GetComponent<SpriteRenderer>().color.a;
+			accentColor = new (accentColor.r, accentColor.g, accentColor.b, alpha);
+		}
+		
 		if (target.TryGetComponent(out Outline outline)) outline.effectColor = accentColor;
 		else if (target.TryGetComponent(out Image image)) image.color = accentColor;
 		else if (target.TryGetComponent(out SpriteRenderer spriteRenderer)) spriteRenderer.color = accentColor;

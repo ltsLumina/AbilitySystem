@@ -1,7 +1,6 @@
 ﻿#region
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using DG.Tweening;
 using JetBrains.Annotations;
 using UnityEngine;
@@ -20,10 +19,9 @@ public class Player : Entity, IPausable
 	[SerializeField] int health = 3;
 	[SerializeField] int maxHealth = 3;
 	[SerializeField] float takeDamageCooldown = 1f;
-	
+
 	[Space(5)]
-	[SerializeField] List<float> speeds = new (2)
-	{ 50, 75 };
+	[SerializeField] float speed = 50;
 	[SerializeField] float topSpeed = 15;
 	[SerializeField] float moveDamping = 5;
 	[SerializeField] float stopDamping = 15;
@@ -31,21 +29,11 @@ public class Player : Entity, IPausable
 	[Space(10)]
 	[Header("Other")]
 	[SerializeField] Color accentColour = new (0.43f, 0.5f, 0.49f);
-	[SerializeField] bool mouseMove;
-
-	InputManager inputs;
-	PlayerInput playerInput;
+	
 	Rigidbody2D rb;
 
-	float speed
-	{
-		get => mouseMove ? speeds[1] * Stats.Speed : speeds[0] * Stats.Speed;
-		set
-		{
-			if (mouseMove) speeds[1] = value;
-			else speeds[0] = value;
-		}
-	}
+	float Speed => speed * Attributes.Speed;
+	float TopSpeed => topSpeed * Attributes.Speed;
 
 	public Color AccentColour
 	{
@@ -88,18 +76,25 @@ public class Player : Entity, IPausable
 
 	#region References
 	public Job Job => job;
-	public InputManager Inputs => GetComponentInChildren<InputManager>();
-	public PlayerInput PlayerInput => Inputs.GetComponent<PlayerInput>();
+	public InputManager InputManager { get; private set; }
+	public PlayerInput PlayerInput { get; private set; }
 	public Inventory Inventory { get; private set; }
 
 	/// <summary>
 	///     The ID of the player, which is equal to the player index + 1.
 	/// </summary>
-	public int ID => PlayerInput.playerIndex + 1;
+	public int ID
+	{
+		get
+		{
+			if (!PlayerInput) PlayerInput = GetComponentInChildren<PlayerInput>();
+			return PlayerInput.playerIndex + 1;
+		}
+	}
 	#endregion
 
 	#region Properties
-	public Stats Stats { get; private set; }
+	public Attributes Attributes { get; private set; }
 	#endregion
 
 	protected override void OnTick() { }
@@ -110,16 +105,6 @@ public class Player : Entity, IPausable
 	{
 		if (!Application.isPlaying) return;
 		gameObject.tag = $"Player {ID}";
-	}
-
-	void Awake()
-	{
-		#region References
-		Stats = GetComponent<Stats>();
-		Inventory = GetComponent<Inventory>();
-		#endregion
-
-		gameObject.name = name;
 	}
 
 	new string name
@@ -135,12 +120,22 @@ public class Player : Entity, IPausable
 
 	public override string ToString() => name;
 
+	void Awake()
+	{
+		#region References
+		rb = GetComponent<Rigidbody2D>();
+		Attributes = GetComponent<Attributes>();
+		Inventory = GetComponent<Inventory>();
+
+		InputManager = GetComponentInChildren<InputManager>();
+		PlayerInput = GetComponentInChildren<PlayerInput>();
+		#endregion
+
+		gameObject.name = name;
+	}
+	
 	protected override void OnStart()
 	{
-		inputs = GetComponentInChildren<InputManager>();
-		playerInput = inputs.GetComponent<PlayerInput>();
-		rb = GetComponent<Rigidbody2D>();
-		
 		//Rebind(mouseMove);
 
 		#region Init Player
@@ -169,17 +164,17 @@ public class Player : Entity, IPausable
 		switch (useMouseBindings)
 		{
 			case true: // Using Mouse bindings (Q, W, E, R)
-				playerInput.actions[InputManager.AbilityKeys[0]].ApplyBindingOverride("<Keyboard>/q");
-				playerInput.actions[InputManager.AbilityKeys[1]].ApplyBindingOverride("<Keyboard>/w");
-				playerInput.actions[InputManager.AbilityKeys[2]].ApplyBindingOverride("<Keyboard>/e");
-				playerInput.actions[InputManager.AbilityKeys[3]].ApplyBindingOverride("<Keyboard>/r");
+				PlayerInput.actions[InputManager.AbilityKeys[0]].ApplyBindingOverride("<Keyboard>/q");
+				PlayerInput.actions[InputManager.AbilityKeys[1]].ApplyBindingOverride("<Keyboard>/w");
+				PlayerInput.actions[InputManager.AbilityKeys[2]].ApplyBindingOverride("<Keyboard>/e");
+				PlayerInput.actions[InputManager.AbilityKeys[3]].ApplyBindingOverride("<Keyboard>/r");
 				break;
 
 			case false: // Using Keyboard bindings (h, j, k, l)
-				playerInput.actions[InputManager.AbilityKeys[0]].ApplyBindingOverride("<Keyboard>/h");
-				playerInput.actions[InputManager.AbilityKeys[1]].ApplyBindingOverride("<Keyboard>/j");
-				playerInput.actions[InputManager.AbilityKeys[2]].ApplyBindingOverride("<Keyboard>/k");
-				playerInput.actions[InputManager.AbilityKeys[3]].ApplyBindingOverride("<Keyboard>/l");
+				PlayerInput.actions[InputManager.AbilityKeys[0]].ApplyBindingOverride("<Keyboard>/h");
+				PlayerInput.actions[InputManager.AbilityKeys[1]].ApplyBindingOverride("<Keyboard>/j");
+				PlayerInput.actions[InputManager.AbilityKeys[2]].ApplyBindingOverride("<Keyboard>/k");
+				PlayerInput.actions[InputManager.AbilityKeys[3]].ApplyBindingOverride("<Keyboard>/l");
 				break;
 		}
 	}
@@ -200,31 +195,27 @@ public class Player : Entity, IPausable
 		transform.position = pos;
 	}
 
-	void FixedUpdate()
-	{
-		if (mouseMove) MouseMove();
-		else Move();
-	}
+	void FixedUpdate() => Move();
 
 	void Move()
 	{
-		if (Vector2.Dot(rb.linearVelocity, inputs.MoveInput) < 0) rb.linearVelocity = Vector2.zero;
+		if (Vector2.Dot(rb.linearVelocity, InputManager.MoveInput) < 0) rb.linearVelocity = Vector2.zero;
 		
-		rb.AddForce(inputs.MoveInput * speed);
-		rb.linearVelocity = Vector2.ClampMagnitude(rb.linearVelocity, topSpeed);
-		bool changingDir = Vector2.Dot(rb.linearVelocity, inputs.MoveInput) < 0;
+		rb.AddForce(InputManager.MoveInput * Speed);
+		rb.linearVelocity = Vector2.ClampMagnitude(rb.linearVelocity, TopSpeed);
+		bool changingDir = Vector2.Dot(rb.linearVelocity, InputManager.MoveInput) < 0;
 		rb.linearDamping = changingDir ? stopDamping : moveDamping;
-		if (!inputs.IsMoving) rb.linearDamping = Mathf.Lerp(rb.linearDamping, 100, 0.1f);
+		if (!InputManager.IsMoving) rb.linearDamping = Mathf.Lerp(rb.linearDamping, 100, 0.1f);
 	}
 
-	void MouseMove()
-	{
-		inputs.OverrideMoveInput((CameraMain.ScreenToWorldPoint(Input.mousePosition) - transform.position).normalized);
-
-		Vector3 mousePos = CameraMain.ScreenToWorldPoint(Input.mousePosition);
-		Vector3 dir = (mousePos - transform.position).normalized;
-		rb.AddForce(dir * speed);
-	}
+	// void MouseMove()
+	// {
+	// 	inputs.OverrideMoveInput((CameraMain.ScreenToWorldPoint(Input.mousePosition) - transform.position).normalized);
+	//
+	// 	Vector3 mousePos = CameraMain.ScreenToWorldPoint(Input.mousePosition);
+	// 	Vector3 dir = (mousePos - transform.position).normalized;
+	// 	rb.AddForce(dir * speed);
+	// }
 
 	protected override void OnTriggerEnter2D(Collider2D other)
 	{
@@ -238,9 +229,9 @@ public class Player : Entity, IPausable
 		if (isOnCooldown) return;
 
 		// Check if the player has shields, and if so, remove one shield and destroy the projectiles surrounding the player
-		if (Stats.Shields > 0)
+		if (Attributes.Shields > 0)
 		{
-			Stats.Remove("shields", 1);
+			Attributes.Remove(Attributes.Stats.Shields, 1);
 			OnTookDamage?.Invoke(true);
 
 			DestroyNearbyOrbs();

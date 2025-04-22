@@ -261,6 +261,8 @@ public class AbilityButton : MonoBehaviour, IPausable
 
 	public void Invoke()
 	{
+		if (!enabled) return; // if paused
+		
 		if (OnCooldown) return;
 
 		if (!ability.Invoke(owner, out Ability.InvokeOutcome reason))

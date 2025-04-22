@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
 using Lumina.Essentials.Attributes;
-using Lumina.Essentials.Modules;
 using MelenitasDev.SoundsGood;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -29,11 +28,9 @@ public class GameManager : Singleton<GameManager>
 		Defeat,
 		Loot,
 		Shop,
+		Transitioning
 	}
-
-	[Header("Paused")]
-	[SerializeField] bool isPaused;
-
+	
 	[Header("Boss")]
 	[ReadOnly]
 	[SerializeField] Boss currentBoss;
@@ -44,31 +41,13 @@ public class GameManager : Singleton<GameManager>
 	[ReadOnly]
 	[SerializeField] List<State> events = new ();
 
-	public State GetNextEvent()
-	{
-		if (events.Count == 0) return State.Lobby;
+	public List<State> Events => events;
 
-		State nextEvent = events[0];
-		events.RemoveAt(0);
-		return nextEvent;
-	}
+	public Boss CurrentBoss => currentBoss;
+	public bool IsTransitioning => currentState == State.Transitioning;
 
-	[Header("Debug")]
-	[Tooltip("Just for fun. Allows you to spawn bosses without despawning the current one.")]
-	[SerializeField] bool bypass;
-
-	public Boss CurrentBoss
-	{
-		get
-		{
-			if (Helpers.FindMultiple<Boss>().Length > 1) return null; // this is only used for duo bosses, which aren't even supported
-			return currentBoss;
-		}
-	}
-
-	public State CurrentState => currentState;
-
-	public bool IsPaused => isPaused;
+	public bool IsPaused => PauseManager.IsPaused;
+	public PauseManager PauseManager { get; private set; }
 
 	#region Pause & State Events
 	public event Action<State> OnStateChanged;
@@ -78,10 +57,19 @@ public class GameManager : Singleton<GameManager>
 	public event Action OnDefeat;
 	public event Action OnEnterLoot;
 	public event Action OnEnterShop;
-
-	public event Action OnPause;
-	public event Action OnResume;
+	public event Action Transitioning;
 	#endregion
+
+	public State CurrentState => currentState;
+	
+	public State GetNextEvent()
+	{
+		if (events.Count == 0) return State.Lobby;
+
+		State nextEvent = events[0];
+		events.RemoveAt(0);
+		return nextEvent;
+	}
 
 	public void SetState(State state)
 	{
@@ -174,6 +162,11 @@ public class GameManager : Singleton<GameManager>
 
 				OnEnterShop?.Invoke();
 				break;
+			
+			case State.Transitioning:
+				// blank state only used for transitioning
+				Transitioning?.Invoke();
+			break;
 
 			default:
 				throw new ArgumentOutOfRangeException(nameof(state), state, null);
@@ -242,13 +235,9 @@ public class GameManager : Singleton<GameManager>
 
 		StageManager.Reset();
 	}
-
-	List<IPausable> pausableObjects = new ();
 	
 	void Start()
 	{
-		pausableObjects = FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Include, FindObjectsSortMode.InstanceID).OfType<IPausable>().ToList();
-		
 		events.Clear();
 
 		OnEnterLobby += () =>
@@ -261,9 +250,19 @@ public class GameManager : Singleton<GameManager>
 			  State.Battle };
 
 			events.AddRange(allEvents);
+
+			if (events.Count != allEvents.Count) 
+				Debug.LogWarning("The events list is longer than the expected. This may cause unexpected behavior.");
 		};
 
 		SetState(GetNextEvent());
+	}
+
+	protected override void Awake()
+	{
+		base.Awake();
+
+		PauseManager = GetComponent<PauseManager>();
 	}
 
 	void Update()
@@ -271,32 +270,9 @@ public class GameManager : Singleton<GameManager>
 		if (isTimerRunning) timer += Time.deltaTime;
 
 #if UNITY_EDITOR
-		if (Input.GetKeyDown(KeyCode.Escape))
+		if (Input.GetKeyDown(KeyCode.F1))
 		{
-			isPaused = !isPaused;
-
-			const float maxCutoffFreq = 22000f;
-			const float cutoffFreq = 1000f;
-			AudioManager.Mixer.DOSetFloat("Muffler", isPaused ? cutoffFreq : maxCutoffFreq, 0.5f).SetUpdate(true);
-
-			pausableObjects = FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Include, FindObjectsSortMode.InstanceID).OfType<IPausable>().ToList();
-			
-			if (isPaused)
-			{
-				foreach (IPausable pausable in pausableObjects) 
-					pausable.Pause();
-
-				Time.timeScale = 0f;
-				OnPause?.Invoke();
-			}
-			else
-			{
-				foreach (IPausable pausable in pausableObjects) 
-					pausable.Resume();
-				
-				Time.timeScale = 1f;
-				OnResume?.Invoke();
-			}
+			CurrentBoss.Kill();
 		}
 #endif
 	}

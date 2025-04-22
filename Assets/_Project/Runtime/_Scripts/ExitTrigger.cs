@@ -43,7 +43,7 @@ public class ExitTrigger : MonoBehaviour
 
 	void OnTriggerEnter2D(Collider2D other)
 	{
-		if (other.TryGetComponent(out Player _)) { playersInTrigger++; }
+		if (other.TryGetComponent(out Player _)) playersInTrigger++;
 
 		if (playersInTrigger == PlayerManager.Instance.Players.Count)
 		{
@@ -51,6 +51,8 @@ public class ExitTrigger : MonoBehaviour
 
 			if (gameManager.CurrentBoss == null || gameManager.CurrentBoss.IsDead)
 			{
+				gameManager.SetState(GameManager.State.Transitioning);
+				
 				playersInTrigger = 0;
 				
 				AudioManager.StopAllMusic(1.85f);
@@ -58,7 +60,10 @@ public class ExitTrigger : MonoBehaviour
 				StageManager.ScrollLevel();
 
 				onwardGraphic.DOFade(0f, 0.25f).OnComplete
-						(() => CameraMain.transform.DOMoveX(CameraMain.transform.position.x + StageManager.STAGE_WIDTH, 2f).SetEase(Ease.InCirc).SetEase(Ease.OutCubic).SetUpdate(UpdateType.Late).OnComplete(() => { gameManager.SetState(gameManager.GetNextEvent()); }));
+						(() => CameraMain.transform.DOMoveX(CameraMain.transform.position.x + StageManager.STAGE_WIDTH, 2f).SetEase(Ease.InCirc).SetEase(Ease.OutCubic).SetUpdate(UpdateType.Late).OnComplete(() =>
+						{
+							gameManager.SetState(gameManager.GetNextEvent());
+						}));
 			}
 		}
 	}
