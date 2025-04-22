@@ -22,6 +22,7 @@ MonoBehaviour:
   cooldownType: 0
   castTime: 0
   cooldown: 30
+  startsOnCooldown: 1
   damage: 1000
   abilityToPrime: {fileID: 0}
   primeChance: 0

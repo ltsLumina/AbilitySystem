@@ -1,5 +1,7 @@
 ﻿#region
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using DG.Tweening;
 using Lumina.Essentials.Attributes;
 using UnityEngine;
@@ -13,6 +15,13 @@ public class PlayerManager : Singleton<PlayerManager>
 	[ReadOnly]
 	[SerializeField] Player[] players = new Player[3];
 
+	/// <summary>
+	///     The players in the game.
+	/// </summary>
+	/// <returns>
+	///     A read-only array of players. This array will not contain any null values.
+	///     The count will therefore reflect how many players are actually playing.
+	/// </returns>
 	public ReadOnlyArray<Player> Players
 	{
 		get
@@ -77,12 +86,66 @@ public class PlayerManager : Singleton<PlayerManager>
 		Debug.LogWarning("Player not found in the array.");
 	}
 
+#if UNITY_EDITOR
+	void OnGUI()
+	{
+		List<GameObject> allJobs = Resources.LoadAll<GameObject>("PREFABS/Jobs").ToList();
+		GameObject defaultJob = DefaultJob;
+
+		GUILayout.BeginArea(new (0, 100, 100, 100));
+
+		string prettyName = defaultJob.name.Replace("(default)", string.Empty);
+
+		if (GUILayout.Button($"Spawn {prettyName}"))
+		{
+			PlayerInputManager.instance.playerPrefab = defaultJob;
+			PlayerInputManager.instance.JoinPlayer();
+		}
+
+		foreach (GameObject job in allJobs)
+		{
+			if (job == defaultJob) continue;
+
+			if (GUILayout.Button($"Spawn {job.name}"))
+			{
+				PlayerInputManager.instance.playerPrefab = job;
+				PlayerInputManager.instance.JoinPlayer();
+			}
+		}
+
+		GUILayout.EndArea();
+	}
+#endif
+
 	void Start()
 	{
 		var manager = PlayerInputManager.instance;
 		
 		manager.onPlayerJoined += HandlePlayerJoined;
 		manager.onPlayerLeft += HandlePlayerLeft;
+
+		manager.playerPrefab = DefaultJob;
+	}
+
+	GameObject DefaultJob
+	{
+		get
+		{
+			List<GameObject> allJobs = Resources.LoadAll<GameObject>("PREFABS/Jobs").ToList();
+#if UNITY_EDITOR
+			GameObject defaultJob = allJobs.FirstOrDefault(x => x.name.Contains("default"));
+#else
+			var defaultJob = allJobs.FirstOrDefault(x => x.name.Contains("RPR"));
+#endif
+
+			if (defaultJob == null)
+			{
+				Logger.LogError("Default job not found");
+				return null;
+			}
+
+			return defaultJob;
+		}
 	}
 
 	void HandlePlayerJoined(PlayerInput input)
@@ -95,12 +158,11 @@ public class PlayerManager : Singleton<PlayerManager>
 		if (firstPlayer) player.transform.position = new (0f, 0f, 0f);
 		else player.transform.position = Players[0].transform.position + new Vector3(Random.insideUnitCircle.x, Random.insideUnitCircle.y) * 3f;
 
-		player.name = $"Player {input.playerIndex + 1}";
-		player.tag = $"Player {input.playerIndex + 1}";
+		player.tag = $"Player {player.ID}";
 		player.transform.SetParent(GameObject.Find("Important").transform);
 		player.transform.SetSiblingIndex(input.playerIndex);
 
-		var canvas = GameObject.Find($"Player {input.playerIndex + 1} Hotbar").GetComponent<Canvas>();
+		var canvas = GameObject.Find($"Player {player.ID} Hotbar").GetComponent<Canvas>();
 		if (canvas)
 		{
 			canvas.GetComponent<CanvasGroup>().alpha = 0f;

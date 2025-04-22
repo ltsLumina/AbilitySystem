@@ -15,16 +15,17 @@ MonoBehaviour:
   job: 1
   abilityName: Jolt
   description: '[Primes] and [Refunds] Verfire'
-  icon: {fileID: 21300000, guid: 7fe9d7925db02f94cb2bef789b377977, type: 3}
+  icon: {fileID: 21300000, guid: c48c433693e329749bf268b404f2d9be, type: 3}
   type: 0
   range: 0
   radius: 0
   cooldownType: 2
   castTime: 1.5
-  cooldown: 3
+  cooldown: 2.5
+  startsOnCooldown: 0
   damage: 75
   abilityToPrime: {fileID: 11400000, guid: fa0691b36ecc15d4aa89d1ba2386619e, type: 2}
   primeChance: 1
-  abilityToRefund: {fileID: 11400000, guid: fa0691b36ecc15d4aa89d1ba2386619e, type: 2}
-  refundChance: 1
+  abilityToRefund: {fileID: 0}
+  refundChance: 0
   effects: []

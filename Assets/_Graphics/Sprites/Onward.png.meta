@@ -1,0 +1,1586 @@
+fileFormatVersion: 2
+guid: 514c9a36de9287f43b43ae0ba803808e
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 8133932001958239591
+    second: Onward_0
+  - first:
+      213: 8853256779687183775
+    second: Onward_1
+  - first:
+      213: 7173602337980899881
+    second: Onward_2
+  - first:
+      213: -8234671352805609683
+    second: Onward_3
+  - first:
+      213: 4498881809878908073
+    second: Onward_4
+  - first:
+      213: 677428213949304690
+    second: Onward_5
+  - first:
+      213: -8615465744115181578
+    second: Onward_6
+  - first:
+      213: 1404357704708185020
+    second: Onward_7
+  - first:
+      213: 6406549628379546659
+    second: Onward_8
+  - first:
+      213: -1769251851999919584
+    second: Onward_9
+  - first:
+      213: 995600197565222511
+    second: Onward_10
+  - first:
+      213: 5337102492780228024
+    second: Onward_11
+  - first:
+      213: 7840856837033233148
+    second: Onward_12
+  - first:
+      213: 6962253369325532512
+    second: Onward_13
+  - first:
+      213: -5877117397812444779
+    second: Onward_14
+  - first:
+      213: 9017653073228111234
+    second: Onward_15
+  - first:
+      213: -714022069636594615
+    second: Onward_16
+  - first:
+      213: 1810100638651314761
+    second: Onward_17
+  - first:
+      213: -8259973797793699640
+    second: Onward_18
+  - first:
+      213: -6105468351896695551
+    second: Onward_19
+  - first:
+      213: 2966405261363809320
+    second: Onward_20
+  - first:
+      213: 8805948950510808331
+    second: Onward_21
+  - first:
+      213: -8382437742036824011
+    second: Onward_22
+  - first:
+      213: -2158936242061878939
+    second: Onward_23
+  - first:
+      213: 2480828995470734156
+    second: Onward_24
+  - first:
+      213: -5518748362519546255
+    second: Onward_25
+  - first:
+      213: 5057402799158741631
+    second: Onward_26
+  - first:
+      213: 8668404043078416462
+    second: Onward_27
+  - first:
+      213: -7075655458991913419
+    second: Onward_28
+  - first:
+      213: -2776932537928948606
+    second: Onward_29
+  - first:
+      213: 5550436984768431478
+    second: Onward_30
+  - first:
+      213: -1572972838376625835
+    second: Onward_31
+  - first:
+      213: -8371649110086525295
+    second: Onward_32
+  - first:
+      213: 7668412203829117633
+    second: Onward_33
+  - first:
+      213: 7607372223012276771
+    second: Onward_34
+  - first:
+      213: 4296754349088678962
+    second: Onward_35
+  - first:
+      213: -6880041961806623910
+    second: Onward_36
+  - first:
+      213: 2372069559809348191
+    second: Onward_37
+  - first:
+      213: 2464354667667125103
+    second: Onward_38
+  - first:
+      213: -5261416318932973091
+    second: Onward_39
+  - first:
+      213: -7680724847833542191
+    second: Onward_40
+  - first:
+      213: -7369826404423268319
+    second: Onward_41
+  - first:
+      213: -8589217802583655740
+    second: Onward_42
+  - first:
+      213: -6048844636104837643
+    second: Onward_43
+  - first:
+      213: 253334281862473409
+    second: Onward_44
+  - first:
+      213: -4773929956111845733
+    second: Onward_45
+  - first:
+      213: -540499097871302202
+    second: Onward_46
+  - first:
+      213: -8152689818244323702
+    second: Onward_47
+  - first:
+      213: 3997070488366517205
+    second: Onward_48
+  - first:
+      213: 4059466266154895330
+    second: Onward_49
+  - first:
+      213: 3995890026349581898
+    second: Onward_50
+  - first:
+      213: -656197901201469760
+    second: Onward_51
+  - first:
+      213: -764504633547852075
+    second: Onward_52
+  - first:
+      213: -6298070111065629907
+    second: Onward_53
+  - first:
+      213: -1527819933225568421
+    second: Onward_54
+  - first:
+      213: -957822752424050799
+    second: Onward_55
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 45
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Onward_0
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 1074
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 76d17e37f0881e070800000000000000
+      internalID: 8133932001958239591
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_1
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 1054
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f95c29272261dda70800000000000000
+      internalID: 8853256779687183775
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_2
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 1034
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 922634ba151cd8360800000000000000
+      internalID: 7173602337980899881
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_3
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 1014
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d2fafe5a80298bd80800000000000000
+      internalID: -8234671352805609683
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_4
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 994
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9ac7c448b2d3f6e30800000000000000
+      internalID: 4498881809878908073
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_5
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 974
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 27f86451f55b66900800000000000000
+      internalID: 677428213949304690
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_6
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 954
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6f7d77b6d87bf6880800000000000000
+      internalID: -8615465744115181578
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_7
+      rect:
+        serializedVersion: 2
+        x: 123
+        y: 706
+        width: 255
+        height: 255
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cbbd6be44e74d7310800000000000000
+      internalID: 1404357704708185020
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_8
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 934
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 324497391f2a8e850800000000000000
+      internalID: 6406549628379546659
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_9
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 914
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 022c75380da5277e0800000000000000
+      internalID: -1769251851999919584
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_10
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 894
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f6e0f22da1511dd00800000000000000
+      internalID: 995600197565222511
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_11
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 874
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8bd6404a072311a40800000000000000
+      internalID: 5337102492780228024
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_12
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 854
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cfa0f0a20c150dc60800000000000000
+      internalID: 7840856837033233148
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_13
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 834
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0653ae24d84ee9060800000000000000
+      internalID: 6962253369325532512
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_14
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 814
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5910f107dd8407ea0800000000000000
+      internalID: -5877117397812444779
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_15
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 794
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 28d987941b3252d70800000000000000
+      internalID: 9017653073228111234
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_16
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 774
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9448581f5b84716f0800000000000000
+      internalID: -714022069636594615
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_17
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 754
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 942f486c0f4ce1910800000000000000
+      internalID: 1810100638651314761
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_18
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 734
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8c8e878189dae5d80800000000000000
+      internalID: -8259973797793699640
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_19
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 714
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 10dcec1d1e4054ba0800000000000000
+      internalID: -6105468351896695551
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_20
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 694
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 82c80775ed9ca2920800000000000000
+      internalID: 2966405261363809320
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_21
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 674
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b0dab612ae3053a70800000000000000
+      internalID: 8805948950510808331
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_22
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 654
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 530511229499bab80800000000000000
+      internalID: -8382437742036824011
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_23
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 634
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5695f272deae902e0800000000000000
+      internalID: -2158936242061878939
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_24
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 614
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c43b58fc3dcad6220800000000000000
+      internalID: 2480828995470734156
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_25
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 594
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 176f0479a977963b0800000000000000
+      internalID: -5518748362519546255
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_26
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 574
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f7a4ce1fc018f2640800000000000000
+      internalID: 5057402799158741631
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_27
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 554
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e48bf3dcc8b5c4870800000000000000
+      internalID: 8668404043078416462
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_28
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 534
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 536cbb539d83ecd90800000000000000
+      internalID: -7075655458991913419
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_29
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 514
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 284658fc19a5679d0800000000000000
+      internalID: -2776932537928948606
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_30
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 494
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6750059b70d170d40800000000000000
+      internalID: 5550436984768431478
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_31
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 474
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5592937998dab2ae0800000000000000
+      internalID: -1572972838376625835
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_32
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 454
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 19ed3114d7de1db80800000000000000
+      internalID: -8371649110086525295
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_33
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 434
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1c24188354cab6a60800000000000000
+      internalID: 7668412203829117633
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_34
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 414
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 32a02d23bb0d29960800000000000000
+      internalID: 7607372223012276771
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_35
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 394
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 234ab88b05321ab30800000000000000
+      internalID: 4296754349088678962
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_36
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 374
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a5b0cbaa94e2580a0800000000000000
+      internalID: -6880041961806623910
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_37
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 354
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f5214f662b84be020800000000000000
+      internalID: 2372069559809348191
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_38
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 334
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f63ffd67385233220800000000000000
+      internalID: 2464354667667125103
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_39
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 314
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dd98e8eebb1bbf6b0800000000000000
+      internalID: -5261416318932973091
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_40
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 294
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1d19d53f175986590800000000000000
+      internalID: -7680724847833542191
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_41
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 274
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1288e04aeed19b990800000000000000
+      internalID: -7369826404423268319
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_42
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 254
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4ca3a8a8ae7fcc880800000000000000
+      internalID: -8589217802583655740
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_43
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 234
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5f5b1730adf2e0ca0800000000000000
+      internalID: -6048844636104837643
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_44
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 214
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1c667d7ef26048300800000000000000
+      internalID: 253334281862473409
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_45
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 194
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b967b5f8ff79fbdb0800000000000000
+      internalID: -4773929956111845733
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_46
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 174
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6c146f52fe2cf78f0800000000000000
+      internalID: -540499097871302202
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_47
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 154
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a866a9b1ec3dbde80800000000000000
+      internalID: -8152689818244323702
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_48
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 134
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5db88498e62787730800000000000000
+      internalID: 3997070488366517205
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_49
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 114
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2e708d3af0f165830800000000000000
+      internalID: 4059466266154895330
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_50
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 94
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a46d71ecec0447730800000000000000
+      internalID: 3995890026349581898
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_51
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 74
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0ce878c4c77b4e6f0800000000000000
+      internalID: -656197901201469760
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_52
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 54
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5d67d38161fe365f0800000000000000
+      internalID: -764504633547852075
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_53
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 34
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d2b9d634a92c898a0800000000000000
+      internalID: -6298070111065629907
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_54
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 14
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b57345f8dd71ccae0800000000000000
+      internalID: -1527819933225568421
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Onward_55
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 0
+        width: 7
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 19f3afb084125b2f0800000000000000
+      internalID: -957822752424050799
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Onward_0: 8133932001958239591
+      Onward_1: 8853256779687183775
+      Onward_10: 995600197565222511
+      Onward_11: 5337102492780228024
+      Onward_12: 7840856837033233148
+      Onward_13: 6962253369325532512
+      Onward_14: -5877117397812444779
+      Onward_15: 9017653073228111234
+      Onward_16: -714022069636594615
+      Onward_17: 1810100638651314761
+      Onward_18: -8259973797793699640
+      Onward_19: -6105468351896695551
+      Onward_2: 7173602337980899881
+      Onward_20: 2966405261363809320
+      Onward_21: 8805948950510808331
+      Onward_22: -8382437742036824011
+      Onward_23: -2158936242061878939
+      Onward_24: 2480828995470734156
+      Onward_25: -5518748362519546255
+      Onward_26: 5057402799158741631
+      Onward_27: 8668404043078416462
+      Onward_28: -7075655458991913419
+      Onward_29: -2776932537928948606
+      Onward_3: -8234671352805609683
+      Onward_30: 5550436984768431478
+      Onward_31: -1572972838376625835
+      Onward_32: -8371649110086525295
+      Onward_33: 7668412203829117633
+      Onward_34: 7607372223012276771
+      Onward_35: 4296754349088678962
+      Onward_36: -6880041961806623910
+      Onward_37: 2372069559809348191
+      Onward_38: 2464354667667125103
+      Onward_39: -5261416318932973091
+      Onward_4: 4498881809878908073
+      Onward_40: -7680724847833542191
+      Onward_41: -7369826404423268319
+      Onward_42: -8589217802583655740
+      Onward_43: -6048844636104837643
+      Onward_44: 253334281862473409
+      Onward_45: -4773929956111845733
+      Onward_46: -540499097871302202
+      Onward_47: -8152689818244323702
+      Onward_48: 3997070488366517205
+      Onward_49: 4059466266154895330
+      Onward_5: 677428213949304690
+      Onward_50: 3995890026349581898
+      Onward_51: -656197901201469760
+      Onward_52: -764504633547852075
+      Onward_53: -6298070111065629907
+      Onward_54: -1527819933225568421
+      Onward_55: -957822752424050799
+      Onward_6: -8615465744115181578
+      Onward_7: 1404357704708185020
+      Onward_8: 6406549628379546659
+      Onward_9: -1769251851999919584
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

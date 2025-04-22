@@ -14,14 +14,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   job: 1
   abilityName: Enchanted Riposte
-  description: 
-  icon: {fileID: 0}
+  description: Critically strikes if dealt within 5 units of the target.
+  icon: {fileID: 21300000, guid: df31af59dc52e7843b8dd474417edda1, type: 3}
   type: 2
-  range: 0
+  range: 5
   radius: 0
   cooldownType: 1
   castTime: 0
-  cooldown: 30
+  cooldown: 999
+  startsOnCooldown: 1
   damage: 350
   abilityToPrime: {fileID: 11400000, guid: baed8f7121eb5a84681f57442d6f7351, type: 2}
   primeChance: 0.5

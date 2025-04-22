@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   job: 0
   abilityName: Primary
-  description: 
-  icon: {fileID: 21300000, guid: eceb0f510ddf4464cbb9dfb8afd35294, type: 3}
+  description: Critically strikes if dealt within 5 units of the target.
+  icon: {fileID: -8567684693673632528, guid: 60f136739762ae34e973f08fac4740f0, type: 3}
   type: 0
-  range: 0
+  range: 5
   radius: 0
   cooldownType: 0
   castTime: 0

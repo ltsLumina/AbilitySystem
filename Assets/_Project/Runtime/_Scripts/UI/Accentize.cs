@@ -10,9 +10,15 @@ public class Accentize : MonoBehaviour
 	[ReadOnly]
 	[SerializeField] Boss associatedBoss;
 	[SerializeField] Component target;
-
+	
 	void Start()
 	{
+		if (TryGetComponentInParent(out Player player))
+		{
+			Recolour(player.AccentColour);
+			return;
+		}
+		
 		associatedBoss = GameManager.Instance.CurrentBoss;
 		if (!associatedBoss) return; // Note: this is only for duo bosses, which aren't supported anyways.
 		Recolour(associatedBoss.AccentColour);
@@ -29,4 +35,15 @@ public class Accentize : MonoBehaviour
 		}
 		else Debug.LogWarning($"No Accentize component found on {gameObject.name}");
 	}
+
+	#region Utility
+	bool TryGetComponentInParent<T>(out T component)
+	{
+		component = GetComponentInParent<T>();
+		if (component != null) return true;
+
+		component = GetComponent<T>();
+		return component != null;
+	}
+	#endregion
 }

@@ -15,6 +15,7 @@ MonoBehaviour:
   sceneDatasByGuid:
     keys:
     - 8c9cfa26abfee488c85f1582747f6a02
+    - 
     values:
     - goDatasByGlobalId:
         keys:
@@ -27,7 +28,7 @@ MonoBehaviour:
         - iColor: 1
           icon: d_eyeDropper.sml
         - iColor: 1
-          icon: d_eyeDropper.sml
+          icon: Canvas Icon
         - iColor: 0
           icon: d_eyeDropper.sml
         - iColor: 1
@@ -35,15 +36,21 @@ MonoBehaviour:
         - iColor: 1
           icon: Favorite
       goDatasByInstanceId:
-        keys: dc9800000c990000f0980000be99000030f2ffff
+        keys: 0c9900003c99000020990000e299000096990000
         values:
         - iColor: 1
           icon: d_eyeDropper.sml
         - iColor: 1
-          icon: d_eyeDropper.sml
+          icon: Canvas Icon
         - iColor: 0
           icon: d_eyeDropper.sml
         - iColor: 1
           icon: Favorite
         - iColor: 1
           icon: Favorite
+    - goDatasByGlobalId:
+        keys: []
+        values: []
+      goDatasByInstanceId:
+        keys: 
+        values: []

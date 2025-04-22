@@ -13,15 +13,16 @@ MonoBehaviour:
   m_Name: SGE [4] (Ultimate)
   m_EditorClassIdentifier: 
   job: 3
-  abilityName: 
+  abilityName: Chain Stratagem
   description: 
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 1828bc5df54e254498a4c8c88c12c2de, type: 3}
   type: 3
   range: 0
   radius: 0
   cooldownType: 0
   castTime: 0
-  cooldown: 45
+  cooldown: 40
+  startsOnCooldown: 1
   damage: 650
   abilityToPrime: {fileID: 0}
   primeChance: 0

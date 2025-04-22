@@ -8,31 +8,29 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using VInspector;
 using static Lumina.Essentials.Modules.Helpers;
+using Random = UnityEngine.Random;
 #endregion
 
 public class Player : Entity
 {
-	[HideInInspector] [UsedImplicitly]
-	public VInspectorData data;
-
 	[SerializeField] Job job;
+	
 	[Space(10)]
 	[Header("Health")]
-
 	[SerializeField] int health = 3;
 	[SerializeField] int maxHealth = 3;
 	[SerializeField] float takeDamageCooldown = 1f;
+	
 	[Space(5)]
-	[Foldout("Movement")]
 	[SerializeField] List<float> speeds = new (2)
 	{ 50, 75 };
-	[EndFoldout]
 	[SerializeField] float topSpeed = 15;
 	[SerializeField] float moveDamping = 5;
 	[SerializeField] float stopDamping = 15;
+
 	[Space(10)]
 	[Header("Other")]
-
+	[SerializeField] Color accentColour = new (0.43f, 0.5f, 0.49f);
 	[SerializeField] bool mouseMove;
 
 	InputManager inputs;
@@ -49,6 +47,25 @@ public class Player : Entity
 		}
 	}
 
+	public Color AccentColour
+	{
+		get
+		{
+			accentColour.a = 1f;
+
+			if (accentColour == Color.black) accentColour = Random.ColorHSV(0, 1, 1, 1, 1, 1, 1, 1);
+
+			return accentColour;
+		}
+	}
+
+	/// <summary>
+	///     Called when the player takes damage.
+	///     This event is triggered when the player takes damage, regardless of whether they have shields or not.
+	///     If the player has shields, the event is triggered after the shields are removed.
+	///     The boolean parameter indicates whether the player had shields or not when taking damage.
+	/// </summary>
+	public event Action<bool> OnTookDamage;
 	public event Action OnDeath;
 
 	public int Health
@@ -66,16 +83,23 @@ public class Player : Entity
 	[Button] [UsedImplicitly]
 	void KillPlayer() => Health = 0;
 
+	[Button] [UsedImplicitly]
+	void HurtPlayer() => TakeDamage(1);
+
 	#region References
 	public Job Job => job;
 	public InputManager Inputs => GetComponentInChildren<InputManager>();
 	public PlayerInput PlayerInput => Inputs.GetComponent<PlayerInput>();
+	public Inventory Inventory { get; private set; }
+
+	/// <summary>
+	///     The ID of the player, which is equal to the player index + 1.
+	/// </summary>
+	public int ID => PlayerInput.playerIndex + 1;
 	#endregion
 
 	#region Properties
 	public Stats Stats { get; private set; }
-
-	public Inventory Inventory { get; private set; }
 	#endregion
 
 	protected override void OnTick() { }
@@ -85,14 +109,31 @@ public class Player : Entity
 	void Reset()
 	{
 		if (!Application.isPlaying) return;
-		gameObject.tag = $"Player {playerInput.playerIndex + 1}";
+		gameObject.tag = $"Player {ID}";
 	}
 
 	void Awake()
 	{
+		#region References
 		Stats = GetComponent<Stats>();
 		Inventory = GetComponent<Inventory>();
+		#endregion
+
+		gameObject.name = name;
 	}
+
+	new string name
+	{
+		get
+		{
+			string id = ID.ToString();
+			string jobName = job.name;
+			string playerName = $"Player {id} - {jobName}";
+			return playerName;
+		}
+	}
+
+	public override string ToString() => name;
 
 	protected override void OnStart()
 	{
@@ -109,6 +150,8 @@ public class Player : Entity
 		{
 			Logger.LogWarning("Player has died!");
 
+			statusEffects.Clear();
+
 			//playerInput.DeactivateInput();
 			//playerInput.SwitchCurrentActionMap("UI");
 
@@ -116,6 +159,8 @@ public class Player : Entity
 
 			//SceneManagerExtended.ReloadScene();
 		};
+
+		GameManager.Instance.OnVictory += () => { statusEffects.Clear(); };
 		#endregion
 	}
 
@@ -137,6 +182,22 @@ public class Player : Entity
 				playerInput.actions[InputManager.AbilityKeys[3]].ApplyBindingOverride("<Keyboard>/l");
 				break;
 		}
+	}
+
+	void Update()
+	{
+		// Calculate screen bounds based on the camera's position and orthographic size
+		Vector3 cameraPos = CameraMain.transform.position;
+		float screenHalfHeight = CameraMain.orthographicSize;
+		float screenHalfWidth = screenHalfHeight * CameraMain.aspect;
+
+		// Clamp the player's position to the screen bounds
+		Vector3 pos = transform.position;
+		pos.x = Mathf.Clamp(pos.x, cameraPos.x - screenHalfWidth + 0.5f, cameraPos.x + screenHalfWidth - 0.5f);
+		pos.y = Mathf.Clamp(pos.y, cameraPos.y - screenHalfHeight + 0.5f, cameraPos.y + screenHalfHeight - 0.5f);
+
+		// Apply the clamped position
+		transform.position = pos;
 	}
 
 	void FixedUpdate()
@@ -180,6 +241,7 @@ public class Player : Entity
 		if (Stats.Shields > 0)
 		{
 			Stats.Remove("shields", 1);
+			OnTookDamage?.Invoke(true);
 
 			DestroyNearbyOrbs();
 
@@ -195,9 +257,10 @@ public class Player : Entity
 
 		Debug.Assert((int) damage == 1, $"Tried to deal {damage} damage to {name}, but it was clamped to {(int) damage}." + "\nThis is likely due to the damage being negative, zero, or greater than the current health.");
 		Health -= Mathf.RoundToInt(damage);
+		OnTookDamage?.Invoke(false);
 		StartCoroutine(DamageCooldown());
 
-		base.TakeDamage(damage);
+		base.TakeDamage(damage); // logs the damage taken
 
 		sprite.FlashSprite(Color.red, 0.3f);
 		CameraMain.DOShakePosition(0.3f, 1f);
@@ -218,17 +281,8 @@ public class Player : Entity
 	IEnumerator DamageCooldown()
 	{
 		isOnCooldown = true;
-		yield return new WaitForSeconds(takeDamageCooldown); // Cooldown duration
+		yield return new WaitForSeconds(takeDamageCooldown); 
 		isOnCooldown = false;
-	}
-
-	public void OnHit(Enemy enemy = null)
-	{
-		health--;
-
-		var sprite = GetComponentInChildren<SpriteRenderer>();
-		sprite.FlashSprite(Color.red, 0.3f);
-		StartCoroutine(sprite.CreateAfterImages(0.05f, 0.25f, 5));
 	}
 
 	void OnDrawGizmos()
@@ -243,10 +297,10 @@ public class Player : Entity
 
 	void OnGUI()
 	{
-		if (statusEffects.Count == 0) return;
+		Vector3 screenPosition = CameraMain.WorldToScreenPoint(transform.position + Vector3.up * 2); // Offset above the player's head
+		screenPosition.y = Screen.height - screenPosition.y;                                         // Convert to GUI coordinates
 
-		// on the left of the middle of the screen
-		GUILayout.BeginArea(new (Screen.width / 2f - 200, Screen.height / 2f - 200, 400, 400));
+		GUILayout.BeginArea(new (screenPosition.x - 50, screenPosition.y - 20, 200, 50));
 
 		foreach (StatusEffect effect in statusEffects)
 		{

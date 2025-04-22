@@ -17,18 +17,17 @@ public class ChainStratagem : Debuff
 
 	protected override void OnInvoke()
 	{
-		entity.TryGetComponent(out Boss boss);
-		if (!boss) return;
-
-		initialHealth = boss.Health;
+		
 	}
 
 	protected override void OnDecay()
 	{
 		if (!entity.TryGetComponent(out Boss boss)) return;
-		float compiledDamage = initialHealth - boss.Health;
+		float compiledDamage = boss.MaxHealth - boss.Health;
 
-		if (compiledDamage >= initialHealth * 0.05f)
+		const float threshold = 0.05f;
+
+		if (compiledDamage >= boss.MaxHealth * threshold) // 5% of max health
 		{
 			foreach (Player player in PlayerManager.Instance.Players)
 			{
@@ -36,5 +35,6 @@ public class ChainStratagem : Debuff
 				Debug.Log("Chain Stratagem shield granted to " + player.name);
 			}
 		}
+		else { Debug.Log($"Chain Stratagem failed. \nCompiled damage: {compiledDamage} ({compiledDamage / initialHealth * 100}%)"); }
 	}
 }

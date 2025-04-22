@@ -17,7 +17,7 @@ public class AbilitySettings : ScriptableObject
 	[SerializeField] float globalCooldown = 1.5f;
 	[SerializeField] int dotRate = 3;
 	[RangedFloat(0.9f, 1.15f)]
-	[SerializeField] RangedFloat damageVariance = new (0.95f, 1.1f);
+	[SerializeField] RangedFloat damageVariance = new (0.95f, 1.05f);
 	[SerializeField] float critChance = 0.05f;
 	[SerializeField] float critMultiplier = 1.5f;
 #pragma warning restore CS0414 // Field is assigned but its value is never used

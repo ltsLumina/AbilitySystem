@@ -1,7 +1,9 @@
 ﻿#region
+using System;
 using UnityEngine;
 #endregion
 
+[Obsolete("This class is deprecated. Use Boss instead.")]
 public abstract class Enemy : Entity
 {
 	protected override void OnTick() { }
@@ -13,7 +15,6 @@ public abstract class Enemy : Entity
 		if (other.TryGetComponent(out Player player))
 		{
 			Debug.Log("Player entered enemy trigger.");
-			player.OnHit(this);
 		}
 	}
 

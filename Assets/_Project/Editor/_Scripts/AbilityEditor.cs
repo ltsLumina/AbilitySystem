@@ -19,6 +19,7 @@ public class AbilityEditor : Editor
 	SerializedProperty cooldownType;
 	SerializedProperty castTime;
 	SerializedProperty cooldown;
+	SerializedProperty startsOnCooldown;
 	SerializedProperty damage;
 	SerializedProperty abilityToPrime;
 	SerializedProperty primeChance;
@@ -101,6 +102,7 @@ public class AbilityEditor : Editor
 		cooldownType = serializedObject.FindProperty("cooldownType");
 		castTime = serializedObject.FindProperty("castTime");
 		cooldown = serializedObject.FindProperty("cooldown");
+		startsOnCooldown = serializedObject.FindProperty("startsOnCooldown");
 		damage = serializedObject.FindProperty("damage");
 		abilityToPrime = serializedObject.FindProperty("abilityToPrime");
 		primeChance = serializedObject.FindProperty("primeChance");
@@ -113,10 +115,9 @@ public class AbilityEditor : Editor
 	bool showProperties = true;
 	bool showAdditional;
 	bool showTextures;
-	static bool overrideGCD;
 	int selectedEffect;
 	TextAsset csv;
-	
+
 	int loadStage
 	{
 		get => EditorPrefs.GetInt("LoadStage", 0);
@@ -181,18 +182,12 @@ public class AbilityEditor : Editor
 					switch (cooldownType.enumValueIndex)
 					{
 						case 0: // GCD
-							overrideGCD = EditorGUILayout.Toggle("Override GCD", overrideGCD);
-
-							using (new EditorGUI.DisabledScope(!overrideGCD))
-							{
-								if (!overrideGCD) cooldown.floatValue = AbilitySettings.GlobalCooldown;
-								EditorGUILayout.PropertyField(cooldown);
-							}
-
+							EditorGUILayout.PropertyField(cooldown);
+							
 							const string defaultMsg = "This ability is on the global cooldown.";
 							const string overrideMsg = "This ability is on the global cooldown, but the cooldown has been overridden.";
 
-							if (!overrideGCD) EditorGUILayout.HelpBox(defaultMsg, MessageType.Info);
+							if (Mathf.Approximately(cooldown.floatValue, AbilitySettings.GlobalCooldown)) EditorGUILayout.HelpBox(defaultMsg, MessageType.Info);
 							else EditorGUILayout.HelpBox(overrideMsg, MessageType.Warning);
 
 							castTime.floatValue = 0;
@@ -213,6 +208,8 @@ public class AbilityEditor : Editor
 							if (cooldown.floatValue <= 1) EditorGUILayout.HelpBox("This ability has a very short cooldown.", MessageType.Warning);
 							break;
 					}
+
+					EditorGUILayout.PropertyField(startsOnCooldown, new GUIContent("Starts On Cooldown", "Whether the ability is on cooldown when a new battle begins."));
 
 					EditorGUILayout.EndFoldoutHeaderGroup();
 

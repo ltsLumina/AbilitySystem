@@ -12,7 +12,7 @@ using static Lumina.Essentials.Modules.Helpers;
 #endregion
 
 [RequireComponent(typeof(Attacks))]
-public partial class Boss : Entity
+public sealed partial class Boss : Entity
 {
 	[HideInInspector] [UsedImplicitly]
 	public VInspectorData data;
@@ -43,18 +43,23 @@ public partial class Boss : Entity
 		{
 			health = Mathf.Clamp(value, 0, maxHealth);
 
+			// QoL change: if health is at less than 50, set health to zero.
+			// Reduces the possibility of the player dying when the boss has a tiny amount of health left.
+			const int THRESHOLD = 50;
+			if (health <= THRESHOLD) health = 0;
+
 			if (health <= 0)
 			{
-				if (isDead) return;
+				if (IsDead) return;
 
 				OnDeath?.Invoke();
 				health = 0;
-				isDead = true;
+				IsDead = true;
 			}
 		}
 	}
 	public int MaxHealth => maxHealth;
-	bool isDead;
+	public bool IsDead { get; private set; }
 
 	public event Action OnBossStarted;
 	public event Action<int> OnTookDamage;
@@ -115,7 +120,7 @@ public partial class Boss : Entity
 	
 	protected override void OnStart()
 	{
-		GameManager.Instance.Initialize(this);
+		GameManager.Instance.InitializeState(this);
 
 		if (phases.Count > 0)
 		{
@@ -123,8 +128,10 @@ public partial class Boss : Entity
 			OnBossStarted?.Invoke();
 		}
 
-		health = maxHealth;
-		name = name.Replace("(Clone)", "");
+		float adjustedHealth = Mathf.RoundToInt(maxHealth * HealthScalar);
+		health = (int) adjustedHealth;
+
+		name = name.Replace("(Clone)", string.Empty);
 		transform.SetParent(GameObject.Find("Important").transform);
 		transform.SetAsLastSibling();
 
@@ -132,9 +139,22 @@ public partial class Boss : Entity
 	}
 
 	#region Health / Take Damage
+	float HealthScalar
+	{
+		get
+		{
+			int players = PlayerManager.Instance.Players.Count;
+
+			// each player adds 25% health to the boss
+			float scalar = 1f + (players - 1) * 0.25f;
+
+			return scalar;
+		}
+	}
+
 	public override void TakeDamage(float damage)
 	{
-		if (isDead) return;
+		if (IsDead) return;
 		
 		int dmg = Mathf.Clamp((int) damage, 0, health);
 		Health -= dmg;

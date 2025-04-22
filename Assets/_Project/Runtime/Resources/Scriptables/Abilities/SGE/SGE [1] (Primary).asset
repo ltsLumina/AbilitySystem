@@ -15,7 +15,7 @@ MonoBehaviour:
   job: 3
   abilityName: 
   description: 
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: a5f147d2736b7694eab70ed5701cf826, type: 3}
   type: 0
   range: 0
   radius: 0

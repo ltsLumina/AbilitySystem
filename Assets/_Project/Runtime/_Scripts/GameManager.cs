@@ -164,44 +164,61 @@ public class GameManager : Singleton<GameManager>
 				foreach (Player player in PlayerManager.Instance.Players) player.Inventory.AddToInventory(shopItem);
 				Logger.LogWarning("The shop is not implemented yet. For now it just gives you a random item.");
 				#endregion
-				
+
 				OnEnterShop?.Invoke();
 				break;
+
+			default:
+				throw new ArgumentOutOfRangeException(nameof(state), state, null);
 		}
 	}
 
 	public event Action<Boss> OnBossSpawned;
 
-	public void Initialize(Boss boss)
+	/// <summary>
+	///     Called when a boss is spawned and initializes the GameManager's state with the boss.
+	/// </summary>
+	/// <remarks> The game will not work properly if this method is not called. </remarks>
+	/// <param name="boss"> The boss to begin combat with. </param>
+	public void InitializeState(Boss boss)
 	{
 		currentBoss = boss;
 		OnBossSpawned?.Invoke(boss);
 
 		currentBoss.OnBossStarted += () =>
 		{
-			DarkenBackground();
-			StartTimer(currentBoss.AccentColour);
+			FadeOutBackground();
+			StartTimer();
 		};
 
 		currentBoss.OnDeath += () =>
 		{
 			SetState(State.Victory);
 
-			DarkenBackground(true);
+			FadeInBackground();
 			StopTimer();
 		};
 	}
 
-	static void DarkenBackground(bool lighten = false)
+	static void FadeOutBackground()
 	{
 		GameObject background = GameObject.Find("Parallax");
 
 		const float darkenValue = 20f / 255f;
 
-		foreach (Transform child in background.transform) child.GetComponent<SpriteRenderer>().DOFade(lighten ? 1f : darkenValue, 1f).SetEase(Ease.OutCubic);
+		foreach (Transform child in background.transform) child.GetComponent<SpriteRenderer>().DOFade(darkenValue, 1f).SetEase(Ease.OutCubic);
 	}
 
-	void StartTimer(Color color)
+	static void FadeInBackground()
+	{
+		GameObject background = GameObject.Find("Parallax");
+
+		const float lightenValue = 1f;
+
+		foreach (Transform child in background.transform) child.GetComponent<SpriteRenderer>().DOFade(lightenValue, 1f).SetEase(Ease.OutCubic);
+	}
+
+	void StartTimer()
 	{
 		timer = 0f;
 		isTimerRunning = true;
@@ -268,7 +285,43 @@ public class GameManager : Singleton<GameManager>
 #if UNITY_EDITOR
 	void OnGUI() => // Display the timer in the top right corner
 			GUI.Label(new (Screen.width - 200, 75, 200, 20), $"Time: {timer:F2}");
+#endif
 
+	/// <summary>
+	///     Randomly selects a boss from the list of bosses and spawns it at the origin position.
+	/// </summary>
+	/// <remarks>
+	///     This method loads all boss prefabs from the "PREFABS/Bosses" resource folder,
+	///     randomly selects one, and instantiates it at position (0,0,0) with default rotation.
+	///     If no boss prefabs are found, it logs an error and returns without spawning.
+	/// </remarks>
+	void SpawnBoss()
+	{
+		// randomly select a boss from the list of bosses
+		List<Boss> bosses = Resources.LoadAll<Boss>("PREFABS/Bosses").ToList();
+
+		Boss boss = bosses[Random.Range(0, bosses.Count)];
+
+		if (boss == null)
+		{
+			Debug.LogError("Boss not found");
+			return;
+		}
+
+		Boss instance = Instantiate(boss, Vector3.zero, Quaternion.identity);
+	}
+
+	/// <summary>
+	///     Spawns a specific boss by searching for a boss prefab that starts with the given name.
+	/// </summary>
+	/// <param name="shortName">The prefix name of the boss to spawn. The name is case-sensitive.</param>
+	/// <remarks>
+	///     This method loads all boss prefabs from the "PREFABS/Bosses" resource folder,
+	///     finds the first boss whose name starts with the provided shortName parameter,
+	///     and instantiates it at position (0,0,0) with default rotation.
+	///     If no matching boss is found, it logs an error and returns without spawning.
+	/// </remarks>
+	/// <example> "Rem, the Sooteared Wolf" can be spawned with input "Rem" </example>
 	void SpawnBoss(string shortName)
 	{
 		List<Boss> bosses = Resources.LoadAll<Boss>("PREFABS/Bosses").ToList();
@@ -286,7 +339,15 @@ public class GameManager : Singleton<GameManager>
 
 	void SpawnScarecrow()
 	{
-		
+		var scarecrow = Resources.Load<Boss>("PREFABS/Bosses/Scarecrow");
+
+		if (scarecrow == null)
+		{
+			Debug.LogError("Scarecrow not found");
+			return;
+		}
+
+		Boss instance = Instantiate(scarecrow, Vector3.zero, Quaternion.identity);
+		instance.gameObject.SetActive(true);
 	}
-#endif
 }

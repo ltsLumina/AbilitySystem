@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7563015686665406905}
   - component: {fileID: 6433385797019857020}
+  - component: {fileID: 9139534032737944389}
   m_Layer: 0
   m_Name: Capsule
   m_TagString: Untagged
@@ -87,6 +88,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &9139534032737944389
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4356661951238873223}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 555d4b05ffa3a6a4f995ceee59d41f22, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  associatedBoss: {fileID: 0}
+  target: {fileID: 6433385797019857020}
 --- !u!1 &4578161536406194208
 GameObject:
   m_ObjectHideFlags: 0
@@ -423,7 +438,7 @@ GameObject:
   - component: {fileID: 4422582200664740063}
   - component: {fileID: 5453742574585655225}
   m_Layer: 3
-  m_Name: Player
+  m_Name: RPR
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -460,8 +475,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   statusEffects: []
-  data: {fileID: 0}
-  job: {fileID: 11400000, guid: 4c4708f843ac0f9459bd7c157c8b9b32, type: 2}
+  job: {fileID: 11400000, guid: b6f539e5710b64641bf28e90f7f12a17, type: 2}
   health: 5
   maxHealth: 5
   takeDamageCooldown: 1
@@ -471,6 +485,7 @@ MonoBehaviour:
   topSpeed: 10
   moveDamping: 0
   stopDamping: 50
+  accentColour: {r: 0.5566038, g: 0.18115878, b: 0.25511, a: 1}
   mouseMove: 0
 --- !u!114 &5836204446567265204
 MonoBehaviour:

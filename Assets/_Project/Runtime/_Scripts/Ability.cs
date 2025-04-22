@@ -44,6 +44,8 @@ public sealed class Ability : ScriptableObject
 	[SerializeField] CooldownType cooldownType;
 	[SerializeField] float castTime;
 	[SerializeField] float cooldown;
+	[Tooltip("Whether the ability is on cooldown when a new battle begins.")]
+	[SerializeField] bool startsOnCooldown;
 
 	[Header("Damage Properties")]
 	[SerializeField] float damage;
@@ -78,6 +80,7 @@ public sealed class Ability : ScriptableObject
 			return cooldown * caster.Stats.SpellSpeed;
 		}
 	}
+	public bool StartsOnCooldown => startsOnCooldown;
 	public float Damage => damage;
 
 	Player caster;
@@ -103,23 +106,26 @@ public sealed class Ability : ScriptableObject
 	{ /* not called when Disable Domain Reload is active. */
 	}
 
-	public void Invoke(Player owner)
+	public bool Invoke(Player owner)
 	{
 		caster = owner;
 
 		Entity nearestTarget = FindBoss();
+		if (nearestTarget == null) return false;
+		
 		bool isGCD = cooldownType == CooldownType.GCD;
 		bool isCast = cooldownType == CooldownType.Cast;
 		bool isInstant = cooldownType == CooldownType.Instant;
 
 		Attack();
 
-		return;
+		return true;
 		Boss FindBoss()
 		{
 			Boss[] allBosses = FindObjectsByType<Boss>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
 			Boss nearest = allBosses.Where(b => b != null && b.gameObject.activeInHierarchy).OrderBy(b => Vector2.Distance(caster.transform.position, b.transform.position)).FirstOrDefault();
 
+#if UNITY_EDITOR && false
 			if (nearest == null)
 			{
 				var scarecrow = Resources.Load<Boss>("PREFABS/Bosses/Scarecrow");
@@ -127,12 +133,19 @@ public sealed class Ability : ScriptableObject
 				instance.gameObject.SetActive(true);
 				return instance;
 			}
+#endif
 
 			return nearest;
 		}
 
 		void Attack()
 		{
+			if (nearestTarget.TryGetComponent(out Boss boss) && boss.IsDead)
+			{
+				// If the boss is dead, do not apply the ability
+				return;
+			}
+			
 			switch (true)
 			{
 				case true when isGCD:
@@ -227,9 +240,12 @@ public sealed class Ability : ScriptableObject
 		target.TryGetComponent(out IDamageable enemy);
 
 		float variance = DamageVariance();
-		float critMult = CritChance();
 		float chargedMult = IsPrimed(caster);
-		SetPrimed(caster, false);
+
+		float distance = Vector2.Distance(caster.transform.position, target.transform.position);
+		float critMult = distance < range ? 1.5f : DetermineCriticalHit();
+
+		SetPrimed(caster, false); // note: can't remember why this is here but its probably important
 		
 		float damageBeforePlayerStats = damage * variance * critMult;
 		float damageWithPlayerStats = damageBeforePlayerStats * caster.Stats.Damage;
@@ -240,7 +256,6 @@ public sealed class Ability : ScriptableObject
 		if (postfix.Count > 0) postfix.Apply((target, caster));
 
 		bool sameValues = Mathf.Approximately(primeChance, refundChance);
-
 		if (sameValues)
 		{
 			float chance = Mathf.Max(primeChance, refundChance);
@@ -304,14 +319,28 @@ public sealed class Ability : ScriptableObject
 		return false;
 	}
 
+	/// <summary>
+	///     Resets the properties of the ability such as primed and refund states.
+	/// </summary>
+	public void ResetProperties()
+	{
+		primedStates.Clear();
+		refundStates.Clear();
+	}
+
 	float DamageVariance()
 	{
 		RangedFloat defaultVariance = AbilitySettings.DamageVariance;
 		float variance = defaultVariance.GetRandomValue();
 		return variance;
 	}
-	
-	float CritChance()
+
+	/// <summary>
+	///     Determines if the ability is a critical hit.
+	///     If it is, returns the critical hit multiplier.
+	/// </summary>
+	/// <returns> AbilitySettings.CritMultiplier (default = 1.5x) if the ability is a critical hit, otherwise 1. </returns>
+	float DetermineCriticalHit()
 	{
 		float critChance = AbilitySettings.CritChance;
 		float critMultiplier = AbilitySettings.CritMultiplier;

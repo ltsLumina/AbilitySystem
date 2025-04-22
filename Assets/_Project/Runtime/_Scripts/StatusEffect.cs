@@ -58,7 +58,11 @@ public class StatusEffect : ScriptableObject
 	protected Player casterAsPlayer => caster.TryGetComponent(out Player player) ? player : null;
 
 #if UNITY_EDITOR
-	protected new string name => base.name = string.IsNullOrEmpty(Path.GetFileNameWithoutExtension(AssetDatabase.GetAssetPath(this))) ? statusName : Path.GetFileNameWithoutExtension(AssetDatabase.GetAssetPath(this));
+	protected new string name
+	{
+		get => base.name = string.IsNullOrEmpty(Path.GetFileNameWithoutExtension(AssetDatabase.GetAssetPath(this))) ? statusName : Path.GetFileNameWithoutExtension(AssetDatabase.GetAssetPath(this));
+		set => base.name = value;
+	}
 #endif
 
 	public override string ToString() => $"{statusName} ({duration} seconds)";
@@ -120,13 +124,20 @@ public class StatusEffect : ScriptableObject
 			}
 			else
 			{
-				entity = t;
-				t.AddStatusEffect(this);
-				OnInvoke();
-				OnInvoked?.Invoke(this);
-				Time = Duration;
-				decayCoroutine ??= CoroutineHelper.StartCoroutine(Decay());
-				Logger.Log($"Applied {this} to {t}");
+				StatusEffect instancedEffect = Instantiate(this);
+				instancedEffect.entity = t;
+				instancedEffect.name = $"{StatusName} (Applied to: {t.name}) | (Owner: {caster.name})";
+				instancedEffect.Time = Duration;
+				instancedEffect.Caster = Caster;
+
+				instancedEffect.entity.AddStatusEffect(instancedEffect);
+				instancedEffect.OnInvoke();
+				instancedEffect.OnInvoked?.Invoke(this);
+				instancedEffect.decayCoroutine ??= CoroutineHelper.StartCoroutine(instancedEffect.Decay());
+
+#if false
+				Logger.Log($"Applied {this} to {instancedEffect.entity}");
+#endif
 			}
 		}
 	}

@@ -1,6 +1,3 @@
-#region
-#endregion
-
 public class Phlegmacism : Buff
 {
     public override void Reset()
@@ -15,7 +12,21 @@ public class Phlegmacism : Buff
     protected override void OnInvoke()
     {
         entity.TryGetComponent(out Player player);
-        player?.Stats.Add("shields", 1);
+
+        if (!player)
+        {
+            Logger.LogError("how");
+            return;
+        }
+
+        player.Stats.Add("shields", 1);
+
+        player.OnTookDamage += RemoveEffectOnDamageTaken;
+    }
+
+    void RemoveEffectOnDamageTaken(bool hadShields)
+    {
+        if (entity.HasStatusEffect(this, out _)) entity.RemoveStatusEffect(this);
     }
 
     protected override void OnDecay()
@@ -23,7 +34,16 @@ public class Phlegmacism : Buff
         if (entity.HasStatusEffect(this, out _))
         {
             entity.TryGetComponent(out Player player);
-            player?.Stats.Add("shields", 1);
+
+            if (!player)
+            {
+                Logger.LogError("how");
+                return;
+            }
+
+            player.Stats.Remove("shields", 1);
+
+            //player.OnTookDamage -= RemoveEffectOnDamageTaken;
         }
     }
 }

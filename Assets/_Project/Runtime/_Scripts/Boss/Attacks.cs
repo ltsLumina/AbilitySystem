@@ -525,19 +525,12 @@ public class Attacks : MonoBehaviour
 	}
 
 	public void CleaveUp(Vector2 origin, bool showWarning, float delay) => PerformCleave(origin, showWarning, delay, 0f);
-
 	public void CleaveDown(Vector2 origin, bool showWarning, float delay) => PerformCleave(origin, showWarning, delay, 180f);
-
 	public void CleaveLeft(Vector2 origin, bool showWarning, float delay) => PerformCleave(origin, showWarning, delay, 90f);
-
 	public void CleaveRight(Vector2 origin, bool showWarning, float delay) => PerformCleave(origin, showWarning, delay, 270f);
-
 	public void CleaveTopLeft(Vector2 origin, bool showWarning, float delay) => PerformCleave(origin, showWarning, delay, 45f);
-
 	public void CleaveTopRight(Vector2 origin, bool showWarning, float delay) => PerformCleave(origin, showWarning, delay, 315f);
-
 	public void CleaveBottomLeft(Vector2 origin, bool showWarning, float delay) => PerformCleave(origin, showWarning, delay, 135f);
-
 	public void CleaveBottomRight(Vector2 origin, bool showWarning, float delay) => PerformCleave(origin, showWarning, delay, 225f);
 
 	#region Cleave
@@ -558,11 +551,17 @@ public class Attacks : MonoBehaviour
 	IEnumerator CleaveHitRoutine(GameObject cleave, float delay)
 	{
 		yield return new WaitForSeconds(delay);
-		if (cleave == null) yield break;
-		var collider = cleave.GetComponentInChildren<BoxCollider2D>();
+		var boxCollider = cleave.GetComponentInChildren<BoxCollider2D>();
+		
 		var results = new List<Collider2D>();
-		collider.Overlap(results);
+		boxCollider.Overlap(results);
 
+		if (results.Count == 0)
+		{
+			Destroy(cleave);
+			yield break;
+		}
+		
 		foreach (Collider2D col in results)
 		{
 			if (col.TryGetComponent(out Player player))

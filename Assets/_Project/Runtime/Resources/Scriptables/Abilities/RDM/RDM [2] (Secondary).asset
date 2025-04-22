@@ -15,7 +15,7 @@ MonoBehaviour:
   job: 1
   abilityName: Verfire
   description: 
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 2ad0d82614cdfe74d98a80afa0002e8e, type: 3}
   type: 1
   range: 0
   radius: 0

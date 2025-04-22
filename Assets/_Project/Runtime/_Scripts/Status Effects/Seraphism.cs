@@ -11,21 +11,17 @@ public class Seraphism : Buff
 
 	protected override void OnInvoke()
 	{
-		foreach (Player player in PlayerManager.Instance.Players)
-		{
-			player.Stats.Remove("cast speed", 0.2f);
-			player.Stats.Remove("spell speed", 0.15f);
-			player.Stats.Add("damage", 0.1f);
-		}
+		entity.TryGetComponent(out Player player);
+		player.Stats.Remove("cast speed", 0.2f);
+		player.Stats.Remove("spell speed", 0.15f);
+		player.Stats.Add("damage", 0.1f);
 	}
 
 	protected override void OnDecay()
 	{
-		foreach (Player player in PlayerManager.Instance.Players)
-		{
-			player.Stats.Add("cast speed", 0.2f);
-			player.Stats.Add("spell speed", 0.15f);
-			player.Stats.Remove("damage", 0.1f);
-		}
+		entity.TryGetComponent(out Player player);
+		player.Stats.Add("cast speed", 0.2f);
+		player.Stats.Add("spell speed", 0.15f);
+		player.Stats.Remove("damage", 0.1f);
 	}
 }

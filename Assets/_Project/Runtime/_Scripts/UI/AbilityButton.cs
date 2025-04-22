@@ -90,12 +90,22 @@ public class AbilityButton : MonoBehaviour
 			if (gameObject.CompareTag(player.tag)) owner = player;
 		};
 
-		GameManager.Instance.OnBossSpawned += boss =>
+		GameManager.Instance.OnEnterBattle += () =>
 		{
-			if (ability.Cooldown >= 25) Cooldown();
+			ability.ResetProperties();
+
+			if (ability.StartsOnCooldown) Cooldown();
+			else ResetCooldown();
+
+			if (ability.Cooldown >= 100) Cooldown(true);
 		};
 
-		GameManager.Instance.OnVictory += ResetCooldown;
+		GameManager.Instance.OnVictory += () =>
+		{
+			ability.ResetProperties();
+
+			ResetCooldown();
+		};
 
 		yield return new WaitUntil(() => owner != null);
 		
@@ -189,7 +199,7 @@ public class AbilityButton : MonoBehaviour
 	Tween cooldownTween;
 	ColorTween cooldownFadeTween;
 
-	void Cooldown()
+	void Cooldown(bool hideUI = false)
 	{
 		ResetCooldown();
 
@@ -212,8 +222,20 @@ public class AbilityButton : MonoBehaviour
 			Terminate(); // Fades the duration text out
 		});
 
-		return;
+		if (hideUI)
+		{
+			circle.gameObject.SetActive(false);
+			duration.gameObject.SetActive(false);
 
+			cooldownTween.OnComplete
+			(() =>
+			{
+				circle.gameObject.SetActive(true);
+				duration.gameObject.SetActive(true);
+			});
+		}
+
+		return;
 		void InitCooldown()
 		{
 			const float fadeTo = 1;
@@ -241,7 +263,12 @@ public class AbilityButton : MonoBehaviour
 	{
 		if (OnCooldown) return;
 
-		ability.Invoke(owner);
+		if (!ability.Invoke(owner))
+		{
+			Logger.LogWarning($"{ability} was not invoked.");
+			return;
+		}
+		
 		Cooldown();
 
 		if (ability.TryRefund(owner, out Ability refundee))

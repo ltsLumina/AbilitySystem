@@ -15,14 +15,15 @@ MonoBehaviour:
   job: 3
   abilityName: 
   description: 
-  icon: {fileID: 0}
+  icon: {fileID: 3593765109023661163, guid: d1dd1ee2edc46c443bd3cdc7f74de453, type: 3}
   type: 1
   range: 0
   radius: 0
   cooldownType: 1
   castTime: 0
   cooldown: 24
-  damage: 250
+  startsOnCooldown: 0
+  damage: 650
   abilityToPrime: {fileID: 0}
   primeChance: 0
   abilityToRefund: {fileID: 0}

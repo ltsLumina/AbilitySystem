@@ -13,9 +13,12 @@ MonoBehaviour:
   m_Name: Phlegmacism
   m_EditorClassIdentifier: 
   statusName: Phlegmacism
-  description: Cast a divine veil around yourself and your allies, protecting everyone
+  description: 'Cast a divine veil around yourself and your allies, protecting everyone
     from one instance of damage.
-  duration: 6
+
+    This effect does not stack, and reapplying
+    it during its duration does not grant the effect again.'
+  duration: 12
   target: 5
   timing: 0
   time: 0
