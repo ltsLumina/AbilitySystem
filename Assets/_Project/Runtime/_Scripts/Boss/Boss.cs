@@ -120,7 +120,12 @@ public sealed partial class Boss : Entity
 	
 	protected override void OnStart()
 	{
-		GameManager.Instance.InitializeState(this);
+		if (!TryGetComponent<Scarecrow>(out _))
+		{
+			// only initialize the state if this is not a scarecrow
+			// the scarecrow is only for the lobby and doesn't count as a boss. it does, however, still use the Boss class.
+			GameManager.Instance.InitializeState(this);
+		}
 
 		if (phases.Count > 0)
 		{
@@ -144,6 +149,7 @@ public sealed partial class Boss : Entity
 		get
 		{
 			int players = PlayerManager.Instance.Players.Count;
+			if (players == 0) players = 1;
 
 			// each player adds 25% health to the boss
 			float scalar = 1f + (players - 1) * 0.25f;

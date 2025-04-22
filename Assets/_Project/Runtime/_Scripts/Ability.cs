@@ -106,19 +106,30 @@ public sealed class Ability : ScriptableObject
 	{ /* not called when Disable Domain Reload is active. */
 	}
 
-	public bool Invoke(Player owner)
+	public enum InvokeOutcome
+	{
+		Success,
+		NoTarget,
+	}
+
+	public bool Invoke(Player owner, out InvokeOutcome reason)
 	{
 		caster = owner;
 
 		Entity nearestTarget = FindBoss();
-		if (nearestTarget == null) return false;
-		
+		if (nearestTarget == null)
+		{
+			reason = InvokeOutcome.NoTarget;
+			return false;
+		}
+
 		bool isGCD = cooldownType == CooldownType.GCD;
 		bool isCast = cooldownType == CooldownType.Cast;
 		bool isInstant = cooldownType == CooldownType.Instant;
 
 		Attack();
 
+		reason = InvokeOutcome.Success;
 		return true;
 		Boss FindBoss()
 		{

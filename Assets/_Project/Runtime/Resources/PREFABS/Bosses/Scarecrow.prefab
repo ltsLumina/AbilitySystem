@@ -49,8 +49,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   statusEffects: []
   data: {fileID: 0}
-  health: 10000
-  maxHealth: 10000
+  health: 100000
+  maxHealth: 100000
   accentColour: {r: 1, g: 0.5424528, b: 0.5424528, a: 1}
   phases:
   - name: AFK

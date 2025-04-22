@@ -48,20 +48,23 @@ public class KonamiCodeChecker : MonoBehaviour
 
 			if (inputKeys.Count > konamiCode.Count) inputKeys.RemoveAt(0);
 
-			if (inputKeys.Count == konamiCode.Count && inputKeys.SequenceEqual(konamiCode))
-			{
-				Debug.Log("Konami Code Entered!");
-				inputKeys.Clear();
+			if (inputKeys.Count == konamiCode.Count && inputKeys.SequenceEqual(konamiCode)) { Success(); }
+		}
+	}
+	
+	void Success()
+	{
+		Debug.Log("Konami Code Entered!");
+		inputKeys.Clear();
 
-				showGUI = true;
-				StartCoroutine(Wait());
+		showGUI = true;
+		StartCoroutine(Wait());
 
-				IEnumerator Wait()
-				{
-					yield return new WaitForSeconds(1.5f);
-					Application.OpenURL("https://www.youtube.com/watch?v=ClHNxPHjhtc");
-				}
-			}
+		return;
+		IEnumerator Wait()
+		{
+			yield return new WaitForSeconds(1.5f);
+			Application.OpenURL("https://www.youtube.com/watch?v=ClHNxPHjhtc");
 		}
 	}
 

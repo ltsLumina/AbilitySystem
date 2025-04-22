@@ -13,7 +13,7 @@ using Tween = DG.Tweening.Core.TweenerCore<float, float, DG.Tweening.Plugins.Opt
 using ColorTween = DG.Tweening.Core.TweenerCore<UnityEngine.Color, UnityEngine.Color, DG.Tweening.Plugins.Options.ColorOptions>;
 #endregion
 
-public class AbilityButton : MonoBehaviour
+public class AbilityButton : MonoBehaviour, IPausable
 {
 	[Tab("Ability")]
 	[SerializeField] Ability ability;
@@ -263,9 +263,18 @@ public class AbilityButton : MonoBehaviour
 	{
 		if (OnCooldown) return;
 
-		if (!ability.Invoke(owner))
+		if (!ability.Invoke(owner, out Ability.InvokeOutcome reason))
 		{
-			Logger.LogWarning($"{ability} was not invoked.");
+			switch (reason)
+			{
+				case Ability.InvokeOutcome.NoTarget:
+					Logger.LogWarning($"{ability} was not invoked. \nReason: No target found.");
+					break;
+				
+				default:
+					Logger.LogWarning($"{ability} was not invoked. \nReason: Unknown.");
+					break;
+			}
 			return;
 		}
 		
@@ -289,4 +298,8 @@ public class AbilityButton : MonoBehaviour
 	#region Utility
 	static float RoundToDecimal(float value, int decimals) => Mathf.Round(value * Mathf.Pow(10, decimals)) / Mathf.Pow(10, decimals);
 	#endregion
+
+	public void Pause() => enabled = false;
+
+	public void Resume() => enabled = true;
 }

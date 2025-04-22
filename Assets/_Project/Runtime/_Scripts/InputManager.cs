@@ -1,7 +1,6 @@
 #region
 using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using VInspector;
@@ -14,34 +13,6 @@ public class InputManager : MonoBehaviour
 	public Vector2 MoveInput { get; private set; }
 
 	public bool IsMoving { get; private set; }
-
-#if true
-	void Update()
-	{
-		// This will fire all abilities each frame
-		//SimulateAllAbilities();
-	}
-
-	void SimulateBLM()
-	{
-		List<KeyCode> rotation = new () { KeyCode.H, KeyCode.J, KeyCode.K, KeyCode.L };
-		
-		foreach (KeyCode key in rotation)
-		{
-			
-		}
-	}
-
-	void SimulateAllAbilities()
-	{
-		SetDictionaryKeys();
-
-		foreach (string abilityName in AbilityKeys)
-		{
-			if (abilityButtons.TryGetValue(abilityName, out GameObject abilityButton)) { abilityButton.GetComponent<AbilityButton>().Invoke(); }
-		}
-	}
-#endif
 	
 	/// <summary>
 	///     Overrides the move input with the given input. (Used for Mouse movement)

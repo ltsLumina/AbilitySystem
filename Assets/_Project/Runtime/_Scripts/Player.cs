@@ -11,7 +11,7 @@ using static Lumina.Essentials.Modules.Helpers;
 using Random = UnityEngine.Random;
 #endregion
 
-public class Player : Entity
+public class Player : Entity, IPausable
 {
 	[SerializeField] Job job;
 	
@@ -311,4 +311,8 @@ public class Player : Entity
 
 		GUILayout.EndArea();
 	}
+
+	public void Pause() => enabled = false;
+
+	public void Resume() => enabled = true;
 }

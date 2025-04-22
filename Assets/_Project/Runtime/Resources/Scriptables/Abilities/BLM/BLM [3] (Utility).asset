@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   job: 2
   abilityName: Enochian
-  description: 
+  description: "Allows Fire IV to be cast instantly and reduces spell speed by 25%,
+    for the full duration.\r"
   icon: {fileID: 21300000, guid: ba16092f8b52922469d75e683b09ce50, type: 3}
   type: 2
   range: 0
@@ -22,6 +23,7 @@ MonoBehaviour:
   cooldownType: 1
   castTime: 0
   cooldown: 24
+  startsOnCooldown: 0
   damage: 100
   abilityToPrime: {fileID: 0}
   primeChance: 0

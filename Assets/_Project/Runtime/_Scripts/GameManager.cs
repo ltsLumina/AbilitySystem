@@ -11,6 +11,13 @@ using UnityEngine.InputSystem;
 using Random = UnityEngine.Random;
 #endregion
 
+public interface IPausable
+{
+	void Pause();
+
+	void Resume();
+}
+
 public class GameManager : Singleton<GameManager>
 {
 	[Serializable]
@@ -102,7 +109,7 @@ public class GameManager : Singleton<GameManager>
 			case State.Battle:
 				SpawnBoss("Rem");
 
-				AudioManager.StopMusic("LobbyMusic", 1f);
+				AudioManager.StopMusic("LobbyMusic", 1f, false);
 
 				var music = new Music(Track.BattleMusic);
 				music.SetOutput(Output.Music);
@@ -114,7 +121,7 @@ public class GameManager : Singleton<GameManager>
 				break;
 
 			case State.Victory:
-				AudioManager.StopMusic("BattleMusic", 1f);
+				AudioManager.StopMusic("BattleMusic", 1f, false);
 
 				var victoryMusic = new Music(Track.VictoryMusic);
 				victoryMusic.SetOutput(Output.Music);
@@ -236,8 +243,12 @@ public class GameManager : Singleton<GameManager>
 		StageManager.Reset();
 	}
 
+	List<IPausable> pausableObjects = new ();
+	
 	void Start()
 	{
+		pausableObjects = FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Include, FindObjectsSortMode.InstanceID).OfType<IPausable>().ToList();
+		
 		events.Clear();
 
 		OnEnterLobby += () =>
@@ -268,13 +279,21 @@ public class GameManager : Singleton<GameManager>
 			const float cutoffFreq = 1000f;
 			AudioManager.Mixer.DOSetFloat("Muffler", isPaused ? cutoffFreq : maxCutoffFreq, 0.5f).SetUpdate(true);
 
+			pausableObjects = FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Include, FindObjectsSortMode.InstanceID).OfType<IPausable>().ToList();
+			
 			if (isPaused)
 			{
+				foreach (IPausable pausable in pausableObjects) 
+					pausable.Pause();
+
 				Time.timeScale = 0f;
 				OnPause?.Invoke();
 			}
 			else
 			{
+				foreach (IPausable pausable in pausableObjects) 
+					pausable.Resume();
+				
 				Time.timeScale = 1f;
 				OnResume?.Invoke();
 			}

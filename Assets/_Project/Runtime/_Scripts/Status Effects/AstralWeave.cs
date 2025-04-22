@@ -19,13 +19,11 @@ public class AstralWeave : Buff
 	{
 		casterAsPlayer.Stats.Remove("cast speed", 1);
 		casterAsPlayer.Stats.Remove("spell speed", 0.25f);
-		casterAsPlayer.Stats.Add("damage", 0.1f);
 	}
 
 	void Decayed(StatusEffect obj)
 	{
 		casterAsPlayer.Stats.Add("cast speed", 1f);
 		casterAsPlayer.Stats.Add("spell speed", 0.25f);
-		casterAsPlayer.Stats.Remove("damage", 0.1f);
 	}
 }
