@@ -72,10 +72,20 @@ public class InputManager : MonoBehaviour
 		}
 	}
 
+	PlayerInput playerInput;
+	
 	void Start()
 	{
-		var playerInput = GetComponent<PlayerInput>();
+		playerInput = GetComponent<PlayerInput>();
 		playerInput.uiInputModule = FindAnyObjectByType<InputSystemUIInputModule>();
+	}
+
+	void Update()
+	{
+		if (Input.GetKeyDown(KeyCode.F2))
+		{
+			ToggleInputLayer(1);
+		}
 	}
 
 	public void OnMove(InputAction.CallbackContext context)

@@ -11,9 +11,8 @@ using UnityEngine.UI;
 public class SceneItem : MonoBehaviour
 {
 	[SerializeField] Item item;
-
-	[Space(5)] [Header("UI")]
-
+	[Space(5)] 
+	[Header("UI")]
 	[SerializeField] TextMeshProUGUI descriptionText;
 
 	void Update()

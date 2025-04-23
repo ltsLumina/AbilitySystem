@@ -38,7 +38,7 @@ namespace Lumina.Essentials.Modules
         /// <param name="audioSource"></param>
         /// <param name="minPitch"></param>
         /// <param name="maxPitch"></param>
-        public static void PlayRandomPitch(AudioClip audioClip, AudioSource audioSource, float minPitch, float maxPitch)
+        public static void PlayRandomPitch(this AudioClip audioClip, AudioSource audioSource, float minPitch, float maxPitch)
         {
             float randomPitch = Random.Range(minPitch, maxPitch);
             audioSource.pitch = randomPitch;
