@@ -71,13 +71,13 @@ public sealed class Ability : ScriptableObject
 	public float Range => range;
 	public float Radius => radius;
 	public CooldownType CDType => cooldownType;
-	public float CastTime => castTime * caster.Attributes.CastSpeed;
+	public float CastTime => castTime * caster.Stats.CastSpeed;
 	public float Cooldown
 	{
 		get
 		{
 			if (!caster) return cooldown;
-			return cooldown * caster.Attributes.SpellSpeed;
+			return cooldown * caster.Stats.SpellSpeed;
 		}
 	}
 	public bool StartsOnCooldown => startsOnCooldown;
@@ -259,7 +259,7 @@ public sealed class Ability : ScriptableObject
 		SetPrimed(caster, false); // note: can't remember why this is here but its probably important
 		
 		float damageBeforePlayerStats = damage * variance * critMult;
-		float damageWithPlayerStats = damageBeforePlayerStats * caster.Attributes.Damage;
+		float damageWithPlayerStats = damageBeforePlayerStats * caster.Stats.Damage;
 		float finalDamage = damageWithPlayerStats * chargedMult;
 		
 		if (prefix.Count > 0) prefix.Apply((target, caster));

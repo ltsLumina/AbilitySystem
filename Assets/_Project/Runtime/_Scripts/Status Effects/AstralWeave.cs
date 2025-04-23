@@ -17,13 +17,13 @@ public class AstralWeave : Buff
 
 	void Invoked(StatusEffect obj)
 	{
-		casterAsPlayer.Attributes.Remove(Attributes.Stats.CastSpeed, 1);
-		casterAsPlayer.Attributes.Remove(Attributes.Stats.SpellSpeed, 0.25f);
+		casterAsPlayer.Stats.Remove(Stats.StatType.CastSpeed, 1);
+		casterAsPlayer.Stats.Remove(Stats.StatType.SpellSpeed, 0.25f);
 	}
 
 	void Decayed(StatusEffect obj)
 	{
-		casterAsPlayer.Attributes.Add(Attributes.Stats.CastSpeed, 1f);
-		casterAsPlayer.Attributes.Add(Attributes.Stats.SpellSpeed, 0.25f);
+		casterAsPlayer.Stats.Add(Stats.StatType.CastSpeed, 1f);
+		casterAsPlayer.Stats.Add(Stats.StatType.SpellSpeed, 0.25f);
 	}
 }

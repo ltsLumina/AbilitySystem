@@ -1,3 +1,4 @@
+#define DISABLED    // this line was added by VUtils.ToggleDefineDisabledInScript
 #if UNITY_EDITOR
 #region
 using System;

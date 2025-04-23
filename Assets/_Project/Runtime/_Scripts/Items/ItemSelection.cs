@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.InputSystem.UI;
 using VInspector;
 using Random = UnityEngine.Random;
 #endregion
@@ -17,6 +18,8 @@ public class ItemSelection : MonoBehaviour
 
 		// Check if all players have voted
 		if (playerVotes.Count == PlayerManager.Instance.Players.Count) ResolveVotes();
+		
+		Debug.Log($"{player} voted");
 	}
 
 	void ResolveVotes()
@@ -31,20 +34,39 @@ public class ItemSelection : MonoBehaviour
 				// Randomly select one player to receive the item
 				Player randomPlayer = group.Select(v => v.Key).OrderBy(_ => Random.value).First();
 				AssignItemToPlayer(randomPlayer, group.Key);
+
+				// set the selected item for the other players to a random item that is not the item that was picked
+				foreach (Player player in PlayerManager.Instance.Players)
+				{
+					if (player == randomPlayer) continue;
+
+					SceneItem[] sceneItems = FindObjectsByType<SceneItem>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+					var randomItem = sceneItems[Random.Range(0, sceneItems.Length)];
+					player.InputManager.GetComponent<MultiplayerEventSystem>().SetSelectedGameObject(randomItem.gameObject);
+				}
+				
+				Debug.Log($"{randomPlayer.name} received {group.Key.name}.");
 			}
 			else // If only one player voted for the item
+			{
 				AssignItemToPlayer(group.First().Key, group.Key);
+
+				var player = group.First().Key;
+				player.InputManager.GetComponent<MultiplayerEventSystem>().SetSelectedGameObject(null);
+			}
+
+			SceneItem sceneItem = group.Key;
+			sceneItem.gameObject.SetActive(false);
+			sceneItem.name += " (Picked)";
 		}
 
 		// Clear votes for the next round
 		playerVotes.Clear();
 	}
 
-	void AssignItemToPlayer(Player player, SceneItem item)
+	void AssignItemToPlayer(Player player, SceneItem sceneItem)
 	{
-		Debug.Log($"Assigned {item.name} to {player.name}");
-
 		// Logic to assign the item to the player
-		
+		player.Inventory.AddToInventory(sceneItem);
 	}
 }

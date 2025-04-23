@@ -41,12 +41,18 @@ public class Inventory : MonoBehaviour
 
 		inventory.Add(item);
 		cooldowns.Add(item, item.Cooldown);
+		Debug.Log($"[Inventory] {item.name} has been added to the inventory.");
 
 		if (item.InvokeWhenAdded)
 		{
 			var owner = GetComponent<Player>();
 			item.Action(owner);
 		}
+	}
+
+	public void AddToInventory(SceneItem item)
+	{
+		AddToInventory(item.RepresentedItem);
 	}
 
 	void Start()

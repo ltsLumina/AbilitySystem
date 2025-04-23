@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
+using UnityEngine.UIElements;
 using VInspector;
+using Button = UnityEngine.UI.Button;
 #endregion
 
 public class InputManager : MonoBehaviour
@@ -34,13 +37,11 @@ public class InputManager : MonoBehaviour
 		switch (layerName)
 		{
 			case "Player": {
-				var playerInput = FindAnyObjectByType<PlayerInput>();
 				playerInput.SwitchCurrentActionMap("Player");
 				return;
 			}
 
 			case "UI": {
-				var playerInput = FindAnyObjectByType<PlayerInput>();
 				playerInput.SwitchCurrentActionMap("UI");
 				return;
 			}
@@ -68,16 +69,65 @@ public class InputManager : MonoBehaviour
 
 			case 1:
 				ToggleInputLayer("UI");
+				
+				GameObject firstSelected = FindFirstObjectByType<SceneItem>(FindObjectsInactive.Exclude).gameObject;
+				eventSystem.SetSelectedGameObject(firstSelected);
 				break;
 		}
 	}
 
+	GameObject selected;
+	GameObject previousGameObject;
+	
+	void FixedUpdate()
+	{ 
+		GameObject currentSelected = eventSystem.currentSelectedGameObject;
+	
+		if (currentSelected == null || currentSelected == selected) return;
+	
+		selected = currentSelected;
+	
+		if (!selected.TryGetComponent(out SceneItem sceneItem)) return;
+	
+		if (sceneItem.TryGetComponent(out Button button))
+		{
+			var selectPointerData = new BaseEventData(eventSystem);
+			button.OnSelect(selectPointerData);
+			var deselectPointerData = new BaseEventData(eventSystem);
+			button.OnDeselect(deselectPointerData);
+	
+			if (selectPointerData.selectedObject == selected)
+			{
+				Debug.Log($"Selected {button.name}");
+
+				button.onClick.RemoveAllListeners();
+				button.onClick.AddListener
+				(() =>
+				{
+					button.onClick.RemoveAllListeners();
+	
+					var selectionManager = FindAnyObjectByType<ItemSelection>();
+					selectionManager.Vote(GetComponentInParent<Player>(), sceneItem);
+	
+					//eventSystem.SetSelectedGameObject(null);
+					
+					// sceneItem.gameObject.SetActive(false);
+					// sceneItem.name += " (Picked)";
+				});
+			}
+		}
+	}
+
 	PlayerInput playerInput;
+	MultiplayerEventSystem eventSystem;
 	
 	void Start()
 	{
 		playerInput = GetComponent<PlayerInput>();
 		playerInput.uiInputModule = FindAnyObjectByType<InputSystemUIInputModule>();
+		playerInput.uiInputModule.actionsAsset = playerInput.actions;
+
+		eventSystem = GetComponent<MultiplayerEventSystem>();
 	}
 
 	void Update()
@@ -85,6 +135,11 @@ public class InputManager : MonoBehaviour
 		if (Input.GetKeyDown(KeyCode.F2))
 		{
 			ToggleInputLayer(1);
+		}
+		
+		if (Input.GetKeyDown(KeyCode.F3))
+		{
+			ToggleInputLayer(0);
 		}
 	}
 

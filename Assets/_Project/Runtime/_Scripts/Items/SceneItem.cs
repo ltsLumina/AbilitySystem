@@ -1,6 +1,9 @@
 #region
+using System;
+using Lumina.Essentials.Attributes;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem.UI;
 using UnityEngine.UI;
 #endregion
 
@@ -10,30 +13,41 @@ using UnityEngine.UI;
 [ExecuteInEditMode]
 public class SceneItem : MonoBehaviour
 {
-	[SerializeField] Item item;
+	[Tooltip("The item this scene item represents")]
+	[SerializeField] Item representedItem;
 	[Space(5)] 
 	[Header("UI")]
 	[SerializeField] TextMeshProUGUI descriptionText;
+
+	/// <summary>
+	/// The item this scene item represents.
+	/// </summary>
+	public Item RepresentedItem => representedItem;
+
+	void Start()
+	{
+		Debug.Assert(representedItem != null, $"[SceneItem] {name} does not have a represented item.");
+	}
 
 	void Update()
 	{
 		#region Rarity
 		Transform background = transform.GetChild(0);
 		if (background == null) return;
-		background.GetComponent<Outline>().effectColor = item.RarityColor.color;
+		background.GetComponent<Outline>().effectColor = representedItem.RarityColor.color;
 		#endregion
 
 		#region Description
 		string[] keywords =
 		{ "[damage]", "[duration]", "[cooldown]", "[buff]" };
 
-		string format = item.Description;
+		string format = representedItem.Description;
 
 		for (int i = 0; i < keywords.Length; i++)
-			if (item.Description.Contains(keywords[i]))
+			if (representedItem.Description.Contains(keywords[i]))
 				format = format.Replace(keywords[i], $"{{{i}}}");
 
-		descriptionText.text = item.Buff != null ? string.Format(format, item.Damage, item.Duration, item.Cooldown, item.Buff.StatusName) : string.Format(format, item.Damage, item.Duration, item.Cooldown);
+		descriptionText.text = representedItem.Buff != null ? string.Format(format, representedItem.Damage, representedItem.Duration, representedItem.Cooldown, representedItem.Buff.StatusName) : string.Format(format, representedItem.Damage, representedItem.Duration, representedItem.Cooldown);
 		#endregion
 	}
 }

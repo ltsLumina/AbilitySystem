@@ -7,7 +7,22 @@ public class PhoenixCharm : Item
 {
 	public override void Action(Player owner)
 	{
-		owner.Attributes.Add(Attributes.Stats.Shields, 1);
+		// owner.OnTookDamage += hadShield =>
+		// {
+		// 	if (owner.Health == 1 && !hadShield)
+		// 	{
+		// 		owner.Heal(owner.MaxHealth);
+		// 	}
+		// };
+
+		owner.OnHit += () =>
+		{
+			if (owner.Health == 1 && owner.Stats.Shields == 0)
+			{
+				owner.Stats.Add(Stats.StatType.Shields, 1);
+				owner.Heal(owner.MaxHealth);
+			}
+		};
 
 		Consumed = true;
 	}

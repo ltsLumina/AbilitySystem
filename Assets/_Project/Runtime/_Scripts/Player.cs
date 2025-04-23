@@ -32,8 +32,8 @@ public class Player : Entity, IPausable
 	
 	Rigidbody2D rb;
 
-	float Speed => speed * Attributes.Speed;
-	float TopSpeed => topSpeed * Attributes.Speed;
+	float Speed => speed * Stats.Speed;
+	float TopSpeed => topSpeed * Stats.Speed;
 
 	public Color AccentColour
 	{
@@ -48,8 +48,14 @@ public class Player : Entity, IPausable
 	}
 
 	/// <summary>
+	///     Called when the player is hit.
+	///     This event is different from OnTookDamage, as it is triggered before the player takes damage.
+	/// </summary>
+	public event Action OnHit;
+	
+	/// <summary>
 	///     Called when the player takes damage.
-	///     This event is triggered when the player takes damage, regardless of whether they have shields or not.
+	///     This event is triggered after the player takes damage, regardless of whether they have shields or not.
 	///     If the player has shields, the event is triggered after the shields are removed.
 	///     The boolean parameter indicates whether the player had shields or not when taking damage.
 	/// </summary>
@@ -68,11 +74,23 @@ public class Player : Entity, IPausable
 		}
 	}
 
-	[Button] [UsedImplicitly]
-	void KillPlayer() => Health = 0;
+	public int MaxHealth => maxHealth;
+	
+	public void Heal(int amount)
+	{
+		if (amount <= 0) return;
 
-	[Button] [UsedImplicitly]
+		Health = Mathf.Min(Health + amount, maxHealth);
+	}
+
+	[Button] [UsedImplicitly] [ButtonSize(5)]
+	void HealPlayer() => Heal(1);
+
+	[Button] [UsedImplicitly] [ButtonSize(5)]
 	void HurtPlayer() => TakeDamage(1);
+	
+	[Button] [UsedImplicitly] [ButtonSize(5)]
+	void KillPlayer() => Health = 0;
 
 	#region References
 	public Job Job => job;
@@ -94,7 +112,7 @@ public class Player : Entity, IPausable
 	#endregion
 
 	#region Properties
-	public Attributes Attributes { get; private set; }
+	public Stats Stats { get; private set; }
 	#endregion
 
 	protected override void OnTick() { }
@@ -124,7 +142,7 @@ public class Player : Entity, IPausable
 	{
 		#region References
 		rb = GetComponent<Rigidbody2D>();
-		Attributes = GetComponent<Attributes>();
+		Stats = GetComponent<Stats>();
 		Inventory = GetComponent<Inventory>();
 
 		InputManager = GetComponentInChildren<InputManager>();
@@ -229,9 +247,9 @@ public class Player : Entity, IPausable
 		if (isOnCooldown) return;
 
 		// Check if the player has shields, and if so, remove one shield and destroy the projectiles surrounding the player
-		if (Attributes.Shields > 0)
+		if (Stats.Shields > 0)
 		{
-			Attributes.Remove(Attributes.Stats.Shields, 1);
+			Stats.Remove(Stats.StatType.Shields, 1);
 			OnTookDamage?.Invoke(true);
 
 			DestroyNearbyOrbs();
@@ -243,15 +261,16 @@ public class Player : Entity, IPausable
 			return;
 		}
 
-		// Destroy all projectiles within a radius of 5 units
-		DestroyNearbyOrbs();
-
+		OnHit?.Invoke();
+		
+		DestroyNearbyOrbs(); // Destroy all projectiles within a radius of 5 units
+		
 		Debug.Assert((int) damage == 1, $"Tried to deal {damage} damage to {name}, but it was clamped to {(int) damage}." + "\nThis is likely due to the damage being negative, zero, or greater than the current health.");
 		Health -= Mathf.RoundToInt(damage);
 		OnTookDamage?.Invoke(false);
 		StartCoroutine(DamageCooldown());
 
-		base.TakeDamage(damage); // logs the damage taken
+		//base.TakeDamage(damage); // logs the damage taken
 
 		sprite.FlashSprite(Color.red, 0.3f);
 		CameraMain.DOShakePosition(0.3f, 1f);

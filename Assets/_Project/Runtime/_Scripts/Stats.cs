@@ -2,7 +2,7 @@
 using UnityEngine;
 #endregion
 
-public class Attributes : MonoBehaviour
+public class Stats : MonoBehaviour
 {
 	[Header("Modifiers")]
 	[SerializeField] float speed = 1;
@@ -22,7 +22,7 @@ public class Attributes : MonoBehaviour
 	public float SpellSpeed => spellSpeed;
 	public int Shields => shields;
 	
-	public enum Stats
+	public enum StatType
 	{
 		Speed,
 		Damage,
@@ -40,67 +40,67 @@ public class Attributes : MonoBehaviour
 		Debug.Assert(shields >= 0, "Shields cannot be negative.");
 	}
 
-	public void Add(Stats stat, float value)
+	public void Add(StatType statType, float value)
 	{
-		switch (stat)
+		switch (statType)
 		{
 			// modifiers
 			
-			case Stats.Speed:
+			case StatType.Speed:
 				speed += Mathf.Clamp(value, -byte.MaxValue, byte.MaxValue);
 				break;
 
-			case Stats.Damage:
+			case StatType.Damage:
 				damage += Mathf.Clamp(value, -byte.MaxValue, byte.MaxValue);
 				break;
 
-			case Stats.CastSpeed:
+			case StatType.CastSpeed:
 				castSpeed += Mathf.Clamp(value, -byte.MaxValue, byte.MaxValue);
 				break;
 
-			case Stats.SpellSpeed:
+			case StatType.SpellSpeed:
 				spellSpeed += Mathf.Clamp(value, -byte.MaxValue, byte.MaxValue);
 				break;
 			
 			// attributes
 
-			case Stats.Shields:
+			case StatType.Shields:
 				shields += Mathf.Clamp((int) value, 0, byte.MaxValue);
 				break;
 
 			default:
-				Debug.LogWarning($"Modifier {stat} not found.");
+				Debug.LogWarning($"Modifier {statType} not found.");
 				break;
 		}
 		
 		Validate();
 	}
 
-	public void Remove(Stats attribute, float value)
+	public void Remove(StatType attribute, float value)
 	{
 		switch (attribute)
 		{
 			// modifiers
 			
-			case Stats.Speed:
+			case StatType.Speed:
 				speed -= Mathf.Clamp(value, -byte.MaxValue, byte.MaxValue);
 				break;
 	
-			case Stats.Damage:
+			case StatType.Damage:
 				damage -= Mathf.Clamp(value, -byte.MaxValue, byte.MaxValue);
 				break;
 	
-			case Stats.CastSpeed:
+			case StatType.CastSpeed:
 				castSpeed -= Mathf.Clamp(value, -byte.MaxValue, byte.MaxValue);
 				break;
 	
-			case Stats.SpellSpeed:
+			case StatType.SpellSpeed:
 				spellSpeed -= Mathf.Clamp(value, -byte.MaxValue, byte.MaxValue);
 				break;
 			
 			// attributes
 	
-			case Stats.Shields:
+			case StatType.Shields:
 				shields -= Mathf.Clamp((int) value, 0, byte.MaxValue);
 				break;
 	

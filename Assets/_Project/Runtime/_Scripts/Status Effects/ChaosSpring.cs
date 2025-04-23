@@ -58,7 +58,7 @@ public class DamageOverTime : MonoBehaviour
 			{
 				if (entityTarget != null)
 				{
-					if (entityTarget.TryGetComponent(out IDamageable damageable)) damageable?.TakeDamage(damage * player.Attributes.Damage);
+					if (entityTarget.TryGetComponent(out IDamageable damageable)) damageable?.TakeDamage(damage * player.Stats.Damage);
 				}
 				
 				dotTick++;
