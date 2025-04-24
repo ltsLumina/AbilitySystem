@@ -119,12 +119,6 @@ public class Player : Entity, IPausable
 
 	protected override void OnCycle() { }
 
-	void Reset()
-	{
-		if (!Application.isPlaying) return;
-		gameObject.tag = $"Player {ID}";
-	}
-
 	new string name
 	{
 		get
@@ -150,8 +144,6 @@ public class Player : Entity, IPausable
 		InputManager = GetComponentInChildren<InputManager>();
 		PlayerInput = GetComponentInChildren<PlayerInput>();
 		#endregion
-
-		gameObject.name = name;
 	}
 	
 	protected override void OnStart()
@@ -248,6 +240,8 @@ public class Player : Entity, IPausable
 	{
 		if (isOnCooldown) return;
 
+		OnHit?.Invoke();
+
 		// Check if the player has shields, and if so, remove one shield and destroy the projectiles surrounding the player
 		if (Stats.Shields > 0)
 		{
@@ -262,8 +256,6 @@ public class Player : Entity, IPausable
 			StartCoroutine(DamageCooldown());
 			return;
 		}
-
-		OnHit?.Invoke();
 		
 		DestroyNearbyOrbs(); // Destroy all projectiles within a radius of 5 units
 		

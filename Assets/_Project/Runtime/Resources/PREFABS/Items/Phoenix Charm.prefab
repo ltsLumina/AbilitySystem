@@ -764,6 +764,18 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6788903762884404333, guid: 73c291ed7900f5942bb7904fd6f68339, type: 3}
+      propertyPath: sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 2467809daf1f45040a6e5f4aa80e40d8, type: 3}
+    - target: {fileID: 6788903762884404333, guid: 73c291ed7900f5942bb7904fd6f68339, type: 3}
+      propertyPath: nameText
+      value: 
+      objectReference: {fileID: 2189242750552249001}
+    - target: {fileID: 6788903762884404333, guid: 73c291ed7900f5942bb7904fd6f68339, type: 3}
+      propertyPath: background
+      value: 
+      objectReference: {fileID: 5058423290654946924}
+    - target: {fileID: 6788903762884404333, guid: 73c291ed7900f5942bb7904fd6f68339, type: 3}
       propertyPath: descriptionText
       value: 
       objectReference: {fileID: 8193194917647092595}

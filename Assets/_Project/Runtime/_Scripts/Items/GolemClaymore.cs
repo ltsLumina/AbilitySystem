@@ -7,11 +7,7 @@ public class GolemClaymore : Item
 {
 	public override void Action(Player owner)
 	{
-		var quickSpell = StatusEffect.CreateCustomStatusEffect("Golem's Might", "Movement speed is reduced by 15%.", 5, StatusEffect.Target.Self, StatusEffect.Timing.Prefix, owner);
-
-		quickSpell.OnInvoked += _ => owner.Stats.Remove(Stats.StatType.Speed, 0.15f);
-		quickSpell.OnDecayed += _ => owner.Stats.Add(Stats.StatType.Speed, 0.15f);
-		quickSpell.Invoke(owner);
+		// TODO: temporary debuff
 
 		Boss enemy = GameManager.Instance.CurrentBoss;
 		enemy.TakeDamage(damage);

@@ -7,14 +7,6 @@ public class PhoenixCharm : Item
 {
 	public override void Action(Player owner)
 	{
-		// owner.OnTookDamage += hadShield =>
-		// {
-		// 	if (owner.Health == 1 && !hadShield)
-		// 	{
-		// 		owner.Heal(owner.MaxHealth);
-		// 	}
-		// };
-
 		owner.OnHit += () =>
 		{
 			if (owner.Health == 1 && owner.Stats.Shields == 0)

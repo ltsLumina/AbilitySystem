@@ -27,21 +27,19 @@ public abstract class Item : ScriptableObject
 	#endregion
 
 	[Header("Item Info")]
-
 	[SerializeField] protected new string name;
 	[TextArea(3, 5)]
 	[SerializeField] protected string description;
-	[Space(10)]
+	
 	[Header("Attributes")]
-
 	[SerializeField] protected int damage;
 	[SerializeField] protected float duration;
 	[SerializeField] protected float cooldown;
 	[SerializeField] protected StatusEffect buff;
-	[Space(10)]
+	
 	[Header("Misc"), ReadOnly]
-	[SerializeField] protected bool consumed;
-	[SerializeField] protected bool invokeWhenAdded;
+	[SerializeField] bool consumed;
+	[SerializeField] bool invokeWhenAdded;
 
 	public string Name => name;
 	public string Description => description;

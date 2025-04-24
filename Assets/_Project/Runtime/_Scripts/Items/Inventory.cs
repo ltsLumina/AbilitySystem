@@ -1,5 +1,6 @@
 #region
 using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
 using UnityEngine;
 using VInspector;
@@ -64,28 +65,33 @@ public class Inventory : MonoBehaviour
 	}
 #endif
 
-	public void AddToInventory(Item item)
+	public void AddToInventory([NotNull] Item item)
 	{
 		if (item == null) return;
 
-		if (inventory.Contains(item))
+		if (inventory.Any(i => i.name == item.name))
 		{
 			Debug.LogWarning($"[Inventory] {item.name} is already in the inventory.");
 			return;
 		}
-
-		inventory.Add(item);
-		cooldowns.Add(item, item.Cooldown);
-		Debug.Log($"[Inventory] {item.name} has been added to the inventory.");
+		
+		// create instance of item
+		Item instance = Instantiate(item);
+		instance.name = item.name;
+		instance.name += '*'; // add asterisk to the name to indicate it's an instance
+		
+		inventory.Add(instance);
+		cooldowns.Add(instance, instance.Cooldown);
+		Debug.Log($"[Inventory] {instance.name} has been added to the inventory.");
 
 		if (item.InvokeWhenAdded)
 		{
 			var owner = GetComponent<Player>();
-			item.Action(owner);
+			instance.Action(owner);
 		}
 	}
 
-	public void AddToInventory(SceneItem item) => AddToInventory(item.RepresentedItem);
+	public void AddToInventory([NotNull] SceneItem item) => AddToInventory(item.RepresentedItem);
 
 	public bool HasItem([NotNull] Item item, bool log = false)
 	{

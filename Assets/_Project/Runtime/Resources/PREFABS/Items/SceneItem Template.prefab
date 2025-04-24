@@ -907,7 +907,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   representedItem: {fileID: 0}
+  background: {fileID: 8895311738829561257}
+  nameText: {fileID: 8315750560989540269}
   descriptionText: {fileID: 4993394595879580743}
+  sprite: {fileID: 0}
 --- !u!114 &3634885189430264501
 MonoBehaviour:
   m_ObjectHideFlags: 0
