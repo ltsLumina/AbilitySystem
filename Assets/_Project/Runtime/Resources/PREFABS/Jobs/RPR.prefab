@@ -409,8 +409,8 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 19ff9f11-79f3-4523-a9e2-bc8ef321b6b6
     m_ActionName: 'Player/Pause[/Keyboard/shift]'
-  m_NeverAutoSwitchControlSchemes: 0
-  m_DefaultControlScheme: 
+  m_NeverAutoSwitchControlSchemes: 1
+  m_DefaultControlScheme: Keyboard&Mouse
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
@@ -471,7 +471,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6536177161810776796}
   - component: {fileID: 7775688791333498309}
-  - component: {fileID: 9103511217342309041}
+  - component: {fileID: 2781842207357107472}
   - component: {fileID: 7469510165550881694}
   - component: {fileID: 4422582200664740063}
   - component: {fileID: 5453742574585655225}
@@ -522,7 +522,7 @@ MonoBehaviour:
   moveDamping: 0
   stopDamping: 50
   accentColour: {r: 0.5566038, g: 0.18115878, b: 0.25511, a: 1}
---- !u!114 &9103511217342309041
+--- !u!114 &2781842207357107472
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -553,6 +553,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inventory: []
   showGUI: 1
+  itemToAdd: {fileID: 0}
 --- !u!50 &4422582200664740063
 Rigidbody2D:
   serializedVersion: 5

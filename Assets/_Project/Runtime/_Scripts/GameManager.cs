@@ -141,11 +141,9 @@ public class GameManager : Singleton<GameManager>
 				lootMusic.SetVolume(0.5f);
 				lootMusic.SetId("LootMusic");
 				lootMusic.Play();
-
-				List<Item> items = Resources.LoadAll<Item>(AbilitySettings.ResourcePaths.ITEMS).ToList();
-				Item item = items[Random.Range(0, items.Count)];
-
-				foreach (Player player in PlayerManager.Instance.Players) player.Inventory.AddToInventory(item);
+				
+				var itemDistributor = FindAnyObjectByType<ItemDistributor>();
+				itemDistributor?.Initialize();
 
 				OnEnterLoot?.Invoke();
 				break;
@@ -276,10 +274,38 @@ public class GameManager : Singleton<GameManager>
 		}
 #endif
 	}
-
+	
 #if UNITY_EDITOR
-	void OnGUI() => // Display the timer in the top right corner
-			GUI.Label(new (Screen.width - 200, 75, 200, 20), $"Time: {timer:F2}");
+	void OnGUI()
+	{
+		// Display the timer in the top right corner
+		GUI.Label(new (Screen.width - 200, 75, 200, 20), $"Time: {timer:F2}");
+
+		GUILayout.BeginArea(new Rect(0, 200, 100, 100));
+
+		bool killBoss = CurrentBoss != null && !CurrentBoss.IsDead;
+		bool spawnBoss = CurrentBoss == null || CurrentBoss.IsDead;
+		string title = CurrentBoss ? $"Kill {CurrentBoss.ShortName}" : "Spawn Boss";
+
+		if (GUILayout.Button(title))
+		{
+			if (killBoss)
+			{
+				CurrentBoss.Kill();
+			}
+			else if (spawnBoss)
+			{
+				SpawnBoss();
+			}
+		}
+
+		if (GUILayout.Button("Skip to Loot"))
+		{
+			SetState(State.Loot);
+		}
+
+		GUILayout.EndArea();
+	}
 #endif
 
 	/// <summary>

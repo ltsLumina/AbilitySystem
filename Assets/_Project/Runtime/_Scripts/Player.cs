@@ -83,13 +83,13 @@ public class Player : Entity, IPausable
 		Health = Mathf.Min(Health + amount, maxHealth);
 	}
 
-	[Button] [UsedImplicitly] [ButtonSize(5)]
+	[Button] [UsedImplicitly] [ButtonSize(25)]
 	void HealPlayer() => Heal(1);
 
-	[Button] [UsedImplicitly] [ButtonSize(5)]
+	[Button] [UsedImplicitly] [ButtonSize(25)]
 	void HurtPlayer() => TakeDamage(1);
 	
-	[Button] [UsedImplicitly] [ButtonSize(5)]
+	[Button] [UsedImplicitly] [ButtonSize(25)]
 	void KillPlayer() => Health = 0;
 
 	#region References
@@ -130,8 +130,10 @@ public class Player : Entity, IPausable
 		get
 		{
 			string id = ID.ToString();
-			string jobName = job.name;
-			string playerName = $"Player {id} - {jobName}";
+			string jobName = job.name; 
+			string controlScheme = PlayerInput != null ? PlayerInput.currentControlScheme : throw new NullReferenceException("PlayerInput is null");
+			int userIndex = PlayerInput.user.index;
+			string playerName = $"Player {id} - {jobName} - {controlScheme} ({userIndex})";
 			return playerName;
 		}
 	}

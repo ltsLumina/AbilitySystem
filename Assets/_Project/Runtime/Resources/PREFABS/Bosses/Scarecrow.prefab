@@ -18,7 +18,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &424927461921130396
 Transform:
   m_ObjectHideFlags: 0
@@ -51,6 +51,7 @@ MonoBehaviour:
   data: {fileID: 0}
   health: 100000
   maxHealth: 100000
+  healthScalar: 1.25
   accentColour: {r: 1, g: 0.5424528, b: 0.5424528, a: 1}
   phases:
   - name: AFK

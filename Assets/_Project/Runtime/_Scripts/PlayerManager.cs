@@ -42,6 +42,9 @@ public class PlayerManager : Singleton<PlayerManager>
 			return new (result);
 		}
 	}
+	
+	// note: this could potentially be an issue because it is static
+	public static int PlayerCount => Instance.Players.Count;
 
 	public event Action<Player> OnPlayerJoined;
 	public event Action<Player> OnPlayerLeft;
@@ -95,7 +98,6 @@ public class PlayerManager : Singleton<PlayerManager>
 		GUILayout.BeginArea(new (0, 100, 100, 100));
 
 		string prettyName = defaultJob.name.Replace("(default)", string.Empty);
-
 		if (GUILayout.Button($"Spawn {prettyName}"))
 		{
 			PlayerInputManager.instance.playerPrefab = defaultJob;
@@ -150,6 +152,8 @@ public class PlayerManager : Singleton<PlayerManager>
 
 	void HandlePlayerJoined(PlayerInput input)
 	{
+		CycleControlScheme();
+		
 		var player = input.GetComponentInParent<Player>();
 		AddPlayer(player);
 
@@ -171,6 +175,41 @@ public class PlayerManager : Singleton<PlayerManager>
 		}
 
 		OnPlayerJoined?.Invoke(player);
+
+		return;
+		void CycleControlScheme() => input.actions["Switch"].performed += _ =>
+		{
+			Gamepad[] gamepads = Gamepad.all.ToArray();
+			Gamepad currentGamepad = Gamepad.current;
+            
+			if (input.currentControlScheme == "Keyboard&Mouse")
+			{
+				// If we're on keyboard, switch to first available gamepad
+				if (gamepads.Length > 0)
+				{
+					input.SwitchCurrentControlScheme("Gamepad", gamepads[0]);
+				}
+			}
+			else
+			{
+				// We're currently on a gamepad
+				if (gamepads.Length > 1)
+				{
+					// Find current gamepad index
+					int currentIndex = Array.IndexOf(gamepads, currentGamepad);
+                    
+					// If there's a next gamepad, switch to it
+					if (currentIndex < gamepads.Length - 1)
+					{
+						input.SwitchCurrentControlScheme("Gamepad", gamepads[currentIndex + 1]);
+						return;
+					}
+				}
+                
+				// If we're on the last gamepad or only have one gamepad, switch back to keyboard
+				input.SwitchCurrentControlScheme("Keyboard&Mouse", Keyboard.current);
+			}
+		};
 	}
 
 	void HandlePlayerLeft(PlayerInput input)

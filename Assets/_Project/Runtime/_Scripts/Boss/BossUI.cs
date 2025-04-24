@@ -48,6 +48,7 @@ public partial class Boss
 	}
 	#endregion
 
+#if UNITY_EDITOR
 	void OnGUI()
 	{
 		if (statusEffects.Count == 0) return;
@@ -64,4 +65,5 @@ public partial class Boss
 
 		GUILayout.EndArea();
 	}
+#endif
 }

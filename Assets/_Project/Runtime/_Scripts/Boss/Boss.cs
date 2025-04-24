@@ -63,10 +63,6 @@ public sealed partial class Boss : Entity
 	public int MaxHealth => maxHealth;
 	public bool IsDead { get; private set; }
 
-	public event Action OnBossStarted;
-	public event Action<int> OnTookDamage;
-	public event Action OnDeath;
-
 	public Color AccentColour
 	{
 		get
@@ -75,6 +71,15 @@ public sealed partial class Boss : Entity
 			return accentColour;
 		}
 	}
+
+	new public string name => gameObject.name;
+	public string ShortName => name.Split(',')[0];
+	
+	public override string ToString() => name;
+
+	public event Action OnBossStarted;
+	public event Action<int> OnTookDamage;
+	public event Action OnDeath;
 
 #if UNITY_EDITOR
 	[Button] [UsedImplicitly]
@@ -138,7 +143,7 @@ public sealed partial class Boss : Entity
 		float adjustedHealth = Mathf.RoundToInt(maxHealth * HealthScalar);
 		health = (int) adjustedHealth;
 
-		name = name.Replace("(Clone)", string.Empty);
+		gameObject.name = gameObject.name.Replace("(Clone)", string.Empty);
 		transform.SetParent(GameObject.Find("Important").transform);
 		transform.SetAsLastSibling();
 
@@ -150,7 +155,7 @@ public sealed partial class Boss : Entity
 	{
 		get
 		{
-			int players = PlayerManager.Instance.Players.Count;
+			int players = PlayerManager.PlayerCount;
 			if (players == 0) players = 1;
 
 			// each player after the first adds {healthScalar}% health to the boss (e.g. 1.25 = 25% health per player)

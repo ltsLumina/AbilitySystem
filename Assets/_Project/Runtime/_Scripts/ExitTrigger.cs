@@ -37,7 +37,7 @@ public class ExitTrigger : MonoBehaviour
 	int temp;
 	int playersInTrigger
 	{
-		get => temp = Mathf.Clamp(temp, 0, PlayerManager.Instance.Players.Count);
+		get => temp = Mathf.Clamp(temp, 0, PlayerManager.PlayerCount);
 		set => temp = value;
 	}
 
@@ -45,7 +45,7 @@ public class ExitTrigger : MonoBehaviour
 	{
 		if (other.TryGetComponent(out Player _)) playersInTrigger++;
 
-		if (playersInTrigger == PlayerManager.Instance.Players.Count)
+		if (playersInTrigger == PlayerManager.PlayerCount)
 		{
 			GameManager gameManager = GameManager.Instance;
 

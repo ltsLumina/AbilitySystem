@@ -2,12 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.UI;
-using UnityEngine.UIElements;
 using VInspector;
-using Button = UnityEngine.UI.Button;
 #endregion
 
 public class InputManager : MonoBehaviour
@@ -17,6 +14,8 @@ public class InputManager : MonoBehaviour
 	public Vector2 MoveInput { get; private set; }
 
 	public bool IsMoving { get; private set; }
+	
+	public MultiplayerEventSystem EventSystem => eventSystem;
 	
 	/// <summary>
 	///     Overrides the move input with the given input. (Used for Mouse movement)
@@ -43,6 +42,9 @@ public class InputManager : MonoBehaviour
 
 			case "UI": {
 				playerInput.SwitchCurrentActionMap("UI");
+
+				GameObject firstSelected = FindFirstObjectByType<SceneItem>(FindObjectsInactive.Exclude).gameObject;
+				eventSystem.SetSelectedGameObject(firstSelected);
 				return;
 			}
 
@@ -59,75 +61,51 @@ public class InputManager : MonoBehaviour
 	/// <remarks> 0 = Player,
 	///     <para>1 = UI</para>
 	/// </remarks>
-	public void ToggleInputLayer(int layerIndex)
+	public void ToggleInputLayer(int layerIndex, bool log = false)
 	{
 		switch (layerIndex)
 		{
 			case 0:
 				ToggleInputLayer("Player");
+				if (log) Debug.Log($"Input layer set to {playerInput.currentActionMap.name} for {playerInput.transform.parent.name}", playerInput.transform.parent);
 				break;
 
 			case 1:
 				ToggleInputLayer("UI");
-				
-				GameObject firstSelected = FindFirstObjectByType<SceneItem>(FindObjectsInactive.Exclude).gameObject;
-				eventSystem.SetSelectedGameObject(firstSelected);
+				if (log) Debug.Log($"Input layer set to {playerInput.currentActionMap.name} for {playerInput.transform.parent.name}", playerInput.transform.parent);
 				break;
 		}
 	}
 
 	GameObject selected;
 	GameObject previousGameObject;
-	
-	void FixedUpdate()
-	{ 
-		GameObject currentSelected = eventSystem.currentSelectedGameObject;
-	
-		if (currentSelected == null || currentSelected == selected) return;
-	
-		selected = currentSelected;
-	
-		if (!selected.TryGetComponent(out SceneItem sceneItem)) return;
-	
-		if (sceneItem.TryGetComponent(out Button button))
-		{
-			var selectPointerData = new BaseEventData(eventSystem);
-			button.OnSelect(selectPointerData);
-			var deselectPointerData = new BaseEventData(eventSystem);
-			button.OnDeselect(deselectPointerData);
-	
-			if (selectPointerData.selectedObject == selected)
-			{
-				Debug.Log($"Selected {button.name}");
 
-				button.onClick.RemoveAllListeners();
-				button.onClick.AddListener
-				(() =>
-				{
-					button.onClick.RemoveAllListeners();
-	
-					var selectionManager = FindAnyObjectByType<ItemSelection>();
-					selectionManager.Vote(GetComponentInParent<Player>(), sceneItem);
-	
-					//eventSystem.SetSelectedGameObject(null);
-					
-					// sceneItem.gameObject.SetActive(false);
-					// sceneItem.name += " (Picked)";
-				});
-			}
-		}
-	}
-
+	Player player;
 	PlayerInput playerInput;
 	MultiplayerEventSystem eventSystem;
 	
 	void Start()
 	{
+		player = GetComponentInParent<Player>();
+		
 		playerInput = GetComponent<PlayerInput>();
-		playerInput.uiInputModule = FindAnyObjectByType<InputSystemUIInputModule>();
+		playerInput.uiInputModule = GetComponent<InputSystemUIInputModule>();
 		playerInput.uiInputModule.actionsAsset = playerInput.actions;
 
 		eventSystem = GetComponent<MultiplayerEventSystem>();
+
+		playerInput.actions["Submit"].performed += _ =>
+		{
+			var selectedGameObject = eventSystem.currentSelectedGameObject;
+			if (selectedGameObject == null) return;
+
+			SceneItem sceneItem = selectedGameObject.TryGetComponent(out SceneItem item) 
+					? item 
+					: throw new MissingComponentException("Selected GameObject does not have a SceneItem component.");
+
+			var selectionManager = FindAnyObjectByType<ItemDistributor>();
+			selectionManager.Vote(player, sceneItem);
+		};
 	}
 
 	void Update()
@@ -136,10 +114,10 @@ public class InputManager : MonoBehaviour
 		{
 			ToggleInputLayer(1);
 		}
-		
+
 		if (Input.GetKeyDown(KeyCode.F3))
 		{
-			ToggleInputLayer(0);
+			ToggleInputLayer(0); 
 		}
 	}
 

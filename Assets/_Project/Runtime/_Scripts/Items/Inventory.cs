@@ -15,19 +15,54 @@ public class Inventory : MonoBehaviour
 
 	readonly Dictionary<Item, float> cooldowns = new (); // the current cooldown time of each item
 
-	[Button] [UsedImplicitly]
-	public void AddGolemClaymore()
-	{
-		var item = Resources.Load<Item>("Scriptables/Items/Golem's Claymore");
-		AddToInventory(item);
-	}
+#if UNITY_EDITOR
+	[SerializeField] Item itemToAdd;
 
 	[Button] [UsedImplicitly]
-	public void AddPhoenixCharm()
+	public void AddItem()
 	{
-		var item = Resources.Load<Item>("Scriptables/Items/Phoenix Charm");
-		AddToInventory(item);
+		AddToInventory(itemToAdd);
 	}
+#endif
+
+	void Start()
+	{
+		foreach (Item item in inventory) cooldowns.Add(item, item.Cooldown);
+
+		//Debug.Log($"{item.name} has an initial cooldown of {item.Cooldown}.");
+
+		GameManager.Instance.OnEnterBattle += () =>
+		{ // reset the cooldowns when entering battle
+			foreach (Item item in inventory)
+			{
+				if (item == null) continue;
+				if (item.Consumed) continue;
+
+				cooldowns[item] = item.Cooldown;
+			}
+		};
+	}
+
+	void Update() => TickItems();
+
+#if UNITY_EDITOR
+	void OnGUI()
+	{
+		if (!showGUI) return;
+
+		GUILayout.BeginArea(new (Screen.width - 200, 10, 190, Screen.height - 20));
+
+		foreach (Item item in inventory)
+		{
+			if (item == null) continue;
+
+			if (cooldowns[item] <= 0) GUILayout.Label($"{item.name} - Passive");
+			else GUILayout.Label($"{item.name} - {cooldowns[item].RoundTo(2)}");
+		}
+
+		GUILayout.EndArea();
+	}
+#endif
 
 	public void AddToInventory(Item item)
 	{
@@ -50,33 +85,26 @@ public class Inventory : MonoBehaviour
 		}
 	}
 
-	public void AddToInventory(SceneItem item)
+	public void AddToInventory(SceneItem item) => AddToInventory(item.RepresentedItem);
+
+	public bool HasItem([NotNull] Item item, bool log = false)
 	{
-		AddToInventory(item.RepresentedItem);
+		if (inventory.Contains(item))
+		{
+			if (log) Debug.Log($"[Inventory] {item.name} is in the inventory.");
+			return true;
+		}
+
+		if (log) Debug.LogWarning($"[Inventory] {item.name} is not in the inventory.");
+		return false;
 	}
-
-	void Start()
-	{
-		foreach (Item item in inventory) cooldowns.Add(item, item.Cooldown);
-
-		//Debug.Log($"{item.name} has an initial cooldown of {item.Cooldown}.");
-
-		GameManager.Instance.OnEnterBattle += () =>
-		{ // reset the cooldowns when entering battle
-			foreach (Item item in inventory)
-			{
-				if (item == null) continue;
-				if (item.Consumed) continue;
-
-				cooldowns[item] = item.Cooldown;
-			}
-		};
-	}
-
-	void Update()
+	
+	public bool HasItem([NotNull] SceneItem item) => HasItem(item.RepresentedItem);
+	
+	void TickItems()
 	{
 		if (GameManager.Instance.CurrentState != GameManager.State.Battle) return;
-		
+
 		foreach (Item item in inventory)
 		{
 			if (item == null) continue;
@@ -100,25 +128,6 @@ public class Inventory : MonoBehaviour
 			}
 		}
 	}
-
-#if UNITY_EDITOR
-	void OnGUI()
-	{
-		if (!showGUI) return;
-
-		GUILayout.BeginArea(new (Screen.width - 200, 10, 190, Screen.height - 20));
-
-		foreach (Item item in inventory)
-		{
-			if (item == null) continue;
-
-			if (cooldowns[item] <= 0) GUILayout.Label($"{item.name} - Passive");
-			else GUILayout.Label($"{item.name} - {cooldowns[item].RoundTo(2)}");
-		}
-
-		GUILayout.EndArea();
-	}
-#endif
 }
 
 public static class MathExtensions

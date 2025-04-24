@@ -1,9 +1,6 @@
 #region
-using System;
-using Lumina.Essentials.Attributes;
 using TMPro;
 using UnityEngine;
-using UnityEngine.InputSystem.UI;
 using UnityEngine.UI;
 #endregion
 
@@ -23,6 +20,9 @@ public class SceneItem : MonoBehaviour
 	/// The item this scene item represents.
 	/// </summary>
 	public Item RepresentedItem => representedItem;
+
+	new public string name => $"{representedItem.name} ({representedItem.RarityColor.rarity.ToString()})";
+	public override string ToString() => name;
 
 	void Start()
 	{
