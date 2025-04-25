@@ -63,10 +63,6 @@ public sealed partial class Boss : Entity
 	public int MaxHealth => maxHealth;
 	public bool IsDead { get; private set; }
 
-	public event Action OnBossStarted;
-	public event Action<int> OnTookDamage;
-	public event Action OnDeath;
-
 	public Color AccentColour
 	{
 		get
@@ -75,6 +71,15 @@ public sealed partial class Boss : Entity
 			return accentColour;
 		}
 	}
+
+	new public string name => gameObject.name;
+	public string ShortName => name.Split(',')[0];
+	
+	public override string ToString() => name;
+
+	public event Action OnBossStarted;
+	public event Action<int> OnTookDamage;
+	public event Action OnDeath;
 
 #if UNITY_EDITOR
 	[Button] [UsedImplicitly]
@@ -89,7 +94,7 @@ public sealed partial class Boss : Entity
 		string path = $"{Application.persistentDataPath}/{name}.json";
 		string json = JsonUtility.ToJson(this, true);
 		File.WriteAllText(path, json);
-		Debug.Log($"Phases saved to {path}");
+		Logger.Log($"Phases saved to {path}");
 
 		if (EditorUtility.DisplayDialog("Open File", "Do you want to open the file?", "Yes", "No")) Application.OpenURL($"file:///{path}");
 		else EditorUtility.DisplayDialog("File Saved", $"Phases saved to {path}", "OK");
@@ -110,8 +115,13 @@ public sealed partial class Boss : Entity
 	void Awake()
 	{
 		attacks = GetComponent<Attacks>();
-
-		OnBossStarted += () => CameraMain.DOOrthoSize(CameraMain.orthographicSize * 1.10f, 1.5f);
+		
+		OnBossStarted += () =>
+		{
+			const float INCREASE = 1.1f;
+			const float DURATION = 1.5f;
+			CameraMain.DOOrthoSize(CameraMain.orthographicSize * INCREASE, DURATION);
+		};
 
 		OnDeath += () =>
 		{
@@ -138,7 +148,7 @@ public sealed partial class Boss : Entity
 		float adjustedHealth = Mathf.RoundToInt(maxHealth * HealthScalar);
 		health = (int) adjustedHealth;
 
-		name = name.Replace("(Clone)", string.Empty);
+		gameObject.name = gameObject.name.Replace("(Clone)", string.Empty);
 		transform.SetParent(GameObject.Find("Important").transform);
 		transform.SetAsLastSibling();
 
@@ -150,7 +160,7 @@ public sealed partial class Boss : Entity
 	{
 		get
 		{
-			int players = PlayerManager.Instance.Players.Count;
+			int players = PlayerManager.PlayerCount;
 			if (players == 0) players = 1;
 
 			// each player after the first adds {healthScalar}% health to the boss (e.g. 1.25 = 25% health per player)
@@ -178,7 +188,7 @@ public sealed partial class Boss : Entity
 
 	void Death()
 	{
-		Logger.LogWarning("Boss has died.");
+		//Logger.LogWarning("Boss has died.");
 		Destroy(gameObject, 5f);
 
 		StopAllCoroutines();
@@ -191,7 +201,7 @@ public sealed partial class Boss : Entity
 		{
 			if (marker == null) continue;
 			DOTween.Kill(marker);
-			marker.GetComponentInChildren<SpriteRenderer>()?.DOFade(0, 0.5f);
+			marker.GetComponentInChildren<SpriteRenderer>()?.DOFade(0, 0.5f).SetLink(gameObject);
 			Destroy(marker, 1f);
 		}
 
@@ -225,7 +235,7 @@ public sealed partial class Boss : Entity
 		if (currentPhaseIndex < phases.Count) StartPhase(phases[currentPhaseIndex]);
 		else
 		{
-			Debug.Log("All phases completed.");
+			Logger.Log("All phases completed.");
 			StartCoroutine(Enrage());
 		}
 	}

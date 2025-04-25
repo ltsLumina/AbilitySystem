@@ -41,10 +41,8 @@ public class AbilityButton : MonoBehaviour, IPausable
 	[SerializeField] float fadeDuration = 0.35f;
 
 	[Tab("Settings")]
-	[SerializeField] bool showDecimals;
+	[SerializeField] bool showCooldown;
 	[EndTab]
-
-	public Ability _Ability => ability;
 	
 	bool OnCooldown
 	{
@@ -58,10 +56,16 @@ public class AbilityButton : MonoBehaviour, IPausable
 	}
 
 	// ReSharper disable once ParameterHidesMember
-	float CooldownTime(bool showDecimals = false)
+	float CooldownTime()
 	{
-		if (showDecimals) return RoundToDecimal(circle.fillAmount * ability.Cooldown, 2);
-		return Mathf.RoundToInt(circle.fillAmount * ability.Cooldown);
+		if (ability == null) return 0;
+
+		float time = ability.Cooldown - cooldownTween.Elapsed();
+
+		time = Mathf.RoundToInt(time);
+		cooldownTime = time;
+
+		return time;
 	}
 
 	public int abilityIndex => transform.GetSiblingIndex();
@@ -119,6 +123,8 @@ public class AbilityButton : MonoBehaviour, IPausable
 
 		circle.fillAmount = 0;
 		duration.alpha = 0;
+
+		duration.gameObject.SetActive(showCooldown);
 
 		InitAvailabilityLayer();
 
@@ -188,8 +194,8 @@ public class AbilityButton : MonoBehaviour, IPausable
 		{
 			// Always show decimals in the hierarchy.
 			// Mostly a debugging feature.
-			availabilityLayer.gameObject.name = $"Unavailable ({CooldownTime(showDecimals: true)} seconds)";
-			duration.text = CooldownTime(showDecimals).ToString(CultureInfo.InvariantCulture);
+			availabilityLayer.gameObject.name = $"Unavailable ({CooldownTime()} seconds)";
+			duration.text = CooldownTime().ToString(CultureInfo.InvariantCulture);
 			yield return null;
 		}
 

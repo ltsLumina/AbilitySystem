@@ -366,7 +366,6 @@ GameObject:
   - component: {fileID: 265365406232580808}
   - component: {fileID: 7916833178086342432}
   - component: {fileID: 3724852529656350874}
-  - component: {fileID: 6902766195832347078}
   m_Layer: 5
   m_Name: 'Ability [KEY]'
   m_TagString: Untagged
@@ -460,18 +459,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &6902766195832347078
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7515439847528555595}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0c9a88ab0567f254a94e6a7336c04017, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &8599066036435017831
 GameObject:
   m_ObjectHideFlags: 0

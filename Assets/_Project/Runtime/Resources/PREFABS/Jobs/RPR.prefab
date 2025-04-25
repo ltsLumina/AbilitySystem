@@ -201,6 +201,8 @@ GameObject:
   - component: {fileID: 3165887595291830493}
   - component: {fileID: 3645904173574332846}
   - component: {fileID: 4599196929053515674}
+  - component: {fileID: 2136647150923580190}
+  - component: {fileID: 323061589184638748}
   m_Layer: 0
   m_Name: Input
   m_TagString: Untagged
@@ -407,11 +409,58 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 19ff9f11-79f3-4523-a9e2-bc8ef321b6b6
     m_ActionName: 'Player/Pause[/Keyboard/shift]'
-  m_NeverAutoSwitchControlSchemes: 0
-  m_DefaultControlScheme: 
+  m_NeverAutoSwitchControlSchemes: 1
+  m_DefaultControlScheme: Keyboard&Mouse
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &2136647150923580190
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5376878994381087697}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b16c6f78230fa4964a222622d8aae332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_FirstSelected: {fileID: 0}
+  m_sendNavigationEvents: 1
+  m_DragThreshold: 10
+  m_PlayerRoot: {fileID: 0}
+--- !u!114 &323061589184638748
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5376878994381087697}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01614664b831546d2ae94a42149d80ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SendPointerHoverToParent: 1
+  m_MoveRepeatDelay: 0.5
+  m_MoveRepeatRate: 0.1
+  m_XRTrackingOrigin: {fileID: 0}
+  m_ActionsAsset: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+  m_PointAction: {fileID: -1654692200621890270, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+  m_MoveAction: {fileID: -8784545083839296357, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+  m_SubmitAction: {fileID: 392368643174621059, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+  m_CancelAction: {fileID: 7727032971491509709, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+  m_LeftClickAction: {fileID: 3001919216989983466, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+  m_MiddleClickAction: {fileID: -2185481485913320682, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+  m_RightClickAction: {fileID: -4090225696740746782, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+  m_ScrollWheelAction: {fileID: 6240969308177333660, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+  m_TrackedDevicePositionAction: {fileID: 0}
+  m_TrackedDeviceOrientationAction: {fileID: 0}
+  m_DeselectOnBackgroundClick: 0
+  m_PointerBehavior: 0
+  m_CursorLockBehavior: 0
+  m_ScrollDeltaPerTick: 6
 --- !u!1 &5559446698122260506
 GameObject:
   m_ObjectHideFlags: 0
@@ -422,7 +471,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6536177161810776796}
   - component: {fileID: 7775688791333498309}
-  - component: {fileID: 5836204446567265204}
+  - component: {fileID: 2781842207357107472}
   - component: {fileID: 7469510165550881694}
   - component: {fileID: 4422582200664740063}
   - component: {fileID: 5453742574585655225}
@@ -473,7 +522,7 @@ MonoBehaviour:
   moveDamping: 0
   stopDamping: 50
   accentColour: {r: 0.5566038, g: 0.18115878, b: 0.25511, a: 1}
---- !u!114 &5836204446567265204
+--- !u!114 &2781842207357107472
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -504,6 +553,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inventory: []
   showGUI: 1
+  itemToAdd: {fileID: 0}
 --- !u!50 &4422582200664740063
 Rigidbody2D:
   serializedVersion: 5

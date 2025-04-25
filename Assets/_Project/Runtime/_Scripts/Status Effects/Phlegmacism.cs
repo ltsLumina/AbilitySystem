@@ -19,7 +19,7 @@ public class Phlegmacism : Buff
             return;
         }
 
-        player.Attributes.Add(Attributes.Stats.Shields, 1);
+        player.Stats.Add(Stats.StatType.Shields, 1);
 
         player.OnTookDamage += RemoveEffectOnDamageTaken;
     }
@@ -41,7 +41,7 @@ public class Phlegmacism : Buff
                 return;
             }
 
-            player.Attributes.Remove(Attributes.Stats.Shields, 1);
+            player.Stats.Remove(Stats.StatType.Shields, 1);
 
             //player.OnTookDamage -= RemoveEffectOnDamageTaken;
         }

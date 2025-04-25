@@ -15,6 +15,8 @@ public class InputManager : MonoBehaviour
 
 	public bool IsMoving { get; private set; }
 	
+	public MultiplayerEventSystem EventSystem => eventSystem;
+	
 	/// <summary>
 	///     Overrides the move input with the given input. (Used for Mouse movement)
 	/// </summary>
@@ -34,13 +36,11 @@ public class InputManager : MonoBehaviour
 		switch (layerName)
 		{
 			case "Player": {
-				var playerInput = FindAnyObjectByType<PlayerInput>();
 				playerInput.SwitchCurrentActionMap("Player");
 				return;
 			}
 
 			case "UI": {
-				var playerInput = FindAnyObjectByType<PlayerInput>();
 				playerInput.SwitchCurrentActionMap("UI");
 				return;
 			}
@@ -58,24 +58,78 @@ public class InputManager : MonoBehaviour
 	/// <remarks> 0 = Player,
 	///     <para>1 = UI</para>
 	/// </remarks>
-	public void ToggleInputLayer(int layerIndex)
+	public void ToggleInputLayer(int layerIndex, bool log = false)
 	{
 		switch (layerIndex)
 		{
 			case 0:
 				ToggleInputLayer("Player");
+				if (log) Debug.Log($"Input layer set to {playerInput.currentActionMap.name} for {playerInput.transform.parent.name}", playerInput.transform.parent);
 				break;
 
 			case 1:
 				ToggleInputLayer("UI");
+				if (log) Debug.Log($"Input layer set to {playerInput.currentActionMap.name} for {playerInput.transform.parent.name}", playerInput.transform.parent);
 				break;
 		}
 	}
 
+	GameObject selected;
+	GameObject previousGameObject;
+
+	Player player;
+	PlayerInput playerInput;
+	MultiplayerEventSystem eventSystem;
+	
 	void Start()
 	{
-		var playerInput = GetComponent<PlayerInput>();
-		playerInput.uiInputModule = FindAnyObjectByType<InputSystemUIInputModule>();
+		player = GetComponentInParent<Player>();
+		
+		playerInput = GetComponent<PlayerInput>();
+		playerInput.uiInputModule = GetComponent<InputSystemUIInputModule>();
+		playerInput.uiInputModule.actionsAsset = playerInput.actions;
+
+		eventSystem = GetComponent<MultiplayerEventSystem>();
+
+		playerInput.actions["Submit"].performed += _ =>
+		{
+			var selectedGameObject = eventSystem.currentSelectedGameObject;
+			if (selectedGameObject == null) return;
+
+			SceneItem sceneItem = selectedGameObject.TryGetComponent(out SceneItem item) 
+					? item 
+					: throw new MissingComponentException("Selected GameObject does not have a SceneItem component.");
+
+			var selectionManager = FindAnyObjectByType<ItemDistributor>();
+			selectionManager.Vote(player, sceneItem);
+			playerInput.actions["Navigate"].Disable();
+		};
+
+		playerInput.actions["Cancel"].performed += _ =>
+		{
+			var selectedGameObject = eventSystem.currentSelectedGameObject;
+			if (selectedGameObject == null) return;
+
+			SceneItem sceneItem = selectedGameObject.TryGetComponent(out SceneItem item) ? item : throw new MissingComponentException("Selected GameObject does not have a SceneItem component.");
+
+			var selectionManager = FindAnyObjectByType<ItemDistributor>();
+			selectionManager.Unvote(player, sceneItem);
+			
+			playerInput.actions["Navigate"].Enable();
+		};
+	}
+
+	void Update()
+	{
+		if (Input.GetKeyDown(KeyCode.F2))
+		{
+			ToggleInputLayer(1);
+		}
+
+		if (Input.GetKeyDown(KeyCode.F3))
+		{
+			ToggleInputLayer(0); 
+		}
 	}
 
 	public void OnMove(InputAction.CallbackContext context)

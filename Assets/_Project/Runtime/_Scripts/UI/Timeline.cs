@@ -1,8 +1,10 @@
 #region
 using System.Collections.Generic;
 using DG.Tweening;
+using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.UI;
+using VInspector;
 using static GameManager;
 #endregion
 
@@ -13,6 +15,11 @@ public class Timeline : MonoBehaviour
 
 	float startPosition;
 	float targetPosition;
+
+#if UNITY_EDITOR
+	[Button] [UsedImplicitly]
+	public void ResetUI() => transform.localPosition = new (transform.localPosition.x, transform.localPosition.y + 100, 0f);
+#endif
 
 	void Reset()
 	{

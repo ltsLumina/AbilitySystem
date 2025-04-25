@@ -1,0 +1,13 @@
+Sort order:
+Cleave AoE: -3
+Line AoE: -3
+Sphere AoE: -1
+Parallax: 0
+Donut AoE: 1
+Player Hotbar: 1
+Worldspace Canvas: 10
+Boss Canvas: 10
+Player Sprite: 10
+Player Collider Sprite: 11
+Timeline Canvas: 15
+Item Canvas: 14

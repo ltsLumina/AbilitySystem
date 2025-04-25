@@ -12,16 +12,16 @@ public class Seraphism : Buff
 	protected override void OnInvoke()
 	{
 		entity.TryGetComponent(out Player player);
-		player.Attributes.Remove(Attributes.Stats.CastSpeed, 0.2f);
-		player.Attributes.Remove(Attributes.Stats.SpellSpeed, 0.15f);
-		player.Attributes.Add(Attributes.Stats.Damage, 0.1f);
+		player.Stats.Remove(Stats.StatType.CastSpeed, 0.2f);
+		player.Stats.Remove(Stats.StatType.SpellSpeed, 0.15f);
+		player.Stats.Add(Stats.StatType.Damage, 0.1f);
 	}
 
 	protected override void OnDecay()
 	{
 		entity.TryGetComponent(out Player player);
-		player.Attributes.Add(Attributes.Stats.CastSpeed, 0.2f);
-		player.Attributes.Add(Attributes.Stats.SpellSpeed, 0.15f);
-		player.Attributes.Remove(Attributes.Stats.Damage, 0.1f);
+		player.Stats.Add(Stats.StatType.CastSpeed, 0.2f);
+		player.Stats.Add(Stats.StatType.SpellSpeed, 0.15f);
+		player.Stats.Remove(Stats.StatType.Damage, 0.1f);
 	}
 }

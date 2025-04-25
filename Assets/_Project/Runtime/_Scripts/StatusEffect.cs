@@ -72,6 +72,7 @@ public class StatusEffect : ScriptableObject
 	/// </summary>
 	protected Entity entity { get; private set; }
 
+
 	public static StatusEffect CreateCustomStatusEffect(string name, string description, int duration, Target target, Timing timing, Entity caster = null)
 	{
 		var customEffect = CreateInstance<StatusEffect>();
@@ -82,7 +83,6 @@ public class StatusEffect : ScriptableObject
 		customEffect.timing = timing;
 		customEffect.caster = caster;
 
-		customEffect = Instantiate(customEffect);
 		return customEffect;
 	}
 
@@ -132,7 +132,7 @@ public class StatusEffect : ScriptableObject
 
 				instancedEffect.entity.AddStatusEffect(instancedEffect);
 				instancedEffect.OnInvoke();
-				instancedEffect.OnInvoked?.Invoke(this);
+				instancedEffect.OnInvoked?.Invoke(instancedEffect);
 				instancedEffect.decayCoroutine ??= CoroutineHelper.StartCoroutine(instancedEffect.Decay());
 
 #if false
@@ -165,6 +165,7 @@ public class StatusEffect : ScriptableObject
 		OnDecay();
 		OnDecayed?.Invoke(this);
 
+		entity?.RemoveStatusEffect(this); // TODO might cause issue wasnt here before
 		Destroy(this);
 		decayCoroutine = null;
 	}
@@ -173,10 +174,10 @@ public class StatusEffect : ScriptableObject
 	///     Callback for when a status effect has decayed.
 	/// </summary>
 	protected virtual void OnDecay() { }
-	public event Action<StatusEffect> OnDecayed;
+	public virtual event Action<StatusEffect> OnDecayed;
 
 	protected virtual void OnInvoke() { }
-	public event Action<StatusEffect> OnInvoked;
+	public virtual event Action<StatusEffect> OnInvoked;
 
 	public virtual void Reset()
 	{

@@ -1,5 +1,6 @@
 #region
 using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
 using UnityEngine;
 using VInspector;
@@ -8,46 +9,18 @@ using VInspector;
 public class Inventory : MonoBehaviour
 {
 	[SerializeField] List<Item> inventory = new ();
-	[Space(10)]
-	[Header("Debug")]
-
-	[SerializeField] bool showGUI;
 
 	readonly Dictionary<Item, float> cooldowns = new (); // the current cooldown time of each item
 
-	[Button] [UsedImplicitly]
-	public void AddGolemClaymore()
-	{
-		var item = Resources.Load<Item>("Scriptables/Items/Golem's Claymore");
-		AddToInventory(item);
-	}
+#if UNITY_EDITOR
+	[SerializeField] Item itemToAdd;
 
 	[Button] [UsedImplicitly]
-	public void AddPhoenixCharm()
+	public void AddItem()
 	{
-		var item = Resources.Load<Item>("Scriptables/Items/Phoenix Charm");
-		AddToInventory(item);
+		AddToInventory(itemToAdd);
 	}
-
-	public void AddToInventory(Item item)
-	{
-		if (item == null) return;
-
-		if (inventory.Contains(item))
-		{
-			Debug.LogWarning($"[Inventory] {item.name} is already in the inventory.");
-			return;
-		}
-
-		inventory.Add(item);
-		cooldowns.Add(item, item.Cooldown);
-
-		if (item.InvokeWhenAdded)
-		{
-			var owner = GetComponent<Player>();
-			item.Action(owner);
-		}
-	}
+#endif
 
 	void Start()
 	{
@@ -67,10 +40,77 @@ public class Inventory : MonoBehaviour
 		};
 	}
 
-	void Update()
+	void Update() => TickItems();
+
+#if UNITY_EDITOR
+	void OnGUI()
+	{
+		var player = GetComponent<Player>();
+		int id = player.ID;
+
+		int x = id switch
+		{ 1 => 175,
+		  2 => 500,
+		  3 => 830,
+		  _ => 0 };
+
+		var rect = new Rect(x, 565, 400, 100);
+		
+		GUILayout.BeginArea(rect);
+
+		foreach (Item item in inventory)
+		{
+			if (item == null) continue;
+			
+			if (cooldowns[item] <= 0) GUILayout.Label($"{item.name} - Passive");
+			else GUILayout.Label($"{item.name} - {cooldowns[item].RoundTo(2)}");
+		}
+
+		GUILayout.EndArea();
+	}
+#endif
+
+	public void AddToInventory([NotNull] Item item)
+	{
+		if (item == null) return;
+		if (HasItem(item, true)) return;
+		
+		// create instance of item
+		Item instance = Instantiate(item);
+		instance.name = item.name;
+		instance.name += '*'; // add asterisk to the name to indicate it's an instance
+		
+		inventory.Add(instance);
+		cooldowns.Add(instance, instance.Cooldown);
+		//Logger.Log($"{instance.name} has been added to the inventory.", null, "Inventory");
+
+		if (item.InvokeWhenAdded)
+		{
+			var owner = GetComponent<Player>();
+			instance.Action(owner);
+		}
+	}
+
+	public void AddToInventory([NotNull] SceneItem item) => AddToInventory(item.RepresentedItem);
+
+	public bool HasItem([NotNull] Item item, bool log = false)
+	{
+		if (inventory.Any(i => i.Name == item.name)) // Note: Can't check references directly because each item is an instance. Therefore we check the name.
+		{
+			if (log) Logger.Log($"{item.name} is in the inventory.", item, "Inventory");
+			return true;
+		}
+
+		if (log) Logger.Log($"{item.name} is not in the inventory.", item, "Inventory");
+		return false;
+	}
+	
+	public bool HasItem([NotNull] SceneItem item) => HasItem(item.RepresentedItem);
+	
+	void TickItems()
 	{
 		if (GameManager.Instance.CurrentState != GameManager.State.Battle) return;
-		
+
 		foreach (Item item in inventory)
 		{
 			if (item == null) continue;
@@ -94,25 +134,6 @@ public class Inventory : MonoBehaviour
 			}
 		}
 	}
-
-#if UNITY_EDITOR
-	void OnGUI()
-	{
-		if (!showGUI) return;
-
-		GUILayout.BeginArea(new (Screen.width - 200, 10, 190, Screen.height - 20));
-
-		foreach (Item item in inventory)
-		{
-			if (item == null) continue;
-
-			if (cooldowns[item] <= 0) GUILayout.Label($"{item.name} - Passive");
-			else GUILayout.Label($"{item.name} - {cooldowns[item].RoundTo(2)}");
-		}
-
-		GUILayout.EndArea();
-	}
-#endif
 }
 
 public static class MathExtensions
