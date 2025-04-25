@@ -27,6 +27,6 @@ public abstract class Enemy : Entity
 		var spriteRenderer = GetComponent<SpriteRenderer>();
 		spriteRenderer.FlashSprite(Color.red, 0.5f);
 
-		PopUpDamageNumbers.ShowDamage(damage, transform.position);
+		TextDisplay.ShowDamage(damage, transform.position);
 	}
 }

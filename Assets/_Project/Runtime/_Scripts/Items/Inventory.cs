@@ -73,7 +73,7 @@ public class Inventory : MonoBehaviour
 	public void AddToInventory([NotNull] Item item)
 	{
 		if (item == null) return;
-		if (HasItem(item, true)) return;
+		if (HasItem(item)) return;
 		
 		// create instance of item
 		Item instance = Instantiate(item);

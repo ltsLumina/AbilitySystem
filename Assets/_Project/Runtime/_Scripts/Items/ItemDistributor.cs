@@ -8,6 +8,7 @@ using System.Linq;
 using DG.Tweening;
 using JetBrains.Annotations;
 using MelenitasDev.SoundsGood;
+using TMPro;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,6 +18,10 @@ using Random = UnityEngine.Random;
 
 public class ItemDistributor : MonoBehaviour
 {
+	[Tooltip("The duration of the roll animation sequence.")]
+	[SerializeField] float rollDelay = 3f;
+	
+	[Header("Debug")]
 	[SerializeField] SerializedDictionary<Player, SceneItem> playerVotes = new ();
 	[SerializeField] List<Player> finishedPlayers = new ();
 
@@ -266,7 +271,7 @@ public class ItemDistributor : MonoBehaviour
 	}
 
 	readonly Dictionary<Player, int> rolls = new ();
-
+	
 	IEnumerator DistributeItemToRandomPlayer(IGrouping<SceneItem, KeyValuePair<Player, SceneItem>> group)
 	{
 		// All players in group roll a dice (1-100)
@@ -301,7 +306,8 @@ public class ItemDistributor : MonoBehaviour
 				Logger.Log($"Tie-breaker: {player.name} rolled a {newRoll} for {group.Key.name}.", this, "Distributor");
 			}
 
-			yield return new WaitForSeconds(1f); // added suspense (re-roll delay)
+			RollDiceAnimation(group.Key);
+			yield return new WaitForSeconds(rollDelay); // added suspense
 
 			// Recursively handle the tie-breaker rolls (in case of another tie)
 			yield return StartCoroutine(DistributeItemToRandomPlayer(group));
@@ -311,7 +317,8 @@ public class ItemDistributor : MonoBehaviour
 		// If no tie, proceed with the highest roller
 		Player winningPlayer = highestRollers.First().Key;
 
-		yield return new WaitForSeconds(1.5f); // added suspense
+		RollDiceAnimation(group.Key);
+		yield return new WaitForSeconds(rollDelay); // added suspense
 
 		AssignItemToPlayer(winningPlayer, group.Key);
 		OnItemDistributed?.Invoke(group.Key, winningPlayer);
@@ -325,6 +332,71 @@ public class ItemDistributor : MonoBehaviour
 
 		// Redirect other players who voted for this item to new selections
 		RedirectOtherPlayers(group, winningPlayer);
+	}
+
+	void RollDiceAnimation(SceneItem item)
+	{
+		List<int> rollValues = rolls.Select(roll => roll.Value).ToList();
+		List<Player> players = rolls.Select(roll => roll.Key).ToList();
+
+#if UNITY_EDITOR && false // DEBUG: rolls have specific debug values for testing
+		rollValues.Clear();
+		const int lowRoll = 1;
+		const int highRoll = 100;
+		
+		rollValues.Add(lowRoll);
+		rollValues.Add(highRoll);
+#endif
+
+		int highestRoll = rollValues.Max();
+
+		foreach (int rollValue in rollValues)
+		{
+			Player currentPlayer = players[rollValues.IndexOf(rollValue)];
+
+			float x = currentPlayer.PlayerInput.playerIndex switch
+			{ 0 => -60,
+			  1 => -20,
+			  2 => 60,
+			  _ => 0 };
+
+			// Create dice at the indicator's position
+			var dicePrefab = Resources.Load<GameObject>("PREFABS/UI/Dice");
+			GameObject dice = Instantiate(dicePrefab, item.transform);
+			dice.gameObject.name = $"{currentPlayer.name} rolled a {rollValue}";
+			dice.transform.localPosition = new (x, -275, 0);
+
+			// Position number above the dice
+			TextMeshProUGUI text = TextDisplay.ShowDiceRoll(rollValue, rollDelay, dice.transform);
+
+			if (rollValue == highestRoll)
+			{
+				text.fontStyle = FontStyles.Bold;
+			}
+			
+			switch (rollValue)
+			{
+				// Sets the colour of the text based on the roll value. Makes getting a 100 and 1 feel special.
+				case 100: {
+					var goldenColor = new Color(0.85f, 0.65f, 0.13f);
+				
+					text.fontSize = 35;
+					text.fontStyle = FontStyles.Underline;
+					text.color = goldenColor;
+					break;
+				}
+
+				case 1:
+					text.color = Color.grey;
+					break;
+
+				default:
+					text.color = currentPlayer.AccentColour;
+					break;
+			}
+
+			Destroy(dice, rollDelay);
+		}
 	}
 
 	void FinishPlayerTurn(Player player, SceneItem item)

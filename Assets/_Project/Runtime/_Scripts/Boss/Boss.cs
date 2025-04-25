@@ -183,7 +183,7 @@ public sealed partial class Boss : Entity
 
 		if (TryGetComponent(out Scarecrow dummy)) dummy?.RegisterDamage(dmg);
 
-		PopUpDamageNumbers.ShowDamage(damage, transform.position);
+		TextDisplay.ShowDamage(damage, transform.position);
 	}
 
 	void Death()
