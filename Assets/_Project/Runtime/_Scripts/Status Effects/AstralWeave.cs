@@ -11,19 +11,15 @@ public class AstralWeave : Buff
 
 	protected override void OnInvoke()
 	{
-		OnInvoked += Invoked;
-		OnDecayed += Decayed;
-	}
-
-	void Invoked(StatusEffect obj)
-	{
 		casterAsPlayer.Stats.Remove(Stats.StatType.CastSpeed, 1);
 		casterAsPlayer.Stats.Remove(Stats.StatType.SpellSpeed, 0.25f);
+		casterAsPlayer.Stats.Add(Stats.StatType.Damage, 0.1f);
 	}
 
-	void Decayed(StatusEffect obj)
+	protected override void OnDecay()
 	{
 		casterAsPlayer.Stats.Add(Stats.StatType.CastSpeed, 1f);
 		casterAsPlayer.Stats.Add(Stats.StatType.SpellSpeed, 0.25f);
+		casterAsPlayer.Stats.Remove(Stats.StatType.Damage, 0.1f);
 	}
 }

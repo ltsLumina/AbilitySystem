@@ -21,7 +21,7 @@ MonoBehaviour:
   radius: 0
   cooldownType: 2
   castTime: 1.5
-  cooldown: 2.5
+  cooldown: 3
   startsOnCooldown: 0
   damage: 75
   abilityToPrime: {fileID: 11400000, guid: fa0691b36ecc15d4aa89d1ba2386619e, type: 2}

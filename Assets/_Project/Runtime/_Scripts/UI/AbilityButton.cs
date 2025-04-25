@@ -124,7 +124,18 @@ public class AbilityButton : MonoBehaviour, IPausable
 		circle.fillAmount = 0;
 		duration.alpha = 0;
 
-		duration.gameObject.SetActive(showCooldown);
+		switch (showCooldown, ability.Cooldown)
+		{
+			case (false, >= 10):
+			case (true, _):
+				duration.gameObject.SetActive(true);
+				break;
+
+			default:
+				duration.gameObject.SetActive(false);
+				break;
+
+		}
 
 		InitAvailabilityLayer();
 

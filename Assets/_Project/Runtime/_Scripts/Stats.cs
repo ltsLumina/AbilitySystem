@@ -31,6 +31,34 @@ public class Stats : MonoBehaviour
 		Shields
 	}
 
+	public float this[StatType statType]
+	{
+		get
+		{
+			switch (statType)
+			{
+				case StatType.Speed:
+					return speed;
+
+				case StatType.Damage:
+					return damage;
+
+				case StatType.CastSpeed:
+					return castSpeed;
+
+				case StatType.SpellSpeed:
+					return spellSpeed;
+
+				case StatType.Shields:
+					return shields;
+
+				default:
+					Debug.LogWarning($"Stat {statType} not found.");
+					return 0;
+			}
+		}
+	}
+
 	void Validate()
 	{
 		Debug.Assert(speed > 0, "Speed cannot be negative or 0.");

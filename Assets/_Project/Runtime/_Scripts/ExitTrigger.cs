@@ -1,12 +1,17 @@
 #region
+using System;
 using DG.Tweening;
 using MelenitasDev.SoundsGood;
+using TMPro;
 using UnityEngine;
 using static Lumina.Essentials.Modules.Helpers;
 #endregion
 
 public class ExitTrigger : MonoBehaviour
 {
+	[Header("Text")]
+	[SerializeField] TMP_Text onwardText;
+
 	BoxCollider2D box;
 	SpriteRenderer onwardGraphic;
 
@@ -16,29 +21,82 @@ public class ExitTrigger : MonoBehaviour
 		box.enabled = true;
 
 		onwardGraphic = GetComponentInChildren<SpriteRenderer>();
+
+		// Initialize text
+		if (onwardText != null)
+		{
+			onwardText.alpha = 0f;
+			onwardText.text = "0/1";
+		}
 	}
 
 	void Start()
 	{
 		GameManager gameManager = GameManager.Instance;
 
-		gameManager.OnBossSpawned += boss =>
+		gameManager.OnStateChanged += state =>
 		{
-			box.enabled = false;
-			boss.OnDeath += () => box.enabled = true;
-		};
+			switch (state)
+			{
+				case GameManager.State.Lobby:
+					ShowText();									
+					box.enabled = true;
+					onwardGraphic.DOFade(1, 0.35f);
+					break;
+				case GameManager.State.Battle:
+					box.enabled = false;
+					break;
+				case GameManager.State.Victory:
+					ShowText();
+					box.enabled = true;
+					onwardGraphic.DOFade(1, 0.35f);
+					break;
+				case GameManager.State.Defeat:
+					box.enabled = false;
+					break;
+				case GameManager.State.Loot:
+					ShowText();
+					box.enabled = true;
+					onwardGraphic.DOFade(1, 0.35f);
+					break;
+				case GameManager.State.Shop:
+					ShowText();
+					box.enabled = true;
+					onwardGraphic.DOFade(1, 0.35f);
+					break;
+				case GameManager.State.Transitioning:
+					HideText();
+					break;
 
-		gameManager.OnVictory += () => onwardGraphic.DOFade(1f, 0.35f);
-		gameManager.OnEnterLobby += () => onwardGraphic.DOFade(1f, 0.35f);
-		gameManager.OnEnterLoot += () => onwardGraphic.DOFade(1f, 0.35f);
-		gameManager.OnEnterShop += () => onwardGraphic.DOFade(1f, 0.35f);
+				default:
+					throw new ArgumentOutOfRangeException(nameof(state), state, null);
+			}
+		};
+		
+		ShowText();
 	}
+
+	void Update() => UpdateTextVisibility();
 
 	int temp;
 	int playersInTrigger
 	{
 		get => temp = Mathf.Clamp(temp, 0, PlayerManager.PlayerCount);
 		set => temp = value;
+	}
+
+	void ShowText()
+	{
+		onwardText.gameObject.name = $"Onward | {UpdateTextVisibility()}";
+		onwardText.transform.position += new Vector3(StageManager.StageOffset.x, 0, 0f);
+		onwardText.DOFade(1f, 0.35f);
+	}
+
+	void HideText() => onwardText.DOFade(0f, 0.35f);
+
+	string UpdateTextVisibility()
+	{
+		return onwardText.text = PlayerManager.PlayerCount > 0 ? $"{playersInTrigger}/{PlayerManager.PlayerCount}" : "waiting for players...";
 	}
 
 	void OnTriggerEnter2D(Collider2D other)
@@ -52,25 +110,29 @@ public class ExitTrigger : MonoBehaviour
 			if (gameManager.CurrentBoss == null || gameManager.CurrentBoss.IsDead)
 			{
 				gameManager.SetState(GameManager.State.Transitioning);
-				
-				playersInTrigger = 0;
-				
+
 				AudioManager.StopAllMusic(1.85f);
 
 				StageManager.ScrollLevel();
 
-				onwardGraphic.DOFade(0f, 0.25f).OnComplete
-						(() => CameraMain.transform.DOMoveX(CameraMain.transform.position.x + StageManager.STAGE_WIDTH, 2f).SetEase(Ease.InCirc).SetEase(Ease.OutCubic).SetUpdate(UpdateType.Late).OnComplete(() =>
-						{
-							gameManager.SetState(gameManager.GetNextEvent());
-						}));
+				onwardGraphic.DOFade(0f, 0.25f)
+				             .OnComplete
+				              (() => CameraMain.transform.DOMoveX(CameraMain.transform.position.x + StageManager.STAGE_WIDTH, 2f)
+				                               .SetEase(Ease.InCirc)
+				                               .SetEase(Ease.OutCubic)
+				                               .SetUpdate(UpdateType.Late)
+				                               .OnComplete
+				                                (() =>
+				                                {
+					                                gameManager.SetState(gameManager.GetNextEvent());
+					                                playersInTrigger = 0;
+				                                }));
 			}
 		}
 	}
 
 	void OnTriggerExit2D(Collider2D other)
 	{
-		// check how many players are in the trigger
 		if (other.TryGetComponent(out Player _)) playersInTrigger--;
 	}
 }

@@ -48,7 +48,7 @@ public abstract class Entity : MonoBehaviour, IEntity, IDamageable
 			statusEffects.Remove(effect);
 			effect.OnDecayed -= e => statusEffects.Remove(e);
 		}
-		else Debug.LogWarning($"{name} does not have the status effect {effect.StatusName}.");
+		//else Debug.LogWarning($"{name} does not have the status effect {effect.StatusName}.");
 	}
 
 	public void RemoveStatusEffect(string effectName) // Note: I have no clue if this actually works.
