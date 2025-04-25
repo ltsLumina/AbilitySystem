@@ -1,6 +1,7 @@
 namespace MelenitasDev.SoundsGood
 {
-public enum SFX
-{
-}
+	public enum SFX
+	{
+		LevelUp
+	}
 }

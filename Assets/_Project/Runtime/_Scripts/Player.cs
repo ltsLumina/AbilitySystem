@@ -76,6 +76,8 @@ public class Player : Entity, IPausable
 
 	public int MaxHealth => maxHealth;
 	
+	public bool IsDead => Health <= 0;
+	
 	public void Heal(int amount)
 	{
 		if (amount <= 0) return;
@@ -119,15 +121,15 @@ public class Player : Entity, IPausable
 
 	protected override void OnCycle() { }
 
-	new string name
+	new public string name
 	{
 		get
 		{
 			string id = ID.ToString();
 			string jobName = job.name; 
-			string controlScheme = PlayerInput != null ? PlayerInput.currentControlScheme : throw new NullReferenceException("PlayerInput is null");
-			int userIndex = PlayerInput.user.index;
-			string playerName = $"Player {id} - {jobName} - {controlScheme} ({userIndex})";
+			//string controlScheme = PlayerInput != null ? PlayerInput.currentControlScheme : throw new NullReferenceException("PlayerInput is null");
+			//int userIndex = PlayerInput.user.index;
+			string playerName = $"Player {id} - {jobName}";
 			return playerName;
 		}
 	}

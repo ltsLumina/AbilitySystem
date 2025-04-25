@@ -1,6 +1,8 @@
 #region
+using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 #endregion
 
@@ -8,7 +10,7 @@ using UnityEngine.UI;
 ///     This class is used to display the item in the scene with the appropriate UI and variables.
 /// </summary>
 [ExecuteInEditMode]
-public class SceneItem : MonoBehaviour
+public class SceneItem : MonoBehaviour, ISelectHandler, IDeselectHandler
 {
 	[Tooltip("The item this scene item represents")]
 	[SerializeField] Item representedItem;
@@ -23,9 +25,31 @@ public class SceneItem : MonoBehaviour
 	/// The item this scene item represents.
 	/// </summary>
 	public Item RepresentedItem => representedItem;
+	public Image Sprite => background.transform.GetChild(1).GetComponent<Image>();
 
 	new public string name => $"{representedItem.name} ({representedItem.RarityColor.rarity.ToString()})";
 	public override string ToString() => name;
+
+	public void OnSelect(BaseEventData eventData)
+	{
+		var player = eventData.currentInputModule.GetComponentInParent<Player>();
+
+		// spawn selection marker
+		var prefab = Resources.Load<Selection>("PREFABS/UI/Selection");
+		var selectionMarker = Instantiate(prefab, transform);
+		selectionMarker.Set(player);
+	}
+
+	public void OnDeselect(BaseEventData eventData)
+	{
+		var player = eventData.currentInputModule.GetComponentInParent<Player>();
+		
+		// save the selection that has the same player as the one that was deselected
+		var selectionMarker = GetComponentsInChildren<Selection>().FirstOrDefault(s => s.AssociatedPlayer == player);
+		if (selectionMarker == null) return;
+		
+		Destroy(selectionMarker.gameObject);
+	}
 
 	void Start()
 	{

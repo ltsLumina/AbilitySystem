@@ -191,29 +191,33 @@ public class GameManager : Singleton<GameManager>
 
 		currentBoss.OnDeath += () =>
 		{
-			SetState(State.Victory);
+			// Checks if the player(s) die before the boss.
+			if (PlayerManager.Instance.Players.All(p => p.IsDead)) 
+				SetState(State.Defeat);
+			else 
+				SetState(State.Victory);
 
 			FadeInBackground();
 			StopTimer();
 		};
 	}
 
-	static void FadeOutBackground()
+	public static void FadeOutBackground(float duration = 1f)
 	{
 		GameObject background = GameObject.Find("Parallax");
 
 		const float darkenValue = 20f / 255f;
 
-		foreach (Transform child in background.transform) child.GetComponent<SpriteRenderer>().DOFade(darkenValue, 1f).SetEase(Ease.OutCubic);
+		foreach (Transform child in background.transform) child.GetComponent<SpriteRenderer>().DOFade(darkenValue, duration).SetEase(Ease.OutCubic);
 	}
 
-	static void FadeInBackground()
+	public static void FadeInBackground(float duration = 1f)
 	{
 		GameObject background = GameObject.Find("Parallax");
 
 		const float lightenValue = 1f;
 
-		foreach (Transform child in background.transform) child.GetComponent<SpriteRenderer>().DOFade(lightenValue, 1f).SetEase(Ease.OutCubic);
+		foreach (Transform child in background.transform) child.GetComponent<SpriteRenderer>().DOFade(lightenValue, duration).SetEase(Ease.OutCubic);
 	}
 
 	void StartTimer()

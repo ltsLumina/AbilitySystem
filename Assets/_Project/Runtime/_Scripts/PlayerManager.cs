@@ -165,6 +165,7 @@ public class PlayerManager : Singleton<PlayerManager>
 		player.tag = $"Player {player.ID}";
 		player.transform.SetParent(GameObject.Find("Important").transform);
 		player.transform.SetSiblingIndex(input.playerIndex);
+		player.gameObject.name = player.name;
 
 		var canvas = GameObject.Find($"Player {player.ID} Hotbar").GetComponent<Canvas>();
 		if (canvas)

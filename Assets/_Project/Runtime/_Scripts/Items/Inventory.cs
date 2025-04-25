@@ -9,10 +9,6 @@ using VInspector;
 public class Inventory : MonoBehaviour
 {
 	[SerializeField] List<Item> inventory = new ();
-	[Space(10)]
-	[Header("Debug")]
-
-	[SerializeField] bool showGUI;
 
 	readonly Dictionary<Item, float> cooldowns = new (); // the current cooldown time of each item
 
@@ -49,14 +45,23 @@ public class Inventory : MonoBehaviour
 #if UNITY_EDITOR
 	void OnGUI()
 	{
-		if (!showGUI) return;
+		var player = GetComponent<Player>();
+		int id = player.ID;
 
-		GUILayout.BeginArea(new (Screen.width - 200, 10, 190, Screen.height - 20));
+		int x = id switch
+		{ 1 => 175,
+		  2 => 500,
+		  3 => 830,
+		  _ => 0 };
+
+		var rect = new Rect(x, 565, 400, 100);
+		
+		GUILayout.BeginArea(rect);
 
 		foreach (Item item in inventory)
 		{
 			if (item == null) continue;
-
+			
 			if (cooldowns[item] <= 0) GUILayout.Label($"{item.name} - Passive");
 			else GUILayout.Label($"{item.name} - {cooldowns[item].RoundTo(2)}");
 		}
@@ -68,12 +73,7 @@ public class Inventory : MonoBehaviour
 	public void AddToInventory([NotNull] Item item)
 	{
 		if (item == null) return;
-
-		if (inventory.Any(i => i.name == item.name))
-		{
-			Debug.LogWarning($"[Inventory] {item.name} is already in the inventory.");
-			return;
-		}
+		if (HasItem(item, true)) return;
 		
 		// create instance of item
 		Item instance = Instantiate(item);
@@ -82,7 +82,7 @@ public class Inventory : MonoBehaviour
 		
 		inventory.Add(instance);
 		cooldowns.Add(instance, instance.Cooldown);
-		Debug.Log($"[Inventory] {instance.name} has been added to the inventory.");
+		//Logger.Log($"{instance.name} has been added to the inventory.", null, "Inventory");
 
 		if (item.InvokeWhenAdded)
 		{
@@ -95,13 +95,13 @@ public class Inventory : MonoBehaviour
 
 	public bool HasItem([NotNull] Item item, bool log = false)
 	{
-		if (inventory.Contains(item))
+		if (inventory.Any(i => i.Name == item.name)) // Note: Can't check references directly because each item is an instance. Therefore we check the name.
 		{
-			if (log) Debug.Log($"[Inventory] {item.name} is in the inventory.");
+			if (log) Logger.Log($"{item.name} is in the inventory.", item, "Inventory");
 			return true;
 		}
 
-		if (log) Debug.LogWarning($"[Inventory] {item.name} is not in the inventory.");
+		if (log) Logger.Log($"{item.name} is not in the inventory.", item, "Inventory");
 		return false;
 	}
 	

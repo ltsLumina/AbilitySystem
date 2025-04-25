@@ -42,9 +42,6 @@ public class InputManager : MonoBehaviour
 
 			case "UI": {
 				playerInput.SwitchCurrentActionMap("UI");
-
-				GameObject firstSelected = FindFirstObjectByType<SceneItem>(FindObjectsInactive.Exclude).gameObject;
-				eventSystem.SetSelectedGameObject(firstSelected);
 				return;
 			}
 
@@ -105,6 +102,20 @@ public class InputManager : MonoBehaviour
 
 			var selectionManager = FindAnyObjectByType<ItemDistributor>();
 			selectionManager.Vote(player, sceneItem);
+			playerInput.actions["Navigate"].Disable();
+		};
+
+		playerInput.actions["Cancel"].performed += _ =>
+		{
+			var selectedGameObject = eventSystem.currentSelectedGameObject;
+			if (selectedGameObject == null) return;
+
+			SceneItem sceneItem = selectedGameObject.TryGetComponent(out SceneItem item) ? item : throw new MissingComponentException("Selected GameObject does not have a SceneItem component.");
+
+			var selectionManager = FindAnyObjectByType<ItemDistributor>();
+			selectionManager.Unvote(player, sceneItem);
+			
+			playerInput.actions["Navigate"].Enable();
 		};
 	}
 

@@ -16,7 +16,11 @@ public static class Logger
     // For example, to change the prefix color to red, enter "Red", or "Orange" for orange.
     const string prefixColor = "Orange";
 
-    static string ErrorMessagePrefix(string color) => $"{color}[Logger] ►</color>";
+    static string ErrorMessagePrefix(string color, string prefix = "Logger")
+    {
+        if (string.IsNullOrEmpty(prefix)) prefix = "Logger";
+        return $"{color}[{prefix}] ►</color>";
+    }
 
     const string DefaultErrorMessage = "No message was provided. \nWas this intentional?";
 
@@ -59,7 +63,8 @@ public static class Logger
     /// </summary>
     /// <param name="message"> The message to be logged. </param>
     /// <param name="context"> Object to which the message applies. </param>
-    public static void Log(string message = default, Object context = default) => LogMessage(Debug.Log, message, context);
+    /// <param name="prefix"> An optional prefix for the message. By default uses the [Logger] prefix. </param>
+    public static void Log(string message = default, Object context = default, string prefix = default) => LogMessage(Debug.Log, message, context, prefix);
 
     public static void Log(bool message = default, Object context = default) => LogMessage(Debug.Log, message.ToString(), context);
 
@@ -72,7 +77,8 @@ public static class Logger
     /// </summary>
     /// <param name="message"> The message to be logged. </param>
     /// <param name="context"> Object to which the message applies. </param>
-    public static void LogWarning(string message = default, Object context = default) => LogMessage(Debug.LogWarning, message, context);
+    /// <param name="prefix"> An optional prefix for the message. By default uses the [Logger] prefix. </param>
+    public static void LogWarning(string message = default, Object context = default, string prefix = default) => LogMessage(Debug.LogWarning, message, context, prefix);
 
     public static void LogWarning(bool message = default, Object context = default) => LogMessage(Debug.LogWarning, message.ToString(), context);
 
@@ -144,16 +150,14 @@ public static class Logger
 
     // -- The following methods are used internally by the Logger class. --
 
-    static void LogMessage(Action<string, Object> logAction, string message = default, Object context = default)
+    static void LogMessage(Action<string, Object> logAction, string message, Object context = default, string prefix = null)
     {
         if (LogBehaviour != LogLevel.Verbose) return;
-
-        // if message is NULL, log the default error message
+        
         // if message is string.Empty, log an empty string
-        message ??= DefaultErrorMessage;
         if (message == string.Empty) message = "";
 
-        string formattedMessage = $"{ErrorMessagePrefix(colorDictionary[prefixColor])} {message}" + "\n";
+        string formattedMessage = $"{ErrorMessagePrefix(colorDictionary[prefixColor], prefix)} {message}" + "\n";
         logAction(formattedMessage, context);
     }
     #endregion

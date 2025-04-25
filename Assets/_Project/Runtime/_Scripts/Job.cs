@@ -34,6 +34,8 @@ public sealed class Job : ScriptableObject
 			return abilities;
 		}
 	}
+	
+	public string Tricode => job.ToString();
 
 #if UNITY_EDITOR
 	void OnValidate()

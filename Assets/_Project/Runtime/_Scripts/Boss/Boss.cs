@@ -94,7 +94,7 @@ public sealed partial class Boss : Entity
 		string path = $"{Application.persistentDataPath}/{name}.json";
 		string json = JsonUtility.ToJson(this, true);
 		File.WriteAllText(path, json);
-		Debug.Log($"Phases saved to {path}");
+		Logger.Log($"Phases saved to {path}");
 
 		if (EditorUtility.DisplayDialog("Open File", "Do you want to open the file?", "Yes", "No")) Application.OpenURL($"file:///{path}");
 		else EditorUtility.DisplayDialog("File Saved", $"Phases saved to {path}", "OK");
@@ -115,8 +115,13 @@ public sealed partial class Boss : Entity
 	void Awake()
 	{
 		attacks = GetComponent<Attacks>();
-
-		OnBossStarted += () => CameraMain.DOOrthoSize(CameraMain.orthographicSize * 1.10f, 1.5f);
+		
+		OnBossStarted += () =>
+		{
+			const float INCREASE = 1.1f;
+			const float DURATION = 1.5f;
+			CameraMain.DOOrthoSize(CameraMain.orthographicSize * INCREASE, DURATION);
+		};
 
 		OnDeath += () =>
 		{
@@ -183,7 +188,7 @@ public sealed partial class Boss : Entity
 
 	void Death()
 	{
-		Logger.LogWarning("Boss has died.");
+		//Logger.LogWarning("Boss has died.");
 		Destroy(gameObject, 5f);
 
 		StopAllCoroutines();
@@ -196,7 +201,7 @@ public sealed partial class Boss : Entity
 		{
 			if (marker == null) continue;
 			DOTween.Kill(marker);
-			marker.GetComponentInChildren<SpriteRenderer>()?.DOFade(0, 0.5f);
+			marker.GetComponentInChildren<SpriteRenderer>()?.DOFade(0, 0.5f).SetLink(gameObject);
 			Destroy(marker, 1f);
 		}
 
@@ -230,7 +235,7 @@ public sealed partial class Boss : Entity
 		if (currentPhaseIndex < phases.Count) StartPhase(phases[currentPhaseIndex]);
 		else
 		{
-			Debug.Log("All phases completed.");
+			Logger.Log("All phases completed.");
 			StartCoroutine(Enrage());
 		}
 	}

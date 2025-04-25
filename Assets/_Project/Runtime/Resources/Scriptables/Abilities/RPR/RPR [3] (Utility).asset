@@ -15,13 +15,14 @@ MonoBehaviour:
   job: 0
   abilityName: Utility
   description: 
-  icon: {fileID: -5560962047660816038, guid: 409fed9461071234eb33472ee2f8d50f, type: 3}
+  icon: {fileID: 21300000, guid: 72d74b3c26cef2d4ea85f6a3a853539d, type: 3}
   type: 2
   range: 0
   radius: 0
   cooldownType: 1
   castTime: 0
   cooldown: 24
+  startsOnCooldown: 0
   damage: 65
   abilityToPrime: {fileID: 0}
   primeChance: 0
