@@ -102,6 +102,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   associatedBoss: {fileID: 0}
   target: {fileID: 3349804629474270041}
+  isMarker: 0
 --- !u!1 &4565969275693188946
 GameObject:
   m_ObjectHideFlags: 0
@@ -119,7 +120,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &7795494915999676855
 Transform:
   m_ObjectHideFlags: 0
@@ -152,6 +153,7 @@ MonoBehaviour:
   data: {fileID: 0}
   health: 10000
   maxHealth: 10000
+  healthScalar: 1.25
   accentColour: {r: 1, g: 1, b: 1, a: 0}
   phases:
   - name: Movement
@@ -160,206 +162,231 @@ MonoBehaviour:
     - description: UP
       type: 0
       position: {x: 0, y: 5}
-      attackKey: 
+      attack: 0
       showWarning: 0
       dialogue: 
       duration: 0.5
       delay: 0
+      isCurrentBehaviour: 0
     - description: ZERO
       type: 0
       position: {x: 0, y: 0}
-      attackKey: 
+      attack: 0
       showWarning: 0
       dialogue: 
       duration: 0.5
       delay: 0
+      isCurrentBehaviour: 0
     - description: DOWN
       type: 0
       position: {x: 0, y: -5}
-      attackKey: 
+      attack: 0
       showWarning: 0
       dialogue: 
       duration: 0.5
       delay: 0
+      isCurrentBehaviour: 0
     - description: ZERO
       type: 0
       position: {x: 0, y: 0}
-      attackKey: 
+      attack: 0
       showWarning: 0
       dialogue: 
       duration: 0.5
       delay: 0
+      isCurrentBehaviour: 0
     - description: LEFT
       type: 0
       position: {x: -5, y: 0}
-      attackKey: 
+      attack: 0
       showWarning: 0
       dialogue: 
       duration: 0.5
       delay: 0
+      isCurrentBehaviour: 0
     - description: ZERO
       type: 0
       position: {x: 0, y: 0}
-      attackKey: 
+      attack: 0
       showWarning: 0
       dialogue: 
       duration: 0.5
       delay: 0
+      isCurrentBehaviour: 0
     - description: RIGHT
       type: 0
       position: {x: 5, y: 0}
-      attackKey: 
+      attack: 0
       showWarning: 0
       dialogue: 
       duration: 0.5
       delay: 0
+      isCurrentBehaviour: 0
     - description: ZERO
       type: 0
       position: {x: 0, y: 0}
-      attackKey: 
+      attack: 0
       showWarning: 0
       dialogue: 
       duration: 0.5
       delay: 0
+      isCurrentBehaviour: 0
   - name: Attacks
     startIndex: 0
     behaviours:
     - description: 
       type: 1
       position: {x: 0, y: 0}
-      attackKey: Donut
+      attack: 0
       showWarning: 1
       dialogue: 
       duration: 1
       delay: 3
+      isCurrentBehaviour: 0
     - description: 
       type: 1
       position: {x: 0, y: 5}
-      attackKey: Line
+      attack: 0
       showWarning: 1
       dialogue: 
       duration: 1
       delay: 3
+      isCurrentBehaviour: 0
     - description: 
       type: 1
       position: {x: 0, y: 0}
-      attackKey: LineBig
+      attack: 0
       showWarning: 1
       dialogue: 
       duration: 1
       delay: 3
+      isCurrentBehaviour: 0
     - description: 
       type: 1
       position: {x: -10, y: 0}
-      attackKey: Pillar
+      attack: 0
       showWarning: 1
       dialogue: 
       duration: 1
       delay: 3
+      isCurrentBehaviour: 0
     - description: 
       type: 1
       position: {x: 0, y: 0}
-      attackKey: Line45
+      attack: 0
       showWarning: 1
       dialogue: 
       duration: 1
       delay: 3
+      isCurrentBehaviour: 0
     - description: 
       type: 1
       position: {x: 0, y: 0}
-      attackKey: Line315
+      attack: 0
       showWarning: 1
       dialogue: 
       duration: 1
       delay: 3
+      isCurrentBehaviour: 0
     - description: 
       type: 1
       position: {x: -10, y: 10}
-      attackKey: HSphere
+      attack: 0
       showWarning: 0
       dialogue: 
       duration: 1
       delay: 1
+      isCurrentBehaviour: 0
     - description: 
       type: 1
       position: {x: 10, y: 10}
-      attackKey: VSphere
+      attack: 0
       showWarning: 0
       dialogue: 
       duration: 3
       delay: 1
+      isCurrentBehaviour: 0
     - description: 
       type: 1
       position: {x: 0, y: 0}
-      attackKey: CleaveUp
+      attack: 0
       showWarning: 1
       dialogue: 
       duration: 1
       delay: 1
+      isCurrentBehaviour: 0
     - description: 
       type: 1
       position: {x: 0, y: 0}
-      attackKey: CleaveRight
+      attack: 0
       showWarning: 1
       dialogue: 
       duration: 1
       delay: 1
+      isCurrentBehaviour: 0
     - description: 
       type: 1
       position: {x: 0, y: 0}
-      attackKey: CleaveDown
+      attack: 0
       showWarning: 1
       dialogue: 
       duration: 1
       delay: 1
+      isCurrentBehaviour: 0
     - description: 
       type: 1
       position: {x: 0, y: 0}
-      attackKey: CleaveLeft
+      attack: 0
       showWarning: 1
       dialogue: 
       duration: 1
       delay: 1
+      isCurrentBehaviour: 0
     - description: 
       type: 3
       position: {x: 0, y: 0}
-      attackKey: 
+      attack: 0
       showWarning: 0
       dialogue: 
       duration: 3
       delay: 0
+      isCurrentBehaviour: 0
     - description: 
       type: 1
       position: {x: 0, y: 0}
-      attackKey: CleaveTopRight
+      attack: 0
       showWarning: 0
       dialogue: 
       duration: 1
       delay: 1
+      isCurrentBehaviour: 0
     - description: 
       type: 1
       position: {x: 0, y: 0}
-      attackKey: CleaveBottomRight
+      attack: 0
       showWarning: 0
       dialogue: 
       duration: 1
       delay: 1
+      isCurrentBehaviour: 0
     - description: 
       type: 1
       position: {x: 0, y: 0}
-      attackKey: CleaveBottomLeft
+      attack: 0
       showWarning: 0
       dialogue: 
       duration: 1
       delay: 1
+      isCurrentBehaviour: 0
     - description: 
       type: 1
       position: {x: 0, y: 0}
-      attackKey: CleaveTopLeft
+      attack: 0
       showWarning: 0
       dialogue: 
       duration: 1
       delay: 1
+      isCurrentBehaviour: 0
   enrageDialogueDelay: 3
   enrageInterval: 5
 --- !u!114 &3306090795827681157

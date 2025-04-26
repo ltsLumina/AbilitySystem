@@ -146,347 +146,390 @@ MonoBehaviour:
     - description: 
       type: 0
       position: {x: 15, y: 0}
-      attackKey: 
+      attack: 0
       showWarning: 0
       dialogue: 
       duration: 2
       delay: 0
-    - description: 
-      type: 3
+      isCurrentBehaviour: 0
+    - description: WAIT
+      type: 2
       position: {x: 0, y: 0}
-      attackKey: 
+      attack: 0
       showWarning: 0
       dialogue: 
       duration: 3
       delay: 0
+      isCurrentBehaviour: 0
     - description: 
       type: 1
       position: {x: 0, y: 0}
-      attackKey: Line
+      attack: 5
       showWarning: 0
       dialogue: 
       duration: 0
       delay: 2
+      isCurrentBehaviour: 0
     - description: 
       type: 0
       position: {x: -15, y: 0}
-      attackKey: 
+      attack: 0
       showWarning: 0
       dialogue: 
       duration: 1
       delay: 0
+      isCurrentBehaviour: 0
     - description: 
       type: 0
       position: {x: -15, y: -5}
-      attackKey: 
+      attack: 0
       showWarning: 0
       dialogue: 
       duration: 1
       delay: 0
+      isCurrentBehaviour: 0
     - description: WAIT
       type: 2
       position: {x: 0, y: 0}
-      attackKey: 
+      attack: 0
       showWarning: 0
       dialogue: 
       duration: 0
       delay: 0
+      isCurrentBehaviour: 0
     - description: 
       type: 1
       position: {x: 6, y: 0}
-      attackKey: CleaveLeft
+      attack: 12
       showWarning: 0
       dialogue: 
       duration: 0
       delay: 4
+      isCurrentBehaviour: 0
     - description: 
       type: 1
       position: {x: 10, y: 0}
-      attackKey: CleaveRight
+      attack: 13
       showWarning: 0
       dialogue: 
       duration: 0
       delay: 4
+      isCurrentBehaviour: 0
     - description: 
       type: 1
       position: {x: 0, y: -8}
-      attackKey: LineBig
+      attack: 6
       showWarning: 0
       dialogue: 
       duration: 1.5
       delay: 3
+      isCurrentBehaviour: 0
     - description: 
       type: 0
       position: {x: 15, y: -8}
-      attackKey: 
+      attack: 0
       showWarning: 0
       dialogue: 
       duration: 1
       delay: 0
+      isCurrentBehaviour: 0
     - description: WAIT
       type: 2
       position: {x: 0, y: 0}
-      attackKey: 
+      attack: 0
       showWarning: 0
       dialogue: 
       duration: 2
       delay: 0
+      isCurrentBehaviour: 0
     - description: 
       type: 1
       position: {x: 0, y: 8}
-      attackKey: CleaveUp
+      attack: 10
       showWarning: 0
       dialogue: 
       duration: 0
       delay: 3
+      isCurrentBehaviour: 0
     - description: 
       type: 1
       position: {x: 0, y: 0}
-      attackKey: CleaveDown
+      attack: 11
       showWarning: 0
       dialogue: 
       duration: 0
       delay: 3
+      isCurrentBehaviour: 0
     - description: 
       type: 0
       position: {x: -15, y: -8}
-      attackKey: 
+      attack: 0
       showWarning: 0
       dialogue: 
       duration: 1
       delay: 0
+      isCurrentBehaviour: 0
     - description: 
       type: 0
       position: {x: -15, y: 5}
-      attackKey: 
+      attack: 0
       showWarning: 0
       dialogue: 
       duration: 1
       delay: 0
+      isCurrentBehaviour: 0
     - description: WAIT
       type: 2
       position: {x: 0, y: 0}
-      attackKey: 
+      attack: 0
       showWarning: 0
       dialogue: 
       duration: 2
       delay: 0
+      isCurrentBehaviour: 0
     - description: 
       type: 1
       position: {x: 8, y: 0}
-      attackKey: CleaveLeft
+      attack: 12
       showWarning: 0
       dialogue: 
       duration: 0
       delay: 3
+      isCurrentBehaviour: 0
     - description: 
       type: 1
       position: {x: 12, y: 0}
-      attackKey: CleaveRight
+      attack: 13
       showWarning: 0
       dialogue: 
       duration: 0
       delay: 3
+      isCurrentBehaviour: 0
     - description: 
       type: 1
       position: {x: 0, y: 5}
-      attackKey: LineBig
+      attack: 6
       showWarning: 0
       dialogue: 
       duration: 1
       delay: 3
+      isCurrentBehaviour: 0
     - description: 
       type: 0
       position: {x: 15, y: 5}
-      attackKey: 
+      attack: 0
       showWarning: 0
       dialogue: 
       duration: 1
       delay: 0
+      isCurrentBehaviour: 0
     - description: 
       type: 0
       position: {x: 15, y: 10}
-      attackKey: 
+      attack: 0
       showWarning: 0
       dialogue: 
       duration: 1
       delay: 0
+      isCurrentBehaviour: 0
     - description: WAIT
       type: 2
       position: {x: 0, y: 0}
-      attackKey: 
+      attack: 0
       showWarning: 0
       dialogue: 
       duration: 1
       delay: 0
+      isCurrentBehaviour: 0
     - description: 
       type: 1
       position: {x: 0, y: 6}
-      attackKey: CleaveDown
+      attack: 11
       showWarning: 0
       dialogue: 
       duration: 0
       delay: 3
+      isCurrentBehaviour: 0
     - description: 
       type: 1
       position: {x: 0, y: 9}
-      attackKey: Line
+      attack: 5
       showWarning: 0
       dialogue: 
       duration: 1
       delay: 2
+      isCurrentBehaviour: 0
     - description: 
       type: 0
       position: {x: -15, y: 10}
-      attackKey: 
+      attack: 0
       showWarning: 0
       dialogue: 
       duration: 1
       delay: 0
+      isCurrentBehaviour: 0
     - description: 
       type: 0
       position: {x: -15, y: -10}
-      attackKey: 
+      attack: 0
       showWarning: 0
       dialogue: 
       duration: 1
       delay: 0
+      isCurrentBehaviour: 0
     - description: WAIT
       type: 2
       position: {x: 0, y: 0}
-      attackKey: 
+      attack: 0
       showWarning: 0
       dialogue: 
       duration: 1
       delay: 0
+      isCurrentBehaviour: 0
     - description: 
       type: 1
       position: {x: -2, y: 0}
-      attackKey: CleaveLeft
+      attack: 12
       showWarning: 0
       dialogue: 
       duration: 0
       delay: 3
+      isCurrentBehaviour: 0
     - description: 
       type: 1
       position: {x: 2, y: 0}
-      attackKey: CleaveRight
+      attack: 13
       showWarning: 0
       dialogue: 
       duration: 0
       delay: 3
+      isCurrentBehaviour: 0
     - description: 
       type: 1
       position: {x: 0, y: -6}
-      attackKey: LineBig
+      attack: 6
       showWarning: 0
       dialogue: 
       duration: 1
       delay: 2
+      isCurrentBehaviour: 0
     - description: 
       type: 0
       position: {x: 15, y: -10}
-      attackKey: 
+      attack: 0
       showWarning: 0
       dialogue: 
       duration: 1
       delay: 0
+      isCurrentBehaviour: 0
     - description: 
       type: 0
       position: {x: 15, y: 0}
-      attackKey: 
+      attack: 0
       showWarning: 0
       dialogue: 
       duration: 1
       delay: 0
+      isCurrentBehaviour: 0
     - description: 
       type: 1
       position: {x: 0, y: 3}
-      attackKey: CleaveUp
+      attack: 10
       showWarning: 0
       dialogue: 
       duration: 0
       delay: 4
+      isCurrentBehaviour: 0
     - description: 
       type: 1
       position: {x: 0, y: -2}
-      attackKey: CleaveDown
+      attack: 11
       showWarning: 0
       dialogue: 
       duration: 0
       delay: 4
+      isCurrentBehaviour: 0
     - description: 
       type: 1
       position: {x: 0, y: 0.5}
-      attackKey: Line
+      attack: 5
       showWarning: 0
       dialogue: 
       duration: 3
       delay: 3
+      isCurrentBehaviour: 0
     - description: 
       type: 0
       position: {x: -15, y: 0}
-      attackKey: 
+      attack: 0
       showWarning: 0
       dialogue: 
       duration: 1
       delay: 0
+      isCurrentBehaviour: 0
     - description: 
       type: 0
       position: {x: -15, y: 8}
-      attackKey: 
+      attack: 0
       showWarning: 0
       dialogue: 
       duration: 1
       delay: 0
+      isCurrentBehaviour: 0
     - description: 
       type: 1
       position: {x: 8, y: 0}
-      attackKey: CleaveLeft
+      attack: 12
       showWarning: 0
       dialogue: 
       duration: 0
       delay: 3
+      isCurrentBehaviour: 0
     - description: 
       type: 1
       position: {x: 12, y: 0}
-      attackKey: CleaveRight
+      attack: 13
       showWarning: 0
       dialogue: 
       duration: 0
       delay: 3
+      isCurrentBehaviour: 0
     - description: 
       type: 1
       position: {x: 0, y: 8}
-      attackKey: LineBig
+      attack: 6
       showWarning: 0
       dialogue: 
       duration: 0
       delay: 2
+      isCurrentBehaviour: 0
     - description: WAIT
       type: 2
       position: {x: 0, y: 0}
-      attackKey: 
+      attack: 0
       showWarning: 0
       dialogue: 
       duration: 2
       delay: 0
+      isCurrentBehaviour: 0
     - description: 
       type: 0
       position: {x: 15, y: 8}
-      attackKey: 
+      attack: 0
       showWarning: 0
       dialogue: 
       duration: 1
       delay: 0
+      isCurrentBehaviour: 0
     - description: 
       type: 0
       position: {x: 15, y: 0}
-      attackKey: 
+      attack: 0
       showWarning: 0
       dialogue: 
       duration: 1
       delay: 0
+      isCurrentBehaviour: 0
   enrageDialogueDelay: 3
   enrageInterval: 5
 --- !u!114 &4677647576805650378

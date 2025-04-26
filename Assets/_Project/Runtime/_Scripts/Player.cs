@@ -1,6 +1,7 @@
 ﻿#region
 using System;
 using System.Collections;
+using System.Linq;
 using DG.Tweening;
 using JetBrains.Annotations;
 using UnityEngine;
@@ -138,14 +139,12 @@ public class Player : Entity, IPausable
 
 	void Awake()
 	{
-		#region References
 		rb = GetComponent<Rigidbody2D>();
 		Stats = GetComponent<Stats>();
 		Inventory = GetComponent<Inventory>();
 
 		InputManager = GetComponentInChildren<InputManager>();
 		PlayerInput = GetComponentInChildren<PlayerInput>();
-		#endregion
 	}
 	
 	protected override void OnStart()
@@ -154,22 +153,34 @@ public class Player : Entity, IPausable
 
 		#region Init Player
 		Health = maxHealth;
+		PlayerInput.ActivateInput();
+		PlayerInput.SwitchCurrentActionMap("Player");
+		InputManager.EventSystem.SetSelectedGameObject(null);
 
 		OnDeath += () =>
 		{
 			Logger.LogWarning("Player has died!");
+			Cleanse();
+			
+			PlayerInput.DeactivateInput();
 
-			statusEffects.Clear();
-
-			//playerInput.DeactivateInput();
-			//playerInput.SwitchCurrentActionMap("UI");
-
-			//StopAllCoroutines();
-
-			//SceneManagerExtended.ReloadScene();
+			if (PlayerManager.Instance.Players.All(p => p.IsDead)) 
+				GameManager.Instance.SetState(GameManager.State.Defeat);
 		};
 
-		GameManager.Instance.OnVictory += () => { statusEffects.Clear(); };
+		GameManager.Instance.OnDefeat += () =>
+		{
+			var gameOverCanvas = GameObject.Find("Game Over Canvas");
+			var background = gameOverCanvas.transform.GetChild(0);
+			
+			background.gameObject.SetActive(true);
+
+			PlayerInput.ActivateInput();
+			PlayerInput.SwitchCurrentActionMap("UI");
+			InputManager.EventSystem.SetSelectedGameObject(gameOverCanvas.transform.GetChild(0).GetChild(1).gameObject);
+		};
+
+		GameManager.Instance.OnVictory += Cleanse;
 		#endregion
 	}
 

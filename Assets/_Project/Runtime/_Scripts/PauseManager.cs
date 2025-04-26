@@ -15,6 +15,24 @@ public class PauseManager : MonoBehaviour
 	public static event Action OnPause;
 	public static event Action OnResume;
 	
+	public void Pause()
+	{
+		var pausableObjects = FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Include, FindObjectsSortMode.InstanceID).OfType<IPausable>();
+		foreach (IPausable pausable in pausableObjects) pausable.Pause();
+
+		Time.timeScale = 0f;
+		OnPause?.Invoke();
+	}
+	
+	public void Resume()
+	{
+		var pausableObjects = FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Include, FindObjectsSortMode.InstanceID).OfType<IPausable>();
+		foreach (IPausable pausable in pausableObjects) pausable.Resume();
+
+		Time.timeScale = 1f;
+		OnResume?.Invoke();
+	}
+	
 	public void TogglePause()
 	{
 		var disallowedPauseStates = new List<GameManager.State>

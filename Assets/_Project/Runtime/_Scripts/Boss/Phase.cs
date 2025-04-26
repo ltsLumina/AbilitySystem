@@ -32,7 +32,9 @@ public class Phase
 		for (int i = startIndex; i < behaviours.Count; i++)
 		{
 			behaviours[i].Start(self);
+			behaviours[i].isCurrentBehaviour = true;
 			yield return new WaitForSeconds(behaviours[i].Duration);
+			behaviours[i].isCurrentBehaviour = false;
 		}
 
 		End();

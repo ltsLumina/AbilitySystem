@@ -11,7 +11,7 @@ using VInspector;
 using static Lumina.Essentials.Modules.Helpers;
 #endregion
 
-[RequireComponent(typeof(Attacks))]
+[RequireComponent(typeof(AttackData))]
 public sealed partial class Boss : Entity
 {
 	[HideInInspector] [UsedImplicitly]
@@ -36,7 +36,7 @@ public sealed partial class Boss : Entity
 	[SerializeField] float enrageInterval = 5f;
 
 	int currentPhaseIndex;
-	Attacks attacks;
+	AttackData attackData;
 
 	public int Health
 	{
@@ -107,14 +107,68 @@ public sealed partial class Boss : Entity
 		
 		string path = EditorUtility.OpenFilePanel("Load Phases", Application.persistentDataPath, "json");
 		if (string.IsNullOrEmpty(path)) return;
+		
 		string json = File.ReadAllText(path);
-		JsonUtility.FromJsonOverwrite(json, this);
+		
+		// Create a temporary class structure that matches the old JSON format
+		var oldFormatData = JsonUtility.FromJson<OldFormatBoss>(json);
+		
+		// Convert the old format to the new format
+		foreach (var phase in oldFormatData.phases)
+		{
+			foreach (var behaviour in phase.behaviours)
+			{
+				if (behaviour.type == Behaviour.Type.Attack && !string.IsNullOrEmpty(behaviour.attackKey))
+				{
+					if (Enum.TryParse<Attacks>(behaviour.attackKey, out Attacks enumValue))
+					{
+						behaviour.attack = enumValue;
+					}
+					else
+					{
+						Debug.LogError($"Failed to convert attack '{behaviour.attackKey}' to enum value in phase '{phase.name}'");
+					}
+				}
+			}
+		}
+		
+		// Apply the converted data back to the current instance
+		JsonUtility.FromJsonOverwrite(JsonUtility.ToJson(oldFormatData), this);
 	}
+
+	#region Conversion Helpers
+	[Serializable]
+	class OldFormatBehaviour : Behaviour
+	{
+		public string attackKey;
+	}
+
+	[Serializable]
+	class OldFormatPhase
+	{
+		public string name;
+		public int startIndex;
+		public List<OldFormatBehaviour> behaviours = new ();
+	}
+
+	[Serializable]
+	class OldFormatBoss
+	{
+		public List<OldFormatPhase> phases = new ();
+
+		// Include other fields that need to be preserved
+		public int health;
+		public int maxHealth;
+		public Color accentColour;
+		public float enrageDialogueDelay;
+		public float enrageDelay;
+	}
+	#endregion
 #endif
 	
 	void Awake()
 	{
-		attacks = GetComponent<Attacks>();
+		attackData = GetComponent<AttackData>();
 		
 		OnBossStarted += () =>
 		{
@@ -194,8 +248,8 @@ public sealed partial class Boss : Entity
 		StopAllCoroutines();
 		DOTween.Kill(this);
 
-		attacks.StopAllCoroutines();
-		DOTween.Kill(attacks);
+		attackData.StopAllCoroutines();
+		DOTween.Kill(attackData);
 
 		foreach (GameObject marker in GameObject.FindGameObjectsWithTag("Marker"))
 		{
@@ -256,7 +310,7 @@ public sealed partial class Boss : Entity
 
 		yield return new WaitForSeconds(2f);
 
-		attacks.Enrage(enrageInterval);
+		attackData.Enrage(enrageInterval);
 
 	}
 	#endregion

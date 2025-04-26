@@ -31,15 +31,17 @@ public class Behaviour
 	[SerializeField] public string description;
 	[SerializeField] public Type type;
 	[SerializeField] protected Vector2 position;
-	[SerializeField] protected string attackKey;
+	[SerializeField] public Attacks attack;
 	[SerializeField] protected bool showWarning;
 	[SerializeField] protected string dialogue;
 	[EndIf]
 	[Space(5)]
-	[Tooltip("The duration of the behaviour, i.e., how long before the next behaviour starts")]
+	[Tooltip("The duration of the behaviour. \nThis is the time it takes for the behaviour to complete.")]
 	[SerializeField] protected float duration;
-	[Tooltip("The delay before the attack completes. A Donut AoE will wait for this time before spawning orbs")]
+	[Tooltip("The delay before the attack completes. An attack will wait this long before is resolves.")]
 	[SerializeField] protected float delay;
+	[UsedImplicitly]
+	[SerializeField] public bool isCurrentBehaviour;
 
 	public float Duration
 	{
@@ -57,7 +59,7 @@ public class Behaviour
 				break;
 
 			case Type.Attack:
-				new Attack(position, attackKey, showWarning, duration, delay).Invoke(context);
+				new Attack(position, attack, showWarning, duration, delay).Invoke(context);
 				break;
 
 			case Type.Dialogue:
@@ -89,10 +91,12 @@ public class Move : Behaviour
 
 public class Attack : Behaviour
 {
-	public Attack(Vector2 position, string attackKey, bool showWarning, float duration, float delay)
+	readonly Attacks attackType;
+
+	public Attack(Vector2 position, Attacks attackType, bool showWarning, float duration, float delay)
 	{
 		this.position = position;
-		this.attackKey = attackKey;
+		this.attackType = attackType;
 		this.showWarning = showWarning;
 		this.delay = delay;
 		this.duration = duration;
@@ -100,10 +104,8 @@ public class Attack : Behaviour
 
 	protected override void Invoke(Entity self)
 	{
-		string key = attackKey;
-
-		var attacks = self.gameObject.GetComponent<Attacks>();
-		MethodInfo method = typeof(Attacks).GetMethod(key);
+		var attacks = self.gameObject.GetComponent<AttackData>();
+		MethodInfo method = typeof(AttackData).GetMethod(attackType.ToString());
 
 		if (method != null)
 		{
@@ -116,7 +118,7 @@ public class Attack : Behaviour
 
 			method.Invoke(attacks, args);
 		}
-		else Debug.LogError($"Attack method \"{key}\" not found in {attacks}. \nPlease check the key in the Behaviour Inspector.");
+		else Debug.LogError($"Attack method \"{attackType}\" not found in {attacks}. \nPlease check the attack type in the Behaviour Inspector.");
 	}
 }
 

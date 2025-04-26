@@ -1,21 +1,50 @@
 #region
+using JetBrains.Annotations;
 using Lumina.Essentials.Attributes;
 using UnityEngine;
 #endregion
 
 public class Healthbar : MonoBehaviour
 {
-	[SerializeField] [ReadOnly] int hearts;
-	[SerializeField] [ReadOnly] Player owner;
+	[UsedImplicitly, ReadOnly]
+	[SerializeField] int hearts;
+	[ReadOnly]
+	[SerializeField] Player owner;
+	
+	Transform[] heartIcons;
 
-	void Start() => PlayerManager.Instance.OnPlayerJoined += player => { owner = player; };
+	void Start()
+	{
+		// Store heart icons for better performance
+		heartIcons = new Transform[transform.childCount];
+		for (int i = 0; i < transform.childCount; i++) heartIcons[i] = transform.GetChild(i);
 
-	void Update()
+		// Subscribe to player join event
+		PlayerManager.Instance.OnPlayerJoined += InitializeHealthbar;
+	}
+
+	void InitializeHealthbar(Player player)
+	{
+		Transform parent = transform.parent;
+
+		if (!player.CompareTag(parent.tag)) return;
+		
+		owner = player;
+		hearts = owner.MaxHealth;
+		owner.OnTookDamage += UpdateHealthDisplay;
+
+		// Initial health display
+		UpdateHealthDisplay(false);
+	}
+
+	void UpdateHealthDisplay(bool hadShields)
 	{
 		if (owner == null) return;
 
-		hearts = owner.Health;
-
-		for (int i = 0; i < transform.childCount; i++) transform.GetChild(i).gameObject.SetActive(i < hearts);
+		for (int i = 0; i < heartIcons.Length; i++)
+		{
+			heartIcons[i].gameObject.SetActive(i < owner.Health);
+			hearts = owner.Health;
+		}
 	}
 }

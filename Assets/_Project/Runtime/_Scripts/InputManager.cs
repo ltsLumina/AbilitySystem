@@ -80,16 +80,19 @@ public class InputManager : MonoBehaviour
 	Player player;
 	PlayerInput playerInput;
 	MultiplayerEventSystem eventSystem;
-	
+
+	void Awake()
+	{
+		playerInput = GetComponent<PlayerInput>();
+		eventSystem = GetComponent<MultiplayerEventSystem>();
+	}
+
 	void Start()
 	{
 		player = GetComponentInParent<Player>();
 		
-		playerInput = GetComponent<PlayerInput>();
 		playerInput.uiInputModule = GetComponent<InputSystemUIInputModule>();
 		playerInput.uiInputModule.actionsAsset = playerInput.actions;
-
-		eventSystem = GetComponent<MultiplayerEventSystem>();
 
 		playerInput.actions["Submit"].performed += _ =>
 		{
@@ -98,7 +101,9 @@ public class InputManager : MonoBehaviour
 
 			SceneItem sceneItem = selectedGameObject.TryGetComponent(out SceneItem item) 
 					? item 
-					: throw new MissingComponentException("Selected GameObject does not have a SceneItem component.");
+					: null;
+			
+			if (sceneItem == null) return;
 
 			var selectionManager = FindAnyObjectByType<ItemDistributor>();
 			selectionManager.Vote(player, sceneItem);
@@ -110,7 +115,8 @@ public class InputManager : MonoBehaviour
 			var selectedGameObject = eventSystem.currentSelectedGameObject;
 			if (selectedGameObject == null) return;
 
-			SceneItem sceneItem = selectedGameObject.TryGetComponent(out SceneItem item) ? item : throw new MissingComponentException("Selected GameObject does not have a SceneItem component.");
+			SceneItem sceneItem = selectedGameObject.TryGetComponent(out SceneItem item) ? item : null;
+			if (sceneItem == null) return;
 
 			var selectionManager = FindAnyObjectByType<ItemDistributor>();
 			selectionManager.Unvote(player, sceneItem);

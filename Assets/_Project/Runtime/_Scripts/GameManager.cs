@@ -81,6 +81,7 @@ public class GameManager : Singleton<GameManager>
 		switch (state)
 		{
 			case State.Lobby:
+				PauseManager.Resume();
 				PlayerInputManager.instance.EnableJoining();
 
 				AudioManager.StopMusic("VictoryMusic", 1f, false);
@@ -121,17 +122,8 @@ public class GameManager : Singleton<GameManager>
 				break;
 
 			case State.Defeat:
-				OnDefeat += () =>
-				{
-					// AudioManager.StopAllMusic(1f);
-					//
-					// var defeatMusic = new Music(Track.DefeatMusic);
-					// defeatMusic.SetOutput(Output.Music);
-					// defeatMusic.SetVolume(0.5f);
-					// defeatMusic.SetId("DefeatMusic");
-					// defeatMusic.Play();
-				};
-
+				PauseManager.Pause();
+				
 				OnDefeat?.Invoke();
 				break;
 
@@ -375,4 +367,7 @@ public class GameManager : Singleton<GameManager>
 		Boss instance = Instantiate(scarecrow, Vector3.zero, Quaternion.identity);
 		instance.gameObject.SetActive(true);
 	}
+
+	// TODO: replace this
+	public void RestartGame() => SceneManagerExtended.ReloadScene();
 }

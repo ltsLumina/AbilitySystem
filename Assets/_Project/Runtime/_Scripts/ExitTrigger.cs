@@ -88,7 +88,6 @@ public class ExitTrigger : MonoBehaviour
 	void ShowText()
 	{
 		onwardText.gameObject.name = $"Onward | {UpdateTextVisibility()}";
-		onwardText.transform.position += new Vector3(StageManager.StageOffset.x, 0, 0f);
 		onwardText.DOFade(1f, 0.35f);
 	}
 
@@ -124,6 +123,7 @@ public class ExitTrigger : MonoBehaviour
 				                               .OnComplete
 				                                (() =>
 				                                {
+					                                onwardText.transform.position += Vector3.right * StageManager.STAGE_WIDTH;
 					                                gameManager.SetState(gameManager.GetNextEvent());
 					                                playersInTrigger = 0;
 				                                }));
