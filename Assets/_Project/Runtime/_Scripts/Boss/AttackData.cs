@@ -5,7 +5,6 @@ using System.Linq;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
-using UnityEngine.InputSystem.Utilities;
 using UnityEngine.UI;
 
 // ReSharper disable UnusedMember.Global
@@ -36,16 +35,15 @@ public class AttackData : MonoBehaviour
 
 	public void Spiral(Vector2 origin, bool showWarning, float delay)
 	{
-		int totalBursts = 8;      // Number of bursts (quarter rotations)
-		int orbCount = 10;        // Number of orbs per burst
+		int totalBursts = 2;      // Number of bursts (quarter rotations)
+		int orbCount = 28;        // Number of orbs per burst
 		float orbSpeed = 5f;      // Speed of the orbs
-		float radius = 1f;        // Radius of the burst
-		float rotationStep = 90f; // Degrees to rotate per burst
+		float radius = .5f;        // Radius of the burst
+		float rotationStep = 45f; // Degrees to rotate per burst
 
 		StartCoroutine(SpiralRoutine());
 
 		return;
-
 		IEnumerator SpiralRoutine()
 		{
 			for (int burst = 0; burst < totalBursts; burst++)
@@ -189,53 +187,99 @@ public class AttackData : MonoBehaviour
 		}
 	}
 	
+	public void DonutBig(Vector2 origin, bool showWarning, float delay)
+	{
+		int orbCount = 100;
+		float orbSpeed = 10f;
+		float radius = 5 * 1.5f;
+
+		StartCoroutine(Yield());
+		Countdown("get in the circle!", origin, showWarning, delay);
+
+		var markerPrefab = Resources.Load<GameObject>("PREFABS/Boss VFX/Donut AoE");
+		GameObject marker = Instantiate(markerPrefab, origin, Quaternion.identity);
+		marker.transform.localScale *= 1.5f;
+		Destroy(marker, delay);
+
+		return;
+		IEnumerator Yield()
+		{
+			yield return new WaitForSeconds(delay);
+
+			for (int i = 0; i < orbCount; i++)
+			{
+				float angle = i * Mathf.PI * 2 / orbCount;
+				Vector2 position = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * radius;
+				GameObject orb = Instantiate(orbPrefab, origin + position, Quaternion.identity);
+				var rb = orb.GetComponent<Rigidbody2D>();
+				rb.linearVelocity = position.normalized * orbSpeed;
+			}
+		}
+	}
+	
 	readonly Queue<Sequence> countdowns = new ();
 
 	/// <summary>
 	///     Spawns a 'dynamic' countdown that follows the player for a given delay while displaying the countdown message.
 	/// </summary>
-	void Countdown(string message, bool showWarning, float delay)
+	void Countdown(string message, Vector3 position, bool showWarning, float delay, bool isSpread = false)
 	{
 		if (!showWarning) return;
-		
-		ReadOnlyArray<Player> players = PlayerManager.Instance.Players;
+
 		var countdownPrefab = Resources.Load<GameObject>("PREFABS/Boss VFX/AoE Countdown");
 		Transform parent = GameObject.FindWithTag("Worldspace Canvas").transform;
-		var offset = new Vector3(0, Mathf.Max(countdowns.Count + 1f, 2f));
 
-		foreach (Player player in players)
+		// For spread attack, keep text closer to the player
+		Vector3 offset = isSpread 
+				? new (0, 2f, 0) 
+				: new Vector3(0, Mathf.Max(countdowns.Count + 1f, 2f));
+
+		GameObject countdown = Instantiate(countdownPrefab, position + offset, Quaternion.identity, parent);
+		countdown.name = $"Countdown: \"{message}\" (dynamic) | (#{countdowns.Count})";
+
+		var tmp = countdown.GetComponent<TextMeshProUGUI>();
+		tmp.text = message;
+
+		// Track target position for spread attack
+		if (isSpread)
 		{
-			GameObject countdown = Instantiate(countdownPrefab, player.transform.position + offset, Quaternion.identity, parent);
-			countdown.name = $"Countdown: \"{message}\" (dynamic) | (#{countdowns.Count})";
-			Tween moveTween = countdown.transform.DOMove(player.transform.position + offset, delay).SetEase(Ease.Linear).OnUpdate(() => countdown.transform.position = player.transform.position + offset).SetLink(gameObject);
+			Transform targetTransform = Physics2D.OverlapPoint(position)?.transform;
 
-			var tmp = countdown.GetComponent<TextMeshProUGUI>();
-			tmp.text = message;
-
-			// set the progress of the image over delay time
-			Transform backgroundImage = countdown.transform.GetChild(0);
-			Transform progressImage = backgroundImage.GetChild(0);
-			var background = backgroundImage.GetComponent<Image>();
-			var progress = progressImage.GetComponent<Image>();
-
-			Sequence sequence = DOTween.Sequence();
-			countdowns.Enqueue(sequence);
-			sequence.SetLink(gameObject);
-			sequence.OnStart(() => progress.fillAmount = 0f);
-			sequence.Append(progress.DOFillAmount(1f, delay).SetEase(Ease.Linear));
-			sequence.AppendInterval(0.8f);
-			sequence.Join(tmp.DOFade(0, 0.2f).SetEase(Ease.Linear));
-			sequence.Join(progress.DOFade(0, 0.2f).SetEase(Ease.Linear));
-			sequence.Join(background.DOFade(0, 0.2f).SetEase(Ease.Linear));
-
-			sequence.OnComplete
-			(() =>
+			if (targetTransform != null)
 			{
-				countdowns.Dequeue();
-				moveTween?.Kill();
-				Destroy(countdown, 0.1f);
-			});
+				countdown.transform.DOMove(targetTransform.position + offset, delay).SetEase(Ease.Linear).OnUpdate(() => countdown.transform.position = targetTransform.position + offset).SetLink(gameObject);
+			}
 		}
+
+		// Setup progress UI
+		Transform backgroundImage = countdown.transform.GetChild(0);
+		Transform progressImage = backgroundImage.GetChild(0);
+		var background = backgroundImage.GetComponent<Image>();
+		var progress = progressImage.GetComponent<Image>();
+
+		// If it's a spread attack, make the UI elements smaller
+		if (isSpread)
+		{
+			backgroundImage.localScale *= 0.7f;
+			tmp.fontSize *= 0.7f;
+		}
+
+		Sequence sequence = DOTween.Sequence();
+		countdowns.Enqueue(sequence);
+		sequence.SetLink(gameObject);
+		sequence.OnStart(() => progress.fillAmount = 0f);
+		sequence.Append(progress.DOFillAmount(1f, delay).SetEase(Ease.Linear));
+		sequence.AppendInterval(0.8f);
+		sequence.Join(tmp.DOFade(0, 0.2f).SetEase(Ease.Linear));
+		sequence.Join(progress.DOFade(0, 0.2f).SetEase(Ease.Linear));
+		sequence.Join(background.DOFade(0, 0.2f).SetEase(Ease.Linear));
+
+		sequence.OnComplete
+		(() =>
+		{
+			countdowns.Dequeue();
+			Destroy(countdown, 0.1f);
+		});
 	}
 
 	/// <summary>
@@ -423,6 +467,144 @@ public class AttackData : MonoBehaviour
 				}
 				else line.SetActive(false);
 			}
+		}
+	}
+
+	public void PillarBig(Vector2 origin, bool showWarning, float delay)
+	{
+		var linePrefab = Resources.Load<GameObject>("PREFABS/Boss VFX/Line AoE");
+		GameObject line = Instantiate(linePrefab, origin, Quaternion.identity);
+		line.transform.localScale = new (Screen.width / 100f, line.transform.localScale.y * 2, line.transform.localScale.z);
+		line.transform.rotation = Quaternion.Euler(0, 0, 90);
+
+		StartCoroutine(Anim());
+		StartCoroutine(Yield());
+
+		Countdown("get away from the line!", origin, showWarning, delay);
+
+		return;
+
+		IEnumerator Anim()
+		{
+			var spriteRenderer = line.GetComponentInChildren<SpriteRenderer>();
+			yield return new WaitForSeconds(delay - 0.2f);
+
+			Sequence sequence = DOTween.Sequence();
+			sequence.SetLink(gameObject);
+			sequence.Append(spriteRenderer.DOFade(1, 0.2f).SetEase(Ease.Linear));
+			sequence.Join(spriteRenderer.transform.DOScaleY(0, 0.2f).SetEase(Ease.InOutCubic));
+			sequence.AppendInterval(0.1f);
+			sequence.OnComplete(() => Destroy(line, 0.1f));
+		}
+
+		IEnumerator Yield()
+		{
+			yield return new WaitForSeconds(delay);
+
+			if (line == null) yield break;
+
+			var collider = line.GetComponent<BoxCollider2D>();
+
+			var results = new List<Collider2D>();
+			var contactFilter = new ContactFilter2D();
+			contactFilter.SetLayerMask(LayerMask.GetMask("Player"));
+			collider.Overlap(contactFilter, results);
+
+			foreach (Collider2D col in results)
+			{
+				if (col.TryGetComponent(out Player player))
+				{
+					player.TakeDamage(1);
+					line.SetActive(false);
+				}
+				else line.SetActive(false);
+			}
+		}
+	}
+
+	public void Mixer(Vector2 origin, bool showWarning, float delay)
+	{
+		var linePrefab = Resources.Load<GameObject>("PREFABS/Boss VFX/Line AoE");
+		var mixerPrefab = Resources.Load<GameObject>("PREFABS/Boss VFX/Mixer AoE");
+		GameObject line = Instantiate(linePrefab, origin, Quaternion.identity);
+		GameObject mixer = Instantiate(mixerPrefab, origin, Quaternion.identity);
+		
+		line.transform.localScale = new (Screen.width / 100f, line.transform.localScale.y, line.transform.localScale.z);
+
+		float rotationSpeed = 45;                          // Degrees per second
+		float duration = 10f;                                // How long the line will rotate
+		float warningRotationSpeed = rotationSpeed * 0.25f; // Slower rotation during warning
+
+		StartCoroutine(Warning());
+		StartCoroutine(RotatingLineRoutine());
+		Countdown("Rotating clockwise!", origin, showWarning, delay);
+
+		return;
+
+		IEnumerator Warning()
+		{
+			float warningElapsedTime = 0f;
+
+			// Rotate mixer during warning
+			while (warningElapsedTime < duration)
+			{
+				float warningAngle = -warningRotationSpeed * warningElapsedTime;
+				mixer.transform.rotation = Quaternion.Euler(0f, 0f, warningAngle);
+				warningElapsedTime += Time.deltaTime;
+				yield return null;
+			}
+			
+			// fade out
+			var sprite = mixer.GetComponentInChildren<SpriteRenderer>();
+			sprite.DOFade(0, 0.2f).SetEase(Ease.Linear).SetLink(mixer).OnComplete(() => Destroy(mixer, 0.1f));
+		}
+		
+		IEnumerator RotatingLineRoutine()
+		{
+			yield return new WaitForSeconds(delay);
+			
+			float elapsedTime = 0f;
+			var lineCollider = line.GetComponent<BoxCollider2D>();
+			var contactFilter = new ContactFilter2D();
+			contactFilter.SetLayerMask(LayerMask.GetMask("Player"));
+			var results = new List<Collider2D>();
+
+			// if (elapsedTime < duration - 0.2f)
+			// {
+			// 	var sprite = mixer.GetComponentInChildren<SpriteRenderer>();
+			// 	sprite.DOFade(0, 0.2f).SetEase(Ease.Linear).SetLink(mixer).OnComplete(() => Destroy(mixer, 0.1f));
+			// }
+
+			const bool clockwise = true; // true for clockwise, false for counter-clockwise
+
+			// Rotate the line and mixer
+			while (elapsedTime < duration)
+			{
+				float angle = clockwise ? -rotationSpeed * elapsedTime : rotationSpeed * elapsedTime; // negative for clockwise rotation, positive for counter-clockwise
+				line.transform.rotation = Quaternion.Euler(0f, 0f, angle);
+
+				// Check for player collision
+				if (lineCollider.Overlap(contactFilter, results) > 0)
+				{
+					foreach (Collider2D col in results)
+					{
+						if (col.TryGetComponent(out Player player))
+							player.TakeDamage(1);
+					}
+				}
+
+				elapsedTime += Time.deltaTime;
+				yield return null;
+			}
+
+			var spriteRenderer = line.GetComponentInChildren<SpriteRenderer>();
+
+			Sequence sequence = DOTween.Sequence();
+			sequence.SetLink(gameObject);
+			sequence.Append(spriteRenderer.DOFade(1, 0.2f).SetEase(Ease.Linear));
+			sequence.Join(spriteRenderer.transform.DOScaleY(0, 0.2f).SetEase(Ease.InOutCubic));
+			sequence.AppendInterval(0.1f);
+			sequence.OnComplete(() => Destroy(line, 0.1f));
 		}
 	}
 
@@ -664,6 +846,128 @@ public class AttackData : MonoBehaviour
 			orb.transform.DOMoveY(-origin.y, duration).SetEase(Ease.Linear).OnComplete(() => orb.GetComponent<SpriteRenderer>().DOFade(0, 1f).OnComplete(() => Destroy(orb)).SetLink(orb.gameObject));
 		}
 	}
+
+	public void Cross(Vector2 origin, bool showWarning, float delay)
+	{
+		var boxPrefab = Resources.Load<GameObject>("PREFABS/Boss VFX/Box AoE");
+		var linePrefab = Resources.Load<GameObject>("PREFABS/Boss VFX/Line AoE");
+
+		GameObject box = Instantiate(boxPrefab, origin, Quaternion.identity);
+
+		StartCoroutine(BoxAttackRoutine());
+		Countdown("", origin, showWarning, delay);
+
+		return;
+
+		IEnumerator BoxAttackRoutine()
+		{
+			yield return new WaitForSeconds(delay);
+
+			// Create instant damage line and pillar
+			GameObject line = Instantiate(linePrefab, origin, Quaternion.identity);
+			GameObject pillar = Instantiate(linePrefab, origin, Quaternion.identity);
+
+			line.transform.localScale = new (Screen.width / 10f, line.transform.localScale.y * 2, line.transform.localScale.z);
+			pillar.transform.localScale = new (Screen.width / 100f, pillar.transform.localScale.y * 2, pillar.transform.localScale.z);
+			pillar.transform.rotation = Quaternion.Euler(0, 0, 90);
+
+			var lineCollider = line.GetComponent<BoxCollider2D>();
+			var pillarCollider = pillar.GetComponent<BoxCollider2D>();
+			var contactFilter = new ContactFilter2D();
+			contactFilter.SetLayerMask(LayerMask.GetMask("Player"));
+			var results = new List<Collider2D>();
+
+			float duration = 1f;
+			float elapsedTime = 0f;
+
+			// Continuously check for collisions
+			while (elapsedTime < duration)
+			{
+				// Check line collision
+				if (lineCollider.Overlap(contactFilter, results) > 0)
+				{
+					foreach (Collider2D col in results)
+					{
+						if (col.TryGetComponent(out Player player))
+							player.TakeDamage(1);
+					}
+				}
+
+				results.Clear();
+
+				// Check pillar collision
+				if (pillarCollider.Overlap(contactFilter, results) > 0)
+				{
+					foreach (Collider2D col in results)
+					{
+						if (col.TryGetComponent(out Player player))
+							player.TakeDamage(1);
+					}
+				}
+
+				elapsedTime += Time.deltaTime;
+				yield return null;
+			}
+
+			var boxSprite = box.GetComponentInChildren<SpriteRenderer>();
+			var lineSprite = line.GetComponentInChildren<SpriteRenderer>();
+			var pillarSprite = pillar.GetComponentInChildren<SpriteRenderer>();
+
+			boxSprite.DOFade(0, 0.2f).SetEase(Ease.Linear).OnComplete(() => Destroy(box, 0.1f));
+			lineSprite.DOFade(0, 0.2f).SetEase(Ease.Linear).OnComplete(() => Destroy(line, 0.1f));
+			pillarSprite.DOFade(0, 0.2f).SetEase(Ease.Linear).OnComplete(() => Destroy(pillar, 0.1f));
+		}
+	}
+	
+	public void Spread(Vector2 _, bool showWarning, float delay)
+     {
+         var spreadPrefab = Resources.Load<GameObject>("PREFABS/Boss VFX/Spread AoE");
+         var players = PlayerManager.Instance.Players;
+         if (players.Count == 1) return; // Spreads dont apply if only one player is present
+         var markers = new List<GameObject>();
+         
+         StartCoroutine(SpreadRoutine());
+         
+         return;
+         IEnumerator SpreadRoutine()
+         {
+             // Create markers on all players
+             foreach (Player player in players)
+             {
+                 GameObject marker = Instantiate(spreadPrefab, player.transform.position, Quaternion.identity);
+                 marker.transform.SetParent(player.transform);
+                 markers.Add(marker);
+                 
+                 // Create dynamic countdown text for each player
+                 Countdown("Spread out!", player.transform.position, showWarning, delay, true);
+             }
+     
+             // Wait for delay
+             yield return new WaitForSeconds(delay);
+     
+             // Check for players in range of each marked player
+             foreach (Player markedPlayer in players)
+             {
+                 var hitColliders = Physics2D.OverlapCircleAll(markedPlayer.transform.position, 5f);
+                 
+                 foreach (Collider2D col in hitColliders)
+                 {
+                     // Skip if it's not a player or if it's the marked player themselves
+                     if (!col.TryGetComponent(out Player hitPlayer) || hitPlayer == markedPlayer)
+                         continue;
+     
+                     hitPlayer.TakeDamage(1);
+                 }
+             }
+     
+             // Fade out and destroy all markers
+             foreach (GameObject marker in markers)
+             {
+                 var markerSprite = marker.GetComponentInChildren<SpriteRenderer>();
+                 markerSprite.DOFade(0, 0.2f).SetEase(Ease.Linear).OnComplete(() => Destroy(marker));
+             }
+         }
+     }
 
 	public void SpawnerUp(Vector2 origin, bool showWarning, float delay) => Spawner(origin, showWarning, Vector2.up, delay);
 	public void SpawnerDown(Vector2 origin, bool showWarning, float delay) => Spawner(origin, showWarning, Vector2.down, delay);

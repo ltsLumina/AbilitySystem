@@ -70,6 +70,8 @@ public class GameManager : Singleton<GameManager>
 		events.RemoveAt(0);
 		return nextEvent;
 	}
+	
+	int bossIndex = 0;
 
 	public void SetState(State state)
 	{
@@ -96,7 +98,28 @@ public class GameManager : Singleton<GameManager>
 				break;
 
 			case State.Battle:
-				SpawnBoss("Rem");
+				switch (bossIndex)
+				{
+					case 0:
+						SpawnBoss("Moog");
+						break;
+					case 1:
+						SpawnBoss("Rem");
+						break;
+					case 2:
+						SpawnBoss("Dragon-king Thordan");
+						break;
+					
+					case 3:
+						bossIndex = 0;
+						SpawnBoss("Rem");
+						break;
+					
+					default:
+						SpawnBoss();
+						break;
+				}
+				bossIndex++;
 
 				AudioManager.StopMusic("LobbyMusic", 1f, false);
 
@@ -142,13 +165,15 @@ public class GameManager : Singleton<GameManager>
 
 			case State.Shop:
 
-				#region Temporary until Shop implemented.
-				List<Item> shopItems = Resources.LoadAll<Item>(AbilitySettings.ResourcePaths.ITEMS).ToList();
-				Item shopItem = shopItems[Random.Range(0, shopItems.Count)];
-
-				foreach (Player player in PlayerManager.Instance.Players) player.Inventory.AddToInventory(shopItem);
-				Logger.LogWarning("The shop is not implemented yet. For now it just gives you a random item.");
-				#endregion
+				// #region Temporary until Shop implemented.
+				// List<Item> shopItems = Resources.LoadAll<Item>(AbilitySettings.ResourcePaths.ITEMS).ToList();
+				// Item shopItem = shopItems[Random.Range(0, shopItems.Count)];
+				//
+				// foreach (Player player in PlayerManager.Instance.Players) player.Inventory.AddToInventory(shopItem);
+				// Logger.LogWarning("The shop is not implemented yet. For now it just gives you a random item.");
+				// #endregion
+				
+				SetState(State.Loot);
 
 				OnEnterShop?.Invoke();
 				break;

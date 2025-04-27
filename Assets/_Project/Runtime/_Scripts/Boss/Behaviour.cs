@@ -37,16 +37,23 @@ public class Behaviour
 	[EndIf]
 	[Space(5)]
 	[Tooltip("The duration of the behaviour. \nThis is the time it takes for the behaviour to complete.")]
-	[SerializeField] protected float duration;
+	[SerializeField] public float duration;
 	[Tooltip("The delay before the attack completes. An attack will wait this long before is resolves.")]
 	[SerializeField] protected float delay;
 	[UsedImplicitly]
 	[SerializeField] public bool isCurrentBehaviour;
-
-	public float Duration
+	
+	public void Reset()
 	{
-		get => duration;
-		private set => duration = value;
+		description = string.Empty;
+		type = Type.Move;
+		position = Vector2.zero;
+		attack = Attacks.Donut;
+		showWarning = false;
+		dialogue = string.Empty;
+		duration = 0;
+		delay = 0;
+		isCurrentBehaviour = false;
 	}
 
 	// ReSharper disable once ParameterHidesMember
@@ -145,8 +152,11 @@ public class Dialogue : Behaviour
 		dialogueText.transform.position = self.transform.position + offset;
 		Tween moveTween = dialogueText.transform.DOMove(self.transform.position + offset, duration).SetEase(Ease.Linear).SetLink(self.gameObject).OnUpdate(() => dialogueText.transform.position = self.transform.position + offset);
 
-		yield return new WaitForSeconds(duration);
-
+		yield return new WaitForSeconds(duration - 0.3f);
+		dialogueText.DOFade(0, 0.3f).SetEase(Ease.Linear).SetLink(self.gameObject);
+		
+		yield return new WaitForSeconds(0.35f);
+		
 		moveTween.Kill();
 		Object.Destroy(dialogueText.gameObject);
 	}

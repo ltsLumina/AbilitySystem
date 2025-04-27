@@ -33,7 +33,7 @@ public class Phase
 		{
 			behaviours[i].Start(self);
 			behaviours[i].isCurrentBehaviour = true;
-			yield return new WaitForSeconds(behaviours[i].Duration);
+			yield return new WaitForSeconds(behaviours[i].duration);
 			behaviours[i].isCurrentBehaviour = false;
 		}
 

@@ -180,8 +180,29 @@ public class Player : Entity, IPausable
 			InputManager.EventSystem.SetSelectedGameObject(gameOverCanvas.transform.GetChild(0).GetChild(1).gameObject);
 		};
 
-		GameManager.Instance.OnVictory += Cleanse;
+		GameManager.Instance.OnVictory += () =>
+		{
+			if (IsDead)
+			{
+				Logger.LogWarning("Player revived!");
+				Revive();
+				return;
+			}
+
+			Cleanse();
+		};
 		#endregion
+	}
+	
+	void Revive()
+	{
+		// Revive the player
+		Health = maxHealth;
+		sprite.FlashSprite(Color.green, 0.3f);
+		
+		PlayerInput.ActivateInput();
+		PlayerInput.SwitchCurrentActionMap("Player");
+		InputManager.EventSystem.SetSelectedGameObject(null);
 	}
 
 	void Rebind(bool useMouseBindings)
@@ -248,10 +269,11 @@ public class Player : Entity, IPausable
 	}
 
 	SpriteRenderer sprite => GetComponentInChildren<SpriteRenderer>();
-
+	
 	public override void TakeDamage(float damage)
 	{
 		if (isOnCooldown) return;
+		if (IsDead) return;
 
 		OnHit?.Invoke();
 
@@ -264,7 +286,7 @@ public class Player : Entity, IPausable
 			DestroyNearbyOrbs();
 
 			sprite.FlashSprite(Color.cyan, 0.3f);
-			CameraMain.DOShakePosition(0.15f, 0.5f);
+			if (!DOTween.IsTweening(CameraMain.transform)) CameraMain.DOShakePosition(0.15f, 0.5f);
 
 			StartCoroutine(DamageCooldown());
 			return;
@@ -280,7 +302,7 @@ public class Player : Entity, IPausable
 		//base.TakeDamage(damage); // logs the damage taken
 
 		sprite.FlashSprite(Color.red, 0.3f);
-		CameraMain.DOShakePosition(0.3f, 1f);
+		if (!DOTween.IsTweening(CameraMain.transform)) CameraMain.DOShakePosition(0.15f, 0.5f);
 
 		return;
 		void DestroyNearbyOrbs()

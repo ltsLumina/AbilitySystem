@@ -476,7 +476,7 @@ GameObject:
   - component: {fileID: 4422582200664740063}
   - component: {fileID: 5453742574585655225}
   m_Layer: 3
-  m_Name: RPR
+  m_Name: RPR (default)
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

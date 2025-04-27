@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8059124801909225644}
   - component: {fileID: 5663667768402186435}
   - component: {fileID: 4274689910411197917}
+  - component: {fileID: 8221739396260102384}
   m_Layer: 0
   m_Name: Orb
   m_TagString: Projectile
@@ -165,3 +166,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ed219fabcb2cb140bc9178acace681c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &8221739396260102384
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6281664029389054506}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 555d4b05ffa3a6a4f995ceee59d41f22, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  associatedBoss: {fileID: 0}
+  target: {fileID: 949493805073965800}
+  isMarker: 1

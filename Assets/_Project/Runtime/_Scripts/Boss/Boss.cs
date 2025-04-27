@@ -73,8 +73,14 @@ public sealed partial class Boss : Entity
 	}
 
 	new public string name => gameObject.name;
-	public string ShortName => name.Split(',')[0];
 	
+	/// <summary>
+	/// The short name of the boss.
+	/// If the name contains a comma, it will return the first part of the name.
+	/// Otherwise, it will return the full name.
+	/// </summary>
+	public string ShortName => name.Contains(',') ? name.Split(',')[0] : name;
+
 	public override string ToString() => name;
 
 	public event Action OnBossStarted;
@@ -165,7 +171,15 @@ public sealed partial class Boss : Entity
 	}
 	#endregion
 #endif
-	
+
+	void OnValidate()
+	{
+		if (Application.isPlaying) return;
+		
+		// if max health updates, update health
+		health = maxHealth;
+	}
+
 	void Awake()
 	{
 		attackData = GetComponent<AttackData>();
@@ -201,6 +215,7 @@ public sealed partial class Boss : Entity
 
 		float adjustedHealth = Mathf.RoundToInt(maxHealth * HealthScalar);
 		health = (int) adjustedHealth;
+		maxHealth = (int) adjustedHealth;
 
 		gameObject.name = gameObject.name.Replace("(Clone)", string.Empty);
 		transform.SetParent(GameObject.Find("Important").transform);
@@ -210,6 +225,10 @@ public sealed partial class Boss : Entity
 	}
 
 	#region Health / Take Damage
+	/// <summary>
+	/// The scalar for the boss' health.
+	/// Each player after the first adds {healthScalar}% health to the boss (e.g. 1.25 = 25% health per player).
+	/// </summary>
 	float HealthScalar
 	{
 		get
@@ -298,9 +317,9 @@ public sealed partial class Boss : Entity
 	{
 		Logger.LogWarning("Enrage!");
 
-		var dialogue = new Dialogue("I've had it with you!", enrageDialogueDelay);
-		dialogue.type = Behaviour.Type.Dialogue;
-		dialogue.Start(this);
+		// var dialogue = new Dialogue("I've had it with you!", enrageDialogueDelay);
+		// dialogue.type = Behaviour.Type.Dialogue;
+		// dialogue.Start(this);
 
 		yield return new WaitForSeconds(enrageDialogueDelay);
 

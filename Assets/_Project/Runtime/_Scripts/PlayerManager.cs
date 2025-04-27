@@ -159,7 +159,7 @@ public class PlayerManager : Singleton<PlayerManager>
 
 		bool firstPlayer = input.playerIndex == 0;
 
-		if (firstPlayer) player.transform.position = new (0f, 0f, 0f);
+		if (firstPlayer) player.transform.position = new (-10f, 0f, 0f);
 		else player.transform.position = Players[0].transform.position + new Vector3(Random.insideUnitCircle.x, Random.insideUnitCircle.y) * 3f;
 
 		player.tag = $"Player {player.ID}";
