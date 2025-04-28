@@ -163,7 +163,7 @@ public class ItemDistributor : MonoBehaviour
 		
 		HideUI();
 
-		StartCoroutine(PlayLevelUpSound());
+		//StartCoroutine(PlayLevelUpSound());
 		
 		Logger.Log("All items have been distributed." + "\nResults: " + string.Join(", ", results.Select(kvp => $"{kvp.Key.name} -> {kvp.Value.name}")), null, "Distributor");
 		
@@ -308,6 +308,8 @@ public class ItemDistributor : MonoBehaviour
 
 			RollDiceAnimation(group.Key);
 			yield return new WaitForSeconds(rollDelay); // added suspense
+
+			rolls.Clear();
 
 			// Recursively handle the tie-breaker rolls (in case of another tie)
 			yield return StartCoroutine(DistributeItemToRandomPlayer(group));

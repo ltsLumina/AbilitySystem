@@ -32,6 +32,7 @@ public class TickManager : MonoBehaviour
 
 	static bool showTickLogs;
 
+#if UNITY_EDITOR
 	void OnGUI()
 	{
 		GUI.Label(new (10, 10, 100, 20), "Tick: " + tick.Current);
@@ -42,6 +43,7 @@ public class TickManager : MonoBehaviour
 		// snap to 0.1 increments
 		Time.timeScale = Mathf.Round(slider * 10) / 10;
 	}
+#endif
 
 	#region Stopwatch
 	Stopwatch stopwatch;

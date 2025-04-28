@@ -41,8 +41,7 @@ public class Inventory : MonoBehaviour
 	}
 
 	void Update() => TickItems();
-
-#if UNITY_EDITOR
+	
 	void OnGUI()
 	{
 		var player = GetComponent<Player>();
@@ -68,7 +67,6 @@ public class Inventory : MonoBehaviour
 
 		GUILayout.EndArea();
 	}
-#endif
 
 	public void AddToInventory([NotNull] Item item)
 	{

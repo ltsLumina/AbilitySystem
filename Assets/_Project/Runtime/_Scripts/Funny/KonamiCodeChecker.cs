@@ -59,6 +59,7 @@ public class KonamiCodeChecker : MonoBehaviour
 
 		showGUI = true;
 		StartCoroutine(Wait());
+		GameManager.Instance.CurrentBoss.Kill();
 
 		return;
 		IEnumerator Wait()

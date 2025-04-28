@@ -47,14 +47,13 @@ public partial class Boss
 		sequence.Append(fader.DOFade(0f, 0.5f).SetEase(Ease.OutCubic));
 	}
 	#endregion
-
-#if UNITY_EDITOR
+	
 	void OnGUI()
 	{
 		if (statusEffects.Count == 0) return;
 
-		// on the right of the middle of the screen
-		GUILayout.BeginArea(new (Screen.width - 200, Screen.height / 2f - 100, 200, 200));
+		// top right corner
+		GUILayout.BeginArea(new Rect(1050, 40, 290, 200));
 
 		foreach (StatusEffect effect in statusEffects)
 		{
@@ -65,5 +64,4 @@ public partial class Boss
 
 		GUILayout.EndArea();
 	}
-#endif
 }

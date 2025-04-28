@@ -88,8 +88,7 @@ public class PlayerManager : Singleton<PlayerManager>
 
 		Debug.LogWarning("Player not found in the array.");
 	}
-
-#if UNITY_EDITOR
+	
 	void OnGUI()
 	{
 		List<GameObject> allJobs = Resources.LoadAll<GameObject>("PREFABS/Jobs").ToList();
@@ -117,7 +116,6 @@ public class PlayerManager : Singleton<PlayerManager>
 
 		GUILayout.EndArea();
 	}
-#endif
 
 	void Start()
 	{

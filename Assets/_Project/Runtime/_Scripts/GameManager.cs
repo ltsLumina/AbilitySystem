@@ -108,15 +108,7 @@ public class GameManager : Singleton<GameManager>
 						break;
 					case 2:
 						SpawnBoss("Dragon-king Thordan");
-						break;
-					
-					case 3:
 						bossIndex = 0;
-						SpawnBoss("Rem");
-						break;
-					
-					default:
-						SpawnBoss();
 						break;
 				}
 				bossIndex++;
@@ -287,20 +279,14 @@ public class GameManager : Singleton<GameManager>
 	void Update()
 	{
 		if (isTimerRunning) timer += Time.deltaTime;
-
-#if UNITY_EDITOR
-		if (Input.GetKeyDown(KeyCode.F1))
-		{
-			CurrentBoss.Kill();
-		}
-#endif
 	}
 	
-#if UNITY_EDITOR
 	void OnGUI()
 	{
 		// Display the timer in the top right corner
 		GUI.Label(new (Screen.width - 200, 75, 200, 20), $"Time: {timer:F2}");
+
+#if UNITY_EDITOR
 
 		GUILayout.BeginArea(new Rect(0, 200, 100, 100));
 
@@ -326,8 +312,8 @@ public class GameManager : Singleton<GameManager>
 		}
 
 		GUILayout.EndArea();
-	}
 #endif
+	}
 
 	/// <summary>
 	///     Randomly selects a boss from the list of bosses and spawns it at the origin position.

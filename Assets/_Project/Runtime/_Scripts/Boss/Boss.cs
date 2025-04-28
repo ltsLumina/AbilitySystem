@@ -89,8 +89,10 @@ public sealed partial class Boss : Entity
 
 #if UNITY_EDITOR
 	[Button] [UsedImplicitly]
+#endif
 	public void Kill() => Health = 0;
 
+#if UNITY_EDITOR
 	[Button] [UsedImplicitly]
 	public void SaveList()
 	{
