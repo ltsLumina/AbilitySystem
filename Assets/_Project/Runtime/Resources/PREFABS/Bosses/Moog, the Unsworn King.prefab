@@ -145,12 +145,12 @@ MonoBehaviour:
     behaviours:
     - description: 
       type: 0
-      position: {x: 10, y: 0}
+      position: {x: 0, y: 0}
       attack: 0
       showWarning: 0
       dialogue: 
-      duration: 3
-      delay: 0
+      duration: 1.5
+      delay: 5
       isCurrentBehaviour: 0
     - description: 
       type: 2
@@ -159,6 +159,15 @@ MonoBehaviour:
       showWarning: 0
       dialogue: Go easy on me...
       duration: 3
+      delay: 0
+      isCurrentBehaviour: 0
+    - description: 
+      type: 0
+      position: {x: 10, y: 0}
+      attack: 0
+      showWarning: 0
+      dialogue: 
+      duration: 1.5
       delay: 0
       isCurrentBehaviour: 0
     - description: 
@@ -251,9 +260,222 @@ MonoBehaviour:
       duration: 5
       delay: 5
       isCurrentBehaviour: 0
+  - name: Phase 1 Repeat
+    startIndex: 0
+    behaviours:
+    - description: 
+      type: 0
+      position: {x: 0, y: 0}
+      attack: 0
+      showWarning: 0
+      dialogue: 
+      duration: 1.5
+      delay: 5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 2
+      position: {x: 0, y: 0}
+      attack: 0
+      showWarning: 0
+      dialogue: Another try...
+      duration: 3
+      delay: 0
+      isCurrentBehaviour: 0
+    - description: 
+      type: 0
+      position: {x: 10, y: 0}
+      attack: 0
+      showWarning: 0
+      dialogue: 
+      duration: 1.5
+      delay: 0
+      isCurrentBehaviour: 0
+    - description: 
+      type: 1
+      position: {x: 10, y: 0}
+      attack: 0
+      showWarning: 0
+      dialogue: 
+      duration: 7.5
+      delay: 3.75
+      isCurrentBehaviour: 0
     - description: 
       type: 0
       position: {x: -10, y: 0}
+      attack: 0
+      showWarning: 0
+      dialogue: 
+      duration: 3
+      delay: 2.5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 3
+      position: {x: -10, y: 0}
+      attack: 0
+      showWarning: 0
+      dialogue: 
+      duration: 3
+      delay: 2.5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 1
+      position: {x: -10, y: 0}
+      attack: 0
+      showWarning: 0
+      dialogue: 
+      duration: 7.5
+      delay: 3.75
+      isCurrentBehaviour: 0
+    - description: 
+      type: 0
+      position: {x: 0, y: 0}
+      attack: 0
+      showWarning: 0
+      dialogue: 
+      duration: 3
+      delay: 5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 1
+      position: {x: 0, y: 0}
+      attack: 4
+      showWarning: 1
+      dialogue: 
+      duration: 5
+      delay: 5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 3
+      position: {x: 0, y: 0}
+      attack: 0
+      showWarning: 0
+      dialogue: 
+      duration: 5
+      delay: 5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 0
+      position: {x: 10, y: 0}
+      attack: 0
+      showWarning: 0
+      dialogue: 
+      duration: 3
+      delay: 5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 3
+      position: {x: 10, y: 0}
+      attack: 0
+      showWarning: 0
+      dialogue: 
+      duration: 2
+      delay: 5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 1
+      position: {x: 10, y: 0}
+      attack: 0
+      showWarning: 0
+      dialogue: 
+      duration: 5
+      delay: 5
+      isCurrentBehaviour: 0
+  - name: Phase 1 Repeat x2
+    startIndex: 0
+    behaviours:
+    - description: 
+      type: 0
+      position: {x: 0, y: 0}
+      attack: 0
+      showWarning: 0
+      dialogue: 
+      duration: 1.5
+      delay: 5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 2
+      position: {x: 0, y: 0}
+      attack: 0
+      showWarning: 0
+      dialogue: One more time...
+      duration: 3
+      delay: 0
+      isCurrentBehaviour: 0
+    - description: 
+      type: 0
+      position: {x: 10, y: 0}
+      attack: 0
+      showWarning: 0
+      dialogue: 
+      duration: 1.5
+      delay: 0
+      isCurrentBehaviour: 0
+    - description: 
+      type: 1
+      position: {x: 10, y: 0}
+      attack: 0
+      showWarning: 0
+      dialogue: 
+      duration: 7.5
+      delay: 3.75
+      isCurrentBehaviour: 0
+    - description: 
+      type: 0
+      position: {x: -10, y: 0}
+      attack: 0
+      showWarning: 0
+      dialogue: 
+      duration: 3
+      delay: 2.5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 3
+      position: {x: -10, y: 0}
+      attack: 0
+      showWarning: 0
+      dialogue: 
+      duration: 3
+      delay: 2.5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 1
+      position: {x: -10, y: 0}
+      attack: 0
+      showWarning: 0
+      dialogue: 
+      duration: 7.5
+      delay: 3.75
+      isCurrentBehaviour: 0
+    - description: 
+      type: 0
+      position: {x: 0, y: 0}
+      attack: 0
+      showWarning: 0
+      dialogue: 
+      duration: 3
+      delay: 5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 1
+      position: {x: 0, y: 0}
+      attack: 4
+      showWarning: 1
+      dialogue: 
+      duration: 5
+      delay: 5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 3
+      position: {x: 0, y: 0}
+      attack: 0
+      showWarning: 0
+      dialogue: 
+      duration: 5
+      delay: 5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 0
+      position: {x: 10, y: 0}
       attack: 0
       showWarning: 0
       dialogue: 

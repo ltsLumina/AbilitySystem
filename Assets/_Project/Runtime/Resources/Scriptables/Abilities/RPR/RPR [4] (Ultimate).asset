@@ -15,7 +15,7 @@ MonoBehaviour:
   job: 0
   abilityName: Ultimate
   description: 
-  icon: {fileID: 21300000, guid: 425db54a9e7cd5440b4d5763eea55aa4, type: 3}
+  icon: {fileID: 21300000, guid: 8c96b04fdd87606439e0dd12c3b58aa2, type: 3}
   type: 3
   range: 0
   radius: 0
@@ -23,7 +23,7 @@ MonoBehaviour:
   castTime: 0
   cooldown: 10
   startsOnCooldown: 1
-  damage: 450
+  damage: 500
   abilityToPrime: {fileID: 0}
   primeChance: 0
   abilityToRefund: {fileID: 0}

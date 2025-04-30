@@ -20,8 +20,9 @@ MonoBehaviour:
   range: 0
   radius: 0
   cooldownType: 2
-  castTime: 3
+  castTime: 5
   cooldown: 1.5
+  startsOnCooldown: 0
   damage: 200
   abilityToPrime: {fileID: 11400000, guid: 599b254ba4fe60e4b8463566621049d5, type: 2}
   primeChance: 0.5

@@ -302,7 +302,7 @@ public class Player : Entity, IPausable
 		//base.TakeDamage(damage); // logs the damage taken
 
 		sprite.FlashSprite(Color.red, 0.3f);
-		if (!DOTween.IsTweening(CameraMain.transform)) CameraMain.DOShakePosition(0.15f, 0.5f);
+		if (!DOTween.IsTweening(CameraMain.transform)) CameraMain.DOShakePosition(0.2f, 0.5f);
 
 		return;
 		void DestroyNearbyOrbs()

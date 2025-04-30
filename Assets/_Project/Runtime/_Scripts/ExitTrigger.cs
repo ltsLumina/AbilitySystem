@@ -38,32 +38,20 @@ public class ExitTrigger : MonoBehaviour
 		{
 			switch (state)
 			{
+				case GameManager.State.Battle:
+				case GameManager.State.Defeat:
+					box.enabled = false;
+					break;
+
 				case GameManager.State.Lobby:
+				case GameManager.State.Victory:
+				case GameManager.State.Loot:
+				case GameManager.State.Shop:
 					ShowText();									
 					box.enabled = true;
 					onwardGraphic.DOFade(1, 0.35f);
 					break;
-				case GameManager.State.Battle:
-					box.enabled = false;
-					break;
-				case GameManager.State.Victory:
-					ShowText();
-					box.enabled = true;
-					onwardGraphic.DOFade(1, 0.35f);
-					break;
-				case GameManager.State.Defeat:
-					box.enabled = false;
-					break;
-				case GameManager.State.Loot:
-					ShowText();
-					box.enabled = true;
-					onwardGraphic.DOFade(1, 0.35f);
-					break;
-				case GameManager.State.Shop:
-					ShowText();
-					box.enabled = true;
-					onwardGraphic.DOFade(1, 0.35f);
-					break;
+
 				case GameManager.State.Transitioning:
 					HideText();
 					break;

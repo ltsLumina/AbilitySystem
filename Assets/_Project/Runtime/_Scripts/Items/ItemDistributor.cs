@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
 using JetBrains.Annotations;
-using MelenitasDev.SoundsGood;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
@@ -72,7 +71,7 @@ public class ItemDistributor : MonoBehaviour
 #endif
 
 		const int multiplier = 2;
-		int minimumItems = Mathf.Max(2, PlayerManager.PlayerCount);
+		int minimumItems = Mathf.Max(2, PlayerManager.PlayerCount); // e.g. 1 player = 2 items, 2 players = 2 items, 3 players = 3 items
 		int itemsToSpawn = Random.Range(minimumItems, (PlayerManager.PlayerCount * multiplier) + 1);
 		
 		// Shuffle the available items list
@@ -179,25 +178,6 @@ public class ItemDistributor : MonoBehaviour
 			// Destroy any remaining items in the scene
 			SceneItem[] items = FindObjectsByType<SceneItem>(FindObjectsInactive.Include, FindObjectsSortMode.InstanceID);
 			foreach (SceneItem item in items.Where(i => i != null)) Destroy(item.gameObject);
-		}
-
-		IEnumerator PlayLevelUpSound()
-		{
-			float musicVolume = AudioManager.GetLastSavedOutputVolume(Output.Music);
-			
-			// Lower the music volume first
-			AudioManager.ChangeOutputVolume(Output.Music, 0.1f);
-
-			// Play the sound
-			var sound = new Sound(SFX.LevelUp);
-			sound.SetOutput(Output.SFX);
-			sound.Play();
-
-			// Wait for the sound to finish
-			yield return new WaitForSeconds(6f);
-
-			// Restore the original music volume
-			AudioManager.ChangeOutputVolume(Output.Music, musicVolume);
 		}
 	}
 

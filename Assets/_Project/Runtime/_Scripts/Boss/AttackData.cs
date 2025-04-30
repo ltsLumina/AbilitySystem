@@ -163,18 +163,23 @@ public class AttackData : MonoBehaviour
 		float orbSpeed = 10f;
 		float radius = 5f;
 
-		StartCoroutine(Yield());
-		Countdown("get in the circle!", origin, showWarning, delay);
-
 		var markerPrefab = Resources.Load<GameObject>("PREFABS/Boss VFX/Donut AoE");
 		GameObject marker = Instantiate(markerPrefab, origin, Quaternion.identity);
-		Destroy(marker, delay);
 
+
+		StartCoroutine(Yield());
+		Countdown("get in the circle!", origin, showWarning, delay);
+		
 		return;
 
 		IEnumerator Yield()
 		{
-			yield return new WaitForSeconds(delay);
+			yield return new WaitForSeconds(delay - 0.2f);
+			
+			var sprite = marker.GetComponentInChildren<SpriteRenderer>();
+			sprite.DOFade(0, 0.4f).SetEase(Ease.Linear).SetLink(gameObject).OnComplete(() => Destroy(marker, 0.1f));
+			
+			yield return new WaitForSeconds(0.2f);
 
 			for (int i = 0; i < orbCount; i++)
 			{
@@ -222,7 +227,7 @@ public class AttackData : MonoBehaviour
 	/// <summary>
 	///     Spawns a 'dynamic' countdown that follows the player for a given delay while displaying the countdown message.
 	/// </summary>
-	void Countdown(string message, Vector3 position, bool showWarning, float delay, bool isSpread = false)
+	void DynamicCountdown(string message, Vector3 position, bool showWarning, float delay, bool isSpread = false)
 	{
 		if (!showWarning) return;
 
@@ -287,10 +292,10 @@ public class AttackData : MonoBehaviour
 	///     <para>Used for AoEs that have a static position, or for AoEs that don't follow the player.</para>
 	///     <example> Donut, Line, Cleave, etc.</example>
 	/// </summary>
-	void Countdown(string message, Vector2 origin, bool showWarning, float delay) // note for self: this will be for countdowns that use a static position
+	public void Countdown(string message, Vector2 origin, bool showWarning, float delay, bool isEnrage = false)
 	{
-		if (!showWarning) return;
-		
+		if (!isEnrage && !showWarning) return;
+
 		var countdownPrefab = Resources.Load<GameObject>("PREFABS/Boss VFX/AoE Countdown");
 		Transform parent = GameObject.FindWithTag("Worldspace Canvas").transform;
 		Vector2 offset = Vector2.up * 2f;
@@ -322,25 +327,34 @@ public class AttackData : MonoBehaviour
 	{
 		var linePrefab = Resources.Load<GameObject>("PREFABS/Boss VFX/Line AoE");
 		GameObject line = Instantiate(linePrefab, origin, Quaternion.identity);
-		line.transform.localScale = new (Screen.width / 100f, line.transform.localScale.y, line.transform.localScale.z);
 		Destroy(line, delay + 0.1f);
 
+		OnSpawn();
 		StartCoroutine(Anim());
 		StartCoroutine(Yield());
 
 		Countdown("get away from the line!", origin, showWarning, delay);
 
 		return;
+		void OnSpawn()
+		{
+			var spriteRenderer = line.GetComponentInChildren<SpriteRenderer>();
+			spriteRenderer.transform.localScale = new (Screen.width / 100f, y: 0, spriteRenderer.transform.localScale.z);
+			
+			var sequence = DOTween.Sequence();
+			sequence.SetLink(gameObject);
+			sequence.Append(spriteRenderer.transform.DOScaleY(1, 0.2f).SetEase(Ease.InOutCubic));
+		}
+		
 		IEnumerator Anim()
 		{
 			var spriteRenderer = line.GetComponentInChildren<SpriteRenderer>();
-			yield return new WaitForSeconds(delay - 0.2f);
+			yield return new WaitForSeconds(delay - 0.4f);
 
 			Sequence sequence = DOTween.Sequence();
 			sequence.SetLink(gameObject);
 			sequence.Append(spriteRenderer.DOFade(1, 0.2f).SetEase(Ease.Linear));
-			sequence.Join(spriteRenderer.transform.DOScaleY(0, 0.2f).SetEase(Ease.InOutCubic));
-			sequence.AppendInterval(0.1f);
+			sequence.Append(spriteRenderer.transform.DOScaleY(0, 0.2f).SetEase(Ease.InOutCubic));
 			sequence.OnComplete(() => Destroy(line, 0.1f));
 		}
 
@@ -373,24 +387,35 @@ public class AttackData : MonoBehaviour
 	{
 		var linePrefab = Resources.Load<GameObject>("PREFABS/Boss VFX/Line AoE");
 		GameObject line = Instantiate(linePrefab, origin, Quaternion.identity);
-		line.transform.localScale = new (Screen.width / 100f, line.transform.localScale.y * 2, line.transform.localScale.z);
+		Destroy(line, delay + 0.1f);
 
+		OnSpawn();
 		StartCoroutine(Anim());
 		StartCoroutine(Yield());
 
 		Countdown("get away from the line!", origin, showWarning, delay);
 
 		return;
+
+		void OnSpawn()
+		{
+			var spriteRenderer = line.GetComponentInChildren<SpriteRenderer>();
+			spriteRenderer.transform.localScale = new (Screen.width / 100f, y: 0, spriteRenderer.transform.localScale.z);
+
+			var sequence = DOTween.Sequence();
+			sequence.SetLink(gameObject);
+			sequence.Append(spriteRenderer.transform.DOScaleY(2, 0.2f).SetEase(Ease.InOutCubic));
+		}
+
 		IEnumerator Anim()
 		{
 			var spriteRenderer = line.GetComponentInChildren<SpriteRenderer>();
-			yield return new WaitForSeconds(delay - 0.2f);
+			yield return new WaitForSeconds(delay - 0.4f);
 
 			Sequence sequence = DOTween.Sequence();
 			sequence.SetLink(gameObject);
 			sequence.Append(spriteRenderer.DOFade(1, 0.2f).SetEase(Ease.Linear));
-			sequence.Join(spriteRenderer.transform.DOScaleY(0, 0.2f).SetEase(Ease.InOutCubic));
-			sequence.AppendInterval(0.1f);
+			sequence.Append(spriteRenderer.transform.DOScaleY(0, 0.2f).SetEase(Ease.InOutCubic));
 			sequence.OnComplete(() => Destroy(line, 0.1f));
 		}
 
@@ -423,25 +448,35 @@ public class AttackData : MonoBehaviour
 	{
 		var linePrefab = Resources.Load<GameObject>("PREFABS/Boss VFX/Line AoE");
 		GameObject line = Instantiate(linePrefab, origin, Quaternion.identity);
-		line.transform.localScale = new (Screen.width / 100f, line.transform.localScale.y, line.transform.localScale.z);
 		line.transform.rotation = Quaternion.Euler(0, 0, 90);
 
+		OnSpawn();
 		StartCoroutine(Anim());
 		StartCoroutine(Yield());
 
 		Countdown("get away from the line!", origin, showWarning, delay);
 
 		return;
+
+		void OnSpawn()
+		{
+			var spriteRenderer = line.GetComponentInChildren<SpriteRenderer>();
+			spriteRenderer.transform.localScale = new (Screen.width / 100f, y: 0, spriteRenderer.transform.localScale.z);
+
+			var sequence = DOTween.Sequence();
+			sequence.SetLink(gameObject);
+			sequence.Append(spriteRenderer.transform.DOScaleY(1, 0.2f).SetEase(Ease.InOutCubic));
+		}
+
 		IEnumerator Anim()
 		{
 			var spriteRenderer = line.GetComponentInChildren<SpriteRenderer>();
-			yield return new WaitForSeconds(delay - 0.2f);
+			yield return new WaitForSeconds(delay - 0.4f);
 
 			Sequence sequence = DOTween.Sequence();
 			sequence.SetLink(gameObject);
 			sequence.Append(spriteRenderer.DOFade(1, 0.2f).SetEase(Ease.Linear));
-			sequence.Join(spriteRenderer.transform.DOScaleY(0, 0.2f).SetEase(Ease.InOutCubic));
-			sequence.AppendInterval(0.1f);
+			sequence.Append(spriteRenderer.transform.DOScaleY(0, 0.2f).SetEase(Ease.InOutCubic));
 			sequence.OnComplete(() => Destroy(line, 0.1f));
 		}
 
@@ -474,26 +509,34 @@ public class AttackData : MonoBehaviour
 	{
 		var linePrefab = Resources.Load<GameObject>("PREFABS/Boss VFX/Line AoE");
 		GameObject line = Instantiate(linePrefab, origin, Quaternion.identity);
-		line.transform.localScale = new (Screen.width / 100f, line.transform.localScale.y * 2, line.transform.localScale.z);
 		line.transform.rotation = Quaternion.Euler(0, 0, 90);
 
+		OnSpawn();
 		StartCoroutine(Anim());
 		StartCoroutine(Yield());
 
 		Countdown("get away from the line!", origin, showWarning, delay);
 
 		return;
+		void OnSpawn()
+		{
+			var spriteRenderer = line.GetComponentInChildren<SpriteRenderer>();
+			spriteRenderer.transform.localScale = new (Screen.width / 100f, y: 0, spriteRenderer.transform.localScale.z);
+
+			var sequence = DOTween.Sequence();
+			sequence.SetLink(gameObject);
+			sequence.Append(spriteRenderer.transform.DOScaleY(2, 0.2f).SetEase(Ease.InOutCubic));
+		}
 
 		IEnumerator Anim()
 		{
 			var spriteRenderer = line.GetComponentInChildren<SpriteRenderer>();
-			yield return new WaitForSeconds(delay - 0.2f);
+			yield return new WaitForSeconds(delay - 0.4f);
 
 			Sequence sequence = DOTween.Sequence();
 			sequence.SetLink(gameObject);
 			sequence.Append(spriteRenderer.DOFade(1, 0.2f).SetEase(Ease.Linear));
-			sequence.Join(spriteRenderer.transform.DOScaleY(0, 0.2f).SetEase(Ease.InOutCubic));
-			sequence.AppendInterval(0.1f);
+			sequence.Append(spriteRenderer.transform.DOScaleY(0, 0.2f).SetEase(Ease.InOutCubic));
 			sequence.OnComplete(() => Destroy(line, 0.1f));
 		}
 
@@ -556,12 +599,15 @@ public class AttackData : MonoBehaviour
 			
 			// fade out
 			var sprite = mixer.GetComponentInChildren<SpriteRenderer>();
-			sprite.DOFade(0, 0.2f).SetEase(Ease.Linear).SetLink(mixer).OnComplete(() => Destroy(mixer, 0.1f));
+			sprite.DOFade(0, 0.2f).SetEase(Ease.Linear).SetLink(gameObject).OnComplete(() => Destroy(mixer, 0.1f));
 		}
 		
 		IEnumerator RotatingLineRoutine()
 		{
 			yield return new WaitForSeconds(delay);
+			
+			var lineSprite = line.GetComponentInChildren<SpriteRenderer>();
+			lineSprite.DOFade(1, 0.2f).SetEase(Ease.Linear).SetLink(gameObject);
 			
 			float elapsedTime = 0f;
 			var lineCollider = line.GetComponent<BoxCollider2D>();
@@ -612,25 +658,34 @@ public class AttackData : MonoBehaviour
 	{
 		var linePrefab = Resources.Load<GameObject>("PREFABS/Boss VFX/Line AoE");
 		GameObject line = Instantiate(linePrefab, origin, Quaternion.identity);
-		line.transform.localScale = new (Screen.width / 100f, line.transform.localScale.y, line.transform.localScale.z);
 		line.transform.rotation = Quaternion.Euler(0, 0, 45);
 
+		OnSpawn();
 		StartCoroutine(Anim());
 		StartCoroutine(Yield());
 
 		Countdown("get away from the line!", origin, showWarning, delay);
 
 		return;
+		void OnSpawn()
+		{
+			var spriteRenderer = line.GetComponentInChildren<SpriteRenderer>();
+			spriteRenderer.transform.localScale = new (Screen.width / 100f, y: 0, spriteRenderer.transform.localScale.z);
+
+			var sequence = DOTween.Sequence();
+			sequence.SetLink(gameObject);
+			sequence.Append(spriteRenderer.transform.DOScaleY(1, 0.2f).SetEase(Ease.InOutCubic));
+		}
 
 		IEnumerator Anim()
 		{
 			var spriteRenderer = line.GetComponentInChildren<SpriteRenderer>();
-			yield return new WaitForSeconds(delay - 0.2f);
+			yield return new WaitForSeconds(delay - 0.4f);
 
 			Sequence sequence = DOTween.Sequence();
 			sequence.SetLink(gameObject);
 			sequence.Append(spriteRenderer.DOFade(1, 0.2f).SetEase(Ease.Linear));
-			sequence.Join(spriteRenderer.transform.DOScaleY(0, 0.2f).SetEase(Ease.InOutCubic));
+			sequence.Append(spriteRenderer.transform.DOScaleY(0, 0.2f).SetEase(Ease.InOutCubic));
 			sequence.OnComplete(() => Destroy(line, 0.1f));
 		}
 
@@ -661,25 +716,34 @@ public class AttackData : MonoBehaviour
 	{
 		var linePrefab = Resources.Load<GameObject>("PREFABS/Boss VFX/Line AoE");
 		GameObject line = Instantiate(linePrefab, origin, Quaternion.identity);
-		line.transform.localScale = new (Screen.width / 100f, line.transform.localScale.y, line.transform.localScale.z);
 		line.transform.rotation = Quaternion.Euler(0, 0, 315);
 
+		OnSpawn();
 		StartCoroutine(Anim());
 		StartCoroutine(Yield());
 
 		Countdown("get away from the line!", origin, showWarning, delay);
 
 		return;
+		void OnSpawn()
+		{
+			var spriteRenderer = line.GetComponentInChildren<SpriteRenderer>();
+			spriteRenderer.transform.localScale = new (Screen.width / 100f, y: 0, spriteRenderer.transform.localScale.z);
+
+			var sequence = DOTween.Sequence();
+			sequence.SetLink(gameObject);
+			sequence.Append(spriteRenderer.transform.DOScaleY(1, 0.2f).SetEase(Ease.InOutCubic));
+		}
 
 		IEnumerator Anim()
 		{
 			var spriteRenderer = line.GetComponentInChildren<SpriteRenderer>();
-			yield return new WaitForSeconds(delay - 0.2f);
+			yield return new WaitForSeconds(delay - 0.4f);
 
 			Sequence sequence = DOTween.Sequence();
 			sequence.SetLink(gameObject);
 			sequence.Append(spriteRenderer.DOFade(1, 0.2f).SetEase(Ease.Linear));
-			sequence.Join(spriteRenderer.transform.DOScaleY(0, 0.2f).SetEase(Ease.InOutCubic));
+			sequence.Append(spriteRenderer.transform.DOScaleY(0, 0.2f).SetEase(Ease.InOutCubic));
 			sequence.OnComplete(() => Destroy(line, 0.1f));
 		}
 
@@ -738,7 +802,10 @@ public class AttackData : MonoBehaviour
 
 		// visual effect: flash white then fade out
 		var spriteRenderer = cleave.GetComponentInChildren<SpriteRenderer>();
-		spriteRenderer.DOFade(1, duration).SetEase(Ease.Linear).OnComplete(() => spriteRenderer.DOFade(0, duration).SetEase(Ease.Linear).SetLink(cleave));
+		spriteRenderer.DOFade(1, duration).SetEase(Ease.Linear).SetLink(cleave).OnComplete(() =>
+		{
+			spriteRenderer.DOFade(0, duration).SetEase(Ease.Linear).SetLink(cleave);
+		});
 		
 		yield return new WaitForSeconds(totalDuration);
 		
@@ -853,19 +920,36 @@ public class AttackData : MonoBehaviour
 		var linePrefab = Resources.Load<GameObject>("PREFABS/Boss VFX/Line AoE");
 
 		GameObject box = Instantiate(boxPrefab, origin, Quaternion.identity);
+		GameObject line = Instantiate(linePrefab, origin, Quaternion.identity);
+		GameObject pillar = Instantiate(linePrefab, origin, Quaternion.identity);
+		
+		line.SetActive(false);
+		pillar.SetActive(false);
 
 		StartCoroutine(BoxAttackRoutine());
+		StartCoroutine(Anim());
 		Countdown("", origin, showWarning, delay);
 
 		return;
+		IEnumerator Anim()
+		{
+			var spriteRenderer = line.GetComponentInChildren<SpriteRenderer>();
+			yield return new WaitForSeconds(delay - 0.4f);
 
+			Sequence sequence = DOTween.Sequence();
+			sequence.SetLink(gameObject);
+			sequence.Append(spriteRenderer.DOFade(1, 0.2f).SetEase(Ease.Linear));
+			sequence.Append(spriteRenderer.transform.DOScaleY(0, 0.2f).SetEase(Ease.InOutCubic));
+			sequence.OnComplete(() => Destroy(line, 0.1f));
+		}
+		
 		IEnumerator BoxAttackRoutine()
 		{
 			yield return new WaitForSeconds(delay);
 
 			// Create instant damage line and pillar
-			GameObject line = Instantiate(linePrefab, origin, Quaternion.identity);
-			GameObject pillar = Instantiate(linePrefab, origin, Quaternion.identity);
+			line.SetActive(true);
+			pillar.SetActive(true);
 
 			line.transform.localScale = new (Screen.width / 10f, line.transform.localScale.y * 2, line.transform.localScale.z);
 			pillar.transform.localScale = new (Screen.width / 100f, pillar.transform.localScale.y * 2, pillar.transform.localScale.z);
@@ -939,7 +1023,7 @@ public class AttackData : MonoBehaviour
                  markers.Add(marker);
                  
                  // Create dynamic countdown text for each player
-                 Countdown("Spread out!", player.transform.position, showWarning, delay, true);
+                 DynamicCountdown("Spread out!", player.transform.position, showWarning, delay, true);
              }
      
              // Wait for delay
@@ -982,7 +1066,7 @@ public class AttackData : MonoBehaviour
 
 		IEnumerator SpawnRoutine()
 		{
-			int orbCount = 10;
+			int orbCount = 100;
 			float interval = delay / orbCount;
 
 			for (int i = 0; i < orbCount; i++)
@@ -1002,10 +1086,10 @@ public class AttackData : MonoBehaviour
 	{
 		while (PlayerManager.Instance.Players.Any(p => p.Health > 0))
 		{
-			Countdown("get ready for the enrage!", new (0, 0), true, enrageDelay);
+			Countdown("get ready for the enrage!", new (0, 0), true, enrageDelay, true);
 
-			int orbCount = 100;
-			float orbSpeed = 10f;
+			int orbCount = 150;
+			float orbSpeed = 20f;
 			float radius = 0.1f;
 
 			for (int i = 0; i < orbCount; i++)

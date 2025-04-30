@@ -365,13 +365,15 @@ public sealed class Ability : ScriptableObject
 	}
 	#endregion
 
-	static void VisualEffect(Entity target, bool isDoT = false)
+	void VisualEffect(Entity target, bool isDoT = false)
 	{
 		var prefab = Resources.Load<GameObject>("PREFABS/Effect");
 		GameObject instantiate = Instantiate(prefab, target.transform.position, Quaternion.identity);
 		instantiate.transform.localScale = isDoT ? new (0.5f, 0.5f) : new (1, 1);
 		var sprite = instantiate.GetComponent<SpriteRenderer>();
 
+		var col = caster.AccentColour;
+		sprite.color = col;
 		sprite.DOFade(0, 1).OnComplete(() => { sprite.DOFade(1, 0).SetLink(instantiate).OnComplete(() => { Destroy(instantiate); }); });
 	}
 }

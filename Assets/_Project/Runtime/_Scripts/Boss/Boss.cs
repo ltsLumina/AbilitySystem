@@ -32,7 +32,6 @@ public sealed partial class Boss : Entity
 	[EndFoldout]
 	
 	[Header("Enrage Settings")]
-	[SerializeField] float enrageDialogueDelay = 3f;
 	[SerializeField] float enrageInterval = 5f;
 
 	int currentPhaseIndex;
@@ -319,17 +318,13 @@ public sealed partial class Boss : Entity
 	{
 		Logger.LogWarning("Enrage!");
 
-		// var dialogue = new Dialogue("I've had it with you!", enrageDialogueDelay);
-		// dialogue.type = Behaviour.Type.Dialogue;
-		// dialogue.Start(this);
-
-		yield return new WaitForSeconds(enrageDialogueDelay);
-
 		var move = new Move(Vector2.zero, 2f);
 		move.type = Behaviour.Type.Move;
 		move.Start(this);
+		
+		attackData.Countdown("get ready for the enrage!", new (0, 0), true, enrageInterval, true);
 
-		yield return new WaitForSeconds(2f);
+		yield return new WaitForSeconds(enrageInterval);
 
 		attackData.Enrage(enrageInterval);
 

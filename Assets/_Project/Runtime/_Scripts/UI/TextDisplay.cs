@@ -20,8 +20,8 @@ public static class TextDisplay
 		TextMeshProUGUI instantiate = Object.Instantiate(damageNumberPrefab, worldSpacePosition, Quaternion.identity, canvas.transform);
 
 		float scaleFactor = damage switch
-		{ >= 1000 => 1.5f,
-		  >= 500  => 1.25f,
+		{ >= 500 => 1.5f,
+		  >= 300  => 1.25f,
 		  < 100   => 0.85f,
 		  _       => 1f };
 
@@ -34,6 +34,10 @@ public static class TextDisplay
 
 		string msg = damage > 0 ? damage.ToString("F0") : "MISSED";
 		instantiate.text = msg;
+
+		// if the damage is 500 or greater, add an ! to the end of the text
+		if (damage >= 500) instantiate.text += "!";
+		else if (damage >= 1000) instantiate.text += "!!";
 	}
 
 	/// <summary>

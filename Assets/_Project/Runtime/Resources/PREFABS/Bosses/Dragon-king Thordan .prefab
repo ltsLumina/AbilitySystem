@@ -135,13 +135,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   statusEffects: []
   data: {fileID: 0}
-  health: 16500
-  maxHealth: 16500
+  health: 20000
+  maxHealth: 20000
   healthScalar: 1.25
   accentColour: {r: 0.9811321, g: 0.35635456, b: 0.35635456, a: 1}
   phases:
   - name: Phase 1
-    startIndex: 0
+    startIndex: 38
     behaviours:
     - description: 
       type: 1
@@ -434,15 +434,6 @@ MonoBehaviour:
     - description: 
       type: 1
       position: {x: 0, y: 0}
-      attack: 6
-      showWarning: 1
-      dialogue: I expect a great challenge.
-      duration: 0
-      delay: 1.5
-      isCurrentBehaviour: 0
-    - description: 
-      type: 1
-      position: {x: 0, y: 0}
       attack: 5
       showWarning: 0
       dialogue: I expect a great challenge.
@@ -455,13 +446,13 @@ MonoBehaviour:
       attack: 5
       showWarning: 0
       dialogue: I expect a great challenge.
-      duration: 2.5
+      duration: 5
       delay: 2.5
       isCurrentBehaviour: 0
     - description: 
       type: 1
       position: {x: 0, y: 0}
-      attack: 8
+      attack: 6
       showWarning: 1
       dialogue: I expect a great challenge.
       duration: 0
@@ -470,8 +461,8 @@ MonoBehaviour:
     - description: 
       type: 1
       position: {x: 0, y: 0}
-      attack: 5
-      showWarning: 0
+      attack: 8
+      showWarning: 1
       dialogue: I expect a great challenge.
       duration: 2
       delay: 2.5
@@ -495,7 +486,7 @@ MonoBehaviour:
       delay: 2.5
       isCurrentBehaviour: 0
   - name: Phase 2
-    startIndex: 0
+    startIndex: 29
     behaviours:
     - description: 
       type: 2
@@ -624,93 +615,12 @@ MonoBehaviour:
       delay: 5
       isCurrentBehaviour: 0
     - description: 
-      type: 1
-      position: {x: 5, y: 5}
-      attack: 18
-      showWarning: 0
-      dialogue: O Ascalon! Drink deep of the power of the slumbering gods!
-      duration: 4
-      delay: 4
-      isCurrentBehaviour: 0
-    - description: 
       type: 2
       position: {x: -5, y: -5}
       attack: 19
       showWarning: 1
       dialogue: You tire me.
       duration: 5
-      delay: 3
-      isCurrentBehaviour: 0
-    - description: 
-      type: 0
-      position: {x: -15, y: -8}
-      attack: 19
-      showWarning: 1
-      dialogue: O Ascalon! Drink deep of the power of the slumbering gods!
-      duration: 1
-      delay: 3
-      isCurrentBehaviour: 0
-    - description: 
-      type: 0
-      position: {x: 0, y: 8}
-      attack: 19
-      showWarning: 1
-      dialogue: O Ascalon! Drink deep of the power of the slumbering gods!
-      duration: 1
-      delay: 3
-      isCurrentBehaviour: 0
-    - description: 
-      type: 0
-      position: {x: 0, y: -8}
-      attack: 19
-      showWarning: 1
-      dialogue: O Ascalon! Drink deep of the power of the slumbering gods!
-      duration: 1
-      delay: 3
-      isCurrentBehaviour: 0
-    - description: 
-      type: 0
-      position: {x: 15, y: 8}
-      attack: 19
-      showWarning: 1
-      dialogue: O Ascalon! Drink deep of the power of the slumbering gods!
-      duration: 1
-      delay: 3
-      isCurrentBehaviour: 0
-    - description: 
-      type: 0
-      position: {x: -15, y: 8}
-      attack: 19
-      showWarning: 1
-      dialogue: O Ascalon! Drink deep of the power of the slumbering gods!
-      duration: 1
-      delay: 3
-      isCurrentBehaviour: 0
-    - description: 
-      type: 0
-      position: {x: 15, y: -8}
-      attack: 19
-      showWarning: 1
-      dialogue: O Ascalon! Drink deep of the power of the slumbering gods!
-      duration: 1
-      delay: 3
-      isCurrentBehaviour: 0
-    - description: 
-      type: 0
-      position: {x: 0, y: 0}
-      attack: 19
-      showWarning: 1
-      dialogue: O Ascalon! Drink deep of the power of the slumbering gods!
-      duration: 1
-      delay: 3
-      isCurrentBehaviour: 0
-    - description: 
-      type: 3
-      position: {x: 0, y: 0}
-      attack: 19
-      showWarning: 1
-      dialogue: O Ascalon! Drink deep of the power of the slumbering gods!
-      duration: 1.5
       delay: 3
       isCurrentBehaviour: 0
     - description: 
@@ -733,18 +643,27 @@ MonoBehaviour:
       isCurrentBehaviour: 0
     - description: 
       type: 1
-      position: {x: -15, y: -15}
+      position: {x: -17, y: -17}
       attack: 12
-      showWarning: 1
+      showWarning: 0
       dialogue: O Ascalon! Drink deep of the power of the slumbering gods!
       duration: 0.2
-      delay: 2
+      delay: 3
+      isCurrentBehaviour: 0
+    - description: 
+      type: 1
+      position: {x: -15, y: -15}
+      attack: 12
+      showWarning: 0
+      dialogue: O Ascalon! Drink deep of the power of the slumbering gods!
+      duration: 0.2
+      delay: 3
       isCurrentBehaviour: 0
     - description: 
       type: 1
       position: {x: -13, y: -13}
       attack: 12
-      showWarning: 1
+      showWarning: 0
       dialogue: O Ascalon! Drink deep of the power of the slumbering gods!
       duration: 0.2
       delay: 3
@@ -753,7 +672,7 @@ MonoBehaviour:
       type: 1
       position: {x: -11, y: -11}
       attack: 12
-      showWarning: 1
+      showWarning: 0
       dialogue: O Ascalon! Drink deep of the power of the slumbering gods!
       duration: 0.2
       delay: 3
@@ -762,7 +681,7 @@ MonoBehaviour:
       type: 1
       position: {x: -9, y: -9}
       attack: 12
-      showWarning: 1
+      showWarning: 0
       dialogue: O Ascalon! Drink deep of the power of the slumbering gods!
       duration: 0.2
       delay: 3
@@ -771,7 +690,7 @@ MonoBehaviour:
       type: 1
       position: {x: -7, y: -7}
       attack: 12
-      showWarning: 1
+      showWarning: 0
       dialogue: O Ascalon! Drink deep of the power of the slumbering gods!
       duration: 0.2
       delay: 3
@@ -780,7 +699,7 @@ MonoBehaviour:
       type: 1
       position: {x: -5, y: -5}
       attack: 12
-      showWarning: 1
+      showWarning: 0
       dialogue: O Ascalon! Drink deep of the power of the slumbering gods!
       duration: 0.2
       delay: 3
@@ -789,7 +708,7 @@ MonoBehaviour:
       type: 1
       position: {x: -3, y: -3}
       attack: 12
-      showWarning: 1
+      showWarning: 0
       dialogue: O Ascalon! Drink deep of the power of the slumbering gods!
       duration: 0.2
       delay: 3
@@ -798,7 +717,7 @@ MonoBehaviour:
       type: 1
       position: {x: -1, y: -1}
       attack: 12
-      showWarning: 1
+      showWarning: 0
       dialogue: O Ascalon! Drink deep of the power of the slumbering gods!
       duration: 0.2
       delay: 3
@@ -818,61 +737,7 @@ MonoBehaviour:
       attack: 12
       showWarning: 1
       dialogue: O Ascalon! Drink deep of the power of the slumbering gods!
-      duration: 0.2
-      delay: 3
-      isCurrentBehaviour: 0
-    - description: 
-      type: 1
-      position: {x: 5, y: 5}
-      attack: 12
-      showWarning: 1
-      dialogue: O Ascalon! Drink deep of the power of the slumbering gods!
-      duration: 0.2
-      delay: 3
-      isCurrentBehaviour: 0
-    - description: 
-      type: 1
-      position: {x: 7, y: 7}
-      attack: 12
-      showWarning: 1
-      dialogue: O Ascalon! Drink deep of the power of the slumbering gods!
-      duration: 0.2
-      delay: 3
-      isCurrentBehaviour: 0
-    - description: 
-      type: 1
-      position: {x: 9, y: 9}
-      attack: 12
-      showWarning: 1
-      dialogue: O Ascalon! Drink deep of the power of the slumbering gods!
-      duration: 0.2
-      delay: 3
-      isCurrentBehaviour: 0
-    - description: 
-      type: 1
-      position: {x: 11, y: 11}
-      attack: 12
-      showWarning: 1
-      dialogue: O Ascalon! Drink deep of the power of the slumbering gods!
-      duration: 0.2
-      delay: 3
-      isCurrentBehaviour: 0
-    - description: 
-      type: 1
-      position: {x: 13, y: 13}
-      attack: 12
-      showWarning: 1
-      dialogue: O Ascalon! Drink deep of the power of the slumbering gods!
-      duration: 0.2
-      delay: 3
-      isCurrentBehaviour: 0
-    - description: 
-      type: 1
-      position: {x: 15, y: 15}
-      attack: 12
-      showWarning: 1
-      dialogue: O Ascalon! Drink deep of the power of the slumbering gods!
-      duration: 0.2
+      duration: 1.5
       delay: 3
       isCurrentBehaviour: 0
     - description: 
@@ -882,10 +747,10 @@ MonoBehaviour:
       showWarning: 1
       dialogue: O Ascalon! Drink deep of the power of the slumbering gods!
       duration: 5
-      delay: 5
+      delay: 3.5
       isCurrentBehaviour: 0
   - name: Phase 3
-    startIndex: 0
+    startIndex: 45
     behaviours:
     - description: 
       type: 2
@@ -896,7 +761,501 @@ MonoBehaviour:
       duration: 5
       delay: 0
       isCurrentBehaviour: 0
-  enrageDialogueDelay: 0
+    - description: 
+      type: 1
+      position: {x: -2.5, y: 2.5}
+      attack: 5
+      showWarning: 0
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 0
+      delay: 5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 1
+      position: {x: 2.5, y: 2.5}
+      attack: 5
+      showWarning: 1
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 0
+      delay: 5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 1
+      position: {x: -2.5, y: -2.5}
+      attack: 5
+      showWarning: 0
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 0
+      delay: 5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 1
+      position: {x: 2.5, y: -2.5}
+      attack: 5
+      showWarning: 0
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 1.5
+      delay: 5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 1
+      position: {x: 0, y: 0}
+      attack: 11
+      showWarning: 0
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 0
+      delay: 3.5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 1
+      position: {x: 0, y: 0}
+      attack: 12
+      showWarning: 0
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 3.5
+      delay: 3.5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 1
+      position: {x: 0, y: 0}
+      attack: 24
+      showWarning: 0
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 0
+      delay: 2.5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 3
+      position: {x: 0, y: 0}
+      attack: 24
+      showWarning: 0
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 3
+      delay: 2.5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 0
+      position: {x: 0, y: -10}
+      attack: 7
+      showWarning: 1
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 1.5
+      delay: 3
+      isCurrentBehaviour: 0
+    - description: 
+      type: 1
+      position: {x: -2.5, y: 0}
+      attack: 15
+      showWarning: 0
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 0
+      delay: 2.5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 1
+      position: {x: 2.5, y: 0}
+      attack: 16
+      showWarning: 0
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 0
+      delay: 2.5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 1
+      position: {x: 0, y: 5}
+      attack: 17
+      showWarning: 0
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 0
+      delay: 2.5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 1
+      position: {x: 0, y: 5}
+      attack: 18
+      showWarning: 0
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 1
+      delay: 2.5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 1
+      position: {x: 0, y: 0}
+      attack: 9
+      showWarning: 1
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 1.5
+      delay: 2
+      isCurrentBehaviour: 0
+    - description: 
+      type: 0
+      position: {x: -15, y: 0}
+      attack: 7
+      showWarning: 1
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 1.5
+      delay: 3
+      isCurrentBehaviour: 0
+    - description: 
+      type: 1
+      position: {x: 0, y: 2.5}
+      attack: 13
+      showWarning: 0
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 0
+      delay: 2.5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 1
+      position: {x: 0, y: -2.5}
+      attack: 14
+      showWarning: 0
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 0
+      delay: 2.5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 1
+      position: {x: 0, y: 2.5}
+      attack: 18
+      showWarning: 0
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 0
+      delay: 2.5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 1
+      position: {x: 0, y: -2.5}
+      attack: 20
+      showWarning: 0
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 1
+      delay: 2.5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 1
+      position: {x: 0, y: 0}
+      attack: 7
+      showWarning: 1
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 1.5
+      delay: 2
+      isCurrentBehaviour: 0
+    - description: 
+      type: 0
+      position: {x: 0, y: 10}
+      attack: 9
+      showWarning: 0
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 1.5
+      delay: 3
+      isCurrentBehaviour: 0
+    - description: 
+      type: 1
+      position: {x: -2.5, y: 0}
+      attack: 15
+      showWarning: 0
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 0
+      delay: 2.5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 1
+      position: {x: 2.5, y: 0}
+      attack: 16
+      showWarning: 0
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 0
+      delay: 2.5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 1
+      position: {x: 0, y: -2.5}
+      attack: 19
+      showWarning: 0
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 0
+      delay: 2.5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 1
+      position: {x: 0, y: -2.5}
+      attack: 20
+      showWarning: 0
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 1
+      delay: 2.5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 1
+      position: {x: 0, y: 0}
+      attack: 9
+      showWarning: 1
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 1.5
+      delay: 2
+      isCurrentBehaviour: 0
+    - description: 
+      type: 0
+      position: {x: 15, y: 0}
+      attack: 9
+      showWarning: 1
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 1.5
+      delay: 2.5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 1
+      position: {x: 0, y: 2.5}
+      attack: 13
+      showWarning: 0
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 0
+      delay: 5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 1
+      position: {x: 0, y: -2.5}
+      attack: 14
+      showWarning: 0
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 0
+      delay: 5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 1
+      position: {x: -5, y: 0}
+      attack: 15
+      showWarning: 0
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 0
+      delay: 5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 1
+      position: {x: 0, y: 0}
+      attack: 4
+      showWarning: 1
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 0
+      delay: 5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 1
+      position: {x: -3, y: 0}
+      attack: 12
+      showWarning: 0
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 0.2
+      delay: 3.5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 1
+      position: {x: 0, y: 0}
+      attack: 11
+      showWarning: 0
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 0.2
+      delay: 3.5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 1
+      position: {x: 3, y: 0}
+      attack: 12
+      showWarning: 0
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 0.2
+      delay: 3.5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 1
+      position: {x: 6, y: 0}
+      attack: 11
+      showWarning: 0
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 0.2
+      delay: 3.5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 1
+      position: {x: 9, y: 0}
+      attack: 12
+      showWarning: 0
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 0.2
+      delay: 3.5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 1
+      position: {x: 12, y: 0}
+      attack: 11
+      showWarning: 0
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 0.2
+      delay: 3.5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 1
+      position: {x: 15, y: 0}
+      attack: 12
+      showWarning: 0
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 0.2
+      delay: 3.5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 1
+      position: {x: 18, y: 0}
+      attack: 11
+      showWarning: 0
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 0.2
+      delay: 3.5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 1
+      position: {x: 21, y: 0}
+      attack: 12
+      showWarning: 0
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 0.2
+      delay: 3.5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 1
+      position: {x: 24, y: 0}
+      attack: 11
+      showWarning: 0
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 0.2
+      delay: 3.5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 1
+      position: {x: 0, y: 0}
+      attack: 7
+      showWarning: 1
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 5
+      delay: 5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 3
+      position: {x: 24, y: 0}
+      attack: 11
+      showWarning: 0
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 3
+      delay: 2.5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 0
+      position: {x: 0, y: 0}
+      attack: 18
+      showWarning: 0
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 1.5
+      delay: 5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 0
+      position: {x: -15, y: 10}
+      attack: 18
+      showWarning: 0
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 1
+      delay: 5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 1
+      position: {x: -15, y: 10}
+      attack: 4
+      showWarning: 1
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 0
+      delay: 3.5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 0
+      position: {x: 15, y: 10}
+      attack: 4
+      showWarning: 1
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 1
+      delay: 5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 1
+      position: {x: 15, y: 10}
+      attack: 4
+      showWarning: 1
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 0
+      delay: 5.5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 0
+      position: {x: 15, y: -10}
+      attack: 4
+      showWarning: 1
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 1
+      delay: 5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 1
+      position: {x: 15, y: -10}
+      attack: 4
+      showWarning: 1
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 0
+      delay: 6.5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 0
+      position: {x: -15, y: -10}
+      attack: 4
+      showWarning: 1
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 1
+      delay: 5
+      isCurrentBehaviour: 0
+    - description: 
+      type: 1
+      position: {x: -15, y: -10}
+      attack: 4
+      showWarning: 1
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 0
+      delay: 9
+      isCurrentBehaviour: 0
+    - description: 
+      type: 0
+      position: {x: 0, y: 0}
+      attack: 3
+      showWarning: 1
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 1.5
+      delay: 4
+      isCurrentBehaviour: 0
+    - description: 
+      type: 1
+      position: {x: 0, y: 0}
+      attack: 5
+      showWarning: 1
+      dialogue: Y-you survived my divine reckoning? Impossible!
+      duration: 10
+      delay: 10
+      isCurrentBehaviour: 0
+    - description: 
+      type: 2
+      position: {x: 0, y: 0}
+      attack: 5
+      showWarning: 1
+      dialogue: Face my divine wrath!
+      duration: 5
+      delay: 5
+      isCurrentBehaviour: 0
   enrageInterval: 5
 --- !u!114 &5999483600560033657
 MonoBehaviour:

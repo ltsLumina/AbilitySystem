@@ -41,8 +41,6 @@ public class GameManager : Singleton<GameManager>
 	[ReadOnly]
 	[SerializeField] List<State> events = new ();
 
-	public List<State> Events => events;
-
 	public Boss CurrentBoss => currentBoss;
 	public bool IsTransitioning => currentState == State.Transitioning;
 
@@ -255,9 +253,8 @@ public class GameManager : Singleton<GameManager>
 		{
 			var allEvents = new List<State>
 			{ State.Battle,
-			  State.Loot,
 			  State.Battle,
-			  State.Shop,
+			  State.Loot,
 			  State.Battle };
 
 			events.AddRange(allEvents);

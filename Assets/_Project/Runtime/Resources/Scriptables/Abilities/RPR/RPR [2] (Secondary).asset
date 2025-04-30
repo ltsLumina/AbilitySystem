@@ -15,7 +15,7 @@ MonoBehaviour:
   job: 0
   abilityName: Secondary
   description: 
-  icon: {fileID: 21300000, guid: 9540215692c7ead449ab9d7040c446a7, type: 3}
+  icon: {fileID: 21300000, guid: d5081d284e91a1b4d9ae5db18cf27a57, type: 3}
   type: 1
   range: 0
   radius: 0
@@ -23,7 +23,7 @@ MonoBehaviour:
   castTime: 0
   cooldown: 1.5
   startsOnCooldown: 0
-  damage: 100
+  damage: 150
   abilityToPrime: {fileID: 0}
   primeChance: 0
   abilityToRefund: {fileID: 0}
